@@ -1,0 +1,180 @@
+{
+  "main": {
+    "id": "35af06c1f076e22a",
+    "type": "split",
+    "children": [
+      {
+        "id": "04a2c5b689e31de6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8c3e222ff7504156",
+            "type": "leaf",
+            "state": {
+              "type": "kanban",
+              "state": {
+                "file": "design-agents-flow/status.md",
+                "kanbanViewState": {
+                  "kanban-plugin": "board",
+                  "list-collapse": []
+                }
+              },
+              "icon": "lucide-trello",
+              "title": "status"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "67dffd59ab4ce809",
+    "type": "split",
+    "children": [
+      {
+        "id": "18873b6a9b849b04",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1127c2f22ee7cfa3",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "b7de6b4b1b826c91",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "3773df43fb95ca6f",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "bfc7ff71acb3936b",
+    "type": "split",
+    "children": [
+      {
+        "id": "73fd27615407682e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d4a923da116c7581",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "design-agents-flow/status.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for status"
+            }
+          },
+          {
+            "id": "f54bf093d7ef88e2",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "design-agents-flow/status.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from status"
+            }
+          },
+          {
+            "id": "0f29f9aed783bcf1",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "2dee76261c7a8d74",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "design-agents-flow/status.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of status"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "obsidian-kanban:Create new board": false
+    }
+  },
+  "active": "8c3e222ff7504156",
+  "lastOpenFiles": [
+    "design-agents-flow/status-details.md",
+    "design-agents-flow/status.md"
+  ]
+}

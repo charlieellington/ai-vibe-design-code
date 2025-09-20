@@ -1,0 +1,8 @@
+{
+  "pluginEnabledStatus": {
+    "community": true
+  },
+  "restrictedMode": false,
+  "safeMode": false,
+  "trustAllPlugins": true
+}
