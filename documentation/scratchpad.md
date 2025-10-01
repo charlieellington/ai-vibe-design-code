@@ -1,55 +1,98 @@
-# Project Scratchpad
+# Project Status - Zebra Design Portfolio
 
-## Current Status: October 1, 2025
+## Current Status
+- **Date**: September 20, 2025
+- **Phase**: Complete design-forward development system ✅
+- **Last Updated**: Created standalone design system repository
+- **Main Repository**: https://github.com/charlieellington/zebra-design
+- **System Repository**: https://github.com/charlieellington/ai-vibe-design-code
 
-### Epic: Pre-Paternity Leave Authority Foundation
+## Recent Changes
+- ✅ Set up Spotlight template with all dependencies
+- ✅ Created git repository and pushed to GitHub
+- ✅ Added design agents flow system from previous project
+- ✅ Updated PARALLEL-DEV-SETUP.md for zebra-design context
+- ✅ Simplified agents flow (removed Agent 0, extra documentation)
+- ✅ Updated CONTRIBUTING.md with security rules and "never edit" directive
+- ✅ **MAJOR**: Restructured agents to use individual task files instead of status-details.md
+  - Created `doing/` folder for tasks in progress
+  - Created `done/` folder for completed tasks
+  - Updated all 5 design agent files to use new structure
+  - Agent 5 now moves files from `doing/` to `done/` when complete
+- ✅ **Updated rule files for project context**:
+  - `tailwind_rules.mdc`: Adapted from Animatix context to zebra-design portfolio standards
+  - `shadcn_rules.mdc`: Marked as reference-only since project uses Headless UI
+  - Updated design agents to reference appropriate rules (Agent 1, 3 & 4)
+- ✅ **Renamed agent files for easier tagging**:
+  - `design-1-planning.md` → `1-design-planning.md`
+  - `design-2-review.md` → `2-design-review.md`
+  - `design-3-discovery.md` → `3-design-discovery.md`
+  - `design-4-execution.md` → `4-design-execution.md`
+  - `design-5-complete.md` → `5-design-complete.md`
+- ✅ **Updated MCP tool references to match actual available tools**:
+  - Fixed shadcn_rules.mdc to reference correct MCP tool names
+  - Updated 3-design-discovery.md with actual MCP tool commands
+- ✅ **Generalized PARALLEL-DEV-SETUP.md for any project**:
+  - Added variable placeholders ({PROJECT_NAME}, {GITHUB_URL}, {BRANCH_NAME})
+  - Included specific examples for zebra-design
+  - Updated troubleshooting to be project-agnostic
+  - Added project-specific quick reference section
+- ✅ **Cleaned up all legacy project references**:
+  - Removed remaining Animatix references from shadcn_rules.mdc
+  - Updated 1-design-planning.md to be project-agnostic
+  - Documentation is now clean and ready for sharing
+- ✅ **Created comprehensive documentation README**:
+  - Moved design-agents-readme.md to documentation/README.md
+  - Updated to explain entire documentation system and design-forward process
+  - Added instructions for importing into any Next.js project
+  - Included technology stack information and adaptation guidelines
+- ✅ **Made PARALLEL-DEV-SETUP.md truly universal**:
+  - Added support for all package managers (npm, pnpm, yarn, bun)
+  - Added multi-framework support (Next.js, Vite, CRA, Remix, etc.)
+  - Created auto-detection script for package manager and framework
+  - Added comprehensive environment variable handling
+  - Enhanced troubleshooting for cross-project issues
+  - Created executable setup-parallel-dev.sh script for one-command setup
+- ✅ **Added comprehensive Obsidian kanban integration**:
+  - Updated status.md with detailed Obsidian setup instructions
+  - Added explanation of why visual kanban management is essential
+  - Documented the synergy between parallel development and visual workflow
+  - Included both basic and advanced Obsidian features guide
+  - Updated main README.md with complete Obsidian integration section
+- ✅ **Created standalone ai-vibe-design-code repository**:
+  - New repository: https://github.com/charlieellington/ai-vibe-design-code
+  - Complete documentation system ready for import to any project
+  - Attractive GitHub README with quick start instructions
+  - Auto-setup script included for one-command configuration
+  - Obsidian configuration included for immediate kanban setup
 
-**Status Update - Wednesday, October 1, 2025**
-- Populated kanban board with three-funnel architecture implementation tasks
-- Organized using MoSCoW prioritization (Must/Should/Could/Won't)
-- First sprint focuses on MVP funnel foundation: website + newsletter
-- Clear path from current state to sustainable authority-based pipeline
+## Agent Flow System
+The project now includes a 5-agent workflow for feature development:
+1. **Planning** - Initial analysis and planning
+2. **Review** - Validation and quality checks  
+3. **Discovery** - Technical research
+4. **Execution** - Implementation
+5. **Complete** - Final documentation
 
-### Sprint 1 (Next 2 Weeks) Deliverables:
-1. MVP website launched TODAY (hero + case study images + newsletter CTA + cal.com footer)
-2. Substack newsletter launched ("UX for Technical Minds")
-3. Website incrementally enhanced (credibility → services → case studies → process)
-4. First Idea → Build → Test cycle completed
-5. Animatix case study documented and added to site
-6. €3k/month retainer secured
-7. Basic email capture system operational
-8. Week 1 content published
-9. Network reconnection emails sent
+Key benefits: 
+- Parallel development setup allows stable reference (port 3000) while actively developing (port 3001)
+- Individual task files prevent status-details.md bloat and improve organization
+- Each task has its own file for easy discovery and management
 
-### Key Decisions Made:
-- Starting with Client Attraction funnel (top of funnel)
-- Using Substack as primary newsletter platform
-- Focus on building in public with weekly rhythm
-- No complex automation until content proves itself
-- Authority-based approach over sales-focused
-- Website CTA is newsletter signup, NOT sales calls (builds trust with technical founders)
-- Hidden inquiry page strategy for when prospects self-select readiness
+## Next Steps
+- **Ready for portfolio development**: Use @1-design-planning.md to start first feature
+- Customize portfolio content (About, Projects, etc.)
+- Replace placeholder images with actual work
+- Set up deployment pipeline (Vercel/Netlify)
+- Test the design agents workflow with real features
 
-### Next Actions After Sprint 1:
-- Move "Must" items into Sprint 2
-- Begin confidence funnel development
-- Launch first tool (70% Problem Analyzer)
-- Host first workshop
+## Repositories Status
+- ✅ **zebra-design**: Portfolio project ready for development
+- ✅ **ai-vibe-design-code**: Standalone design system ready for sharing/import
 
-### Notes:
-- Removed outdated next-six-weeks.md from consideration
-- Aligned all tasks with three-funnel architecture strategy
-- Prioritized sustainable building over rush to revenue
-- Newsletter CTA justified by: technical founders do 70-95% research before contact, authority leads convert 3-5x higher, only need 4-6 clients/year
-- Hidden inquiry page handles sales conversations when prospects are ready (demand-side approach)
-- Added cal.com link in footer as subtle "escape valve" for ready-now prospects
-- Website broken into staged releases: MVP today → incremental enhancements throughout sprint
-
-### Website Staging Strategy:
-- **Day 1 (TODAY)**: Hero, case study images, newsletter CTA, cal.com footer
-- **Day 3-4**: Add credibility section (Deep Work, metrics)
-- **Day 5-6**: Add services section (three tiers)
-- **Day 7-8**: Add full Animatix case study
-- **Day 9-10**: Add process section
-
-This allows immediate launch while maintaining quality for each section.
+## Tech Stack
+- Next.js v15 with App Router
+- Tailwind CSS v4.1
+- TypeScript v5.8
+- MDX for blog posts
+- React v19

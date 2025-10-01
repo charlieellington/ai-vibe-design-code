@@ -19,7 +19,7 @@ kanban-plugin: board
 - 🔗 **Link to Details**: Task titles link to individual files in `doing/` folder
 - ✅ **Mark Complete**: Check off completed tasks
 
-**Agent Workflow:** Planning → Review → Discovery → Ready to Execute → Executing → Visual Verification → Testing → Complete
+**Agent Workflow:** Planning → Review → Discovery → Ready to Execute → Executing → Testing → Complete
 
 ---
 
@@ -43,17 +43,13 @@ kanban-plugin: board
 
 <!-- Tasks move here via @4-design-execution.md -->
 
-## Visual Verification
-
-<!-- Tasks move here via @5-design-visual-verification.md -->
-
 ## Testing
 
-<!-- Tasks move here when visual verification complete -->
+<!-- Tasks move here when implementation complete -->
 
 ## Complete
 
-<!-- Tasks move here via @6-design-complete.md -->
+<!-- Tasks move here via @5-design-complete.md -->
 
 ## Archived Features
 

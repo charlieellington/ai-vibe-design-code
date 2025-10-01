@@ -831,9 +831,8 @@ Your task will flow through these stages:
 3. **Discovery** (Agent 3) - Technical verification using MCP tools
 4. **Ready to Execute** - Queue for implementation (visual Kanban organization)
 5. **Execution** (Agent 4) - Implement the code
-6. **Visual Verification** (Agent 5) - Automated visual testing
-7. **Testing** (Manual) - User verification and approval
-8. **Completion** (Agent 6) - Finalization and learning capture
+6. **Testing** (Manual) - User verification and approval
+7. **Completion** (Agent 5) - Finalization and learning capture
 
 You complete Planning and hand off to Review.
 
