@@ -2,14 +2,14 @@
 
 ## 🎯 Overview
 
-This documentation system provides a comprehensive, design-forward development workflow for any Next.js project. Built around a 5-agent system for structured feature development, parallel development environments, and proven design patterns.
+This documentation system provides a comprehensive, design-forward development workflow for any Next.js project. Built around a 6-agent system for structured feature development, parallel development environments, and proven design patterns.
 
 **Perfect for:** Portfolio sites, SaaS applications, marketing sites, and any Next.js project requiring systematic feature development.
 
 **Key Benefits:**
 - 🚀 **Rapid Development**: Parallel stable/active environments prevent debugging delays
 - 🎨 **Design-Forward**: Built-in design system compliance and visual reference workflows
-- 📋 **Systematic**: 5-agent workflow ensures quality at every stage
+- 📋 **Systematic**: 6-agent workflow ensures quality at every stage
 - 🔄 **Reusable**: Documentation system designed to import into any project
 
 ## 📁 Documentation Structure
@@ -24,9 +24,10 @@ documentation/
     ├── setup-parallel-dev.sh   # 🆕 Auto-setup script for any project
     ├── 1-design-planning.md     # Agent 1: Planning & Analysis
     ├── 2-design-review.md       # Agent 2: Quality Assurance
-    ├── 3-design-discovery.md    # Agent 3: Technical Research
-    ├── 4-design-execution.md    # Agent 4: Implementation
-    ├── 5-design-complete.md     # Agent 5: Finalization
+    ├── 3-design-discovery.md         # Agent 3: Technical Research
+    ├── 4-design-execution.md         # Agent 4: Implementation
+    ├── 5-design-visual-verification.md # Agent 5: Visual Verification
+    ├── 6-design-complete.md          # Agent 6: Finalization
     ├── status.md               # Kanban task board
     ├── status-details.md       # Deprecated (now uses individual files)
     ├── doing/                  # Active task files
@@ -66,7 +67,7 @@ Each task gets its own file with comprehensive documentation:
 - **done/[task-slug].md** - Completed tasks
 - Each file contains: Original Request, Design Context, Codebase Context, Plan, Stage, Priority, Questions, Review Notes
 - File naming: Convert task titles to kebab-case (e.g., "Create Welcome Card" → `create-welcome-card.md`)
-- Agent 5 moves files from `doing/` to `done/` when complete
+- Agent 6 moves files from `doing/` to `done/` when complete
 
 ### 3. **Design System Rules** (`misc/` folder)
 - **tailwind_rules.mdc** - Comprehensive Tailwind CSS v4 best practices, updated for modern development
@@ -78,7 +79,7 @@ Each task gets its own file with comprehensive documentation:
 - **scratchpad.md** - Living document tracking current project status, recent changes, and next steps
 
 
-## 🔄 The 5-Agent Workflow
+## 🔄 The 6-Agent Workflow
 
 ### Agent 1: **Planning** (`@1-design-planning.md`)
 - **Role**: Initial analysis and comprehensive planning
@@ -109,9 +110,16 @@ Each task gets its own file with comprehensive documentation:
 - **Updates**: Moves through Executing → Testing → Complete
 - **Process**: Implements based on visual references, documents visual decisions, tests
 
-### Agent 5: **Complete** (`@5-design-complete.md`)
+### Agent 5: **Visual Verification** (`@5-design-visual-verification.md`)
+- **Role**: Automated visual testing and refinement
+- **Input**: Completed implementation from Agent 4
+- **Output**: Visual verification report with screenshots, minor visual fixes
+- **Process**: Uses Playwright MCP to capture screenshots, analyze visual quality, fix minor issues
+- **Key**: Catches visual bugs before manual testing begins
+
+### Agent 6: **Complete** (`@6-design-complete.md`)
 - **Role**: Final documentation, system updates, and agent improvement
-- **Input**: Tested implementations from Agent 4
+- **Input**: Tested implementations from manual testing
 - **Output**: Updated documentation, rules, and system improvements
 - **Updates**: Finalizes task in Complete column, updates relevant documentation
 - **Key**: Analyzes entire workflow to improve all agents for future tasks
@@ -144,9 +152,9 @@ Each task gets its own file with comprehensive documentation:
    Agent 1 creates: `doing/your-feature-request.md`
 
 4. **Follow the agent flow**:
-   - Planning → Review → Discovery → Execution → Complete
+   - Planning → Review → Discovery → Execution → Visual Verification → Testing → Complete
    - Each agent updates the same task file in `doing/` folder
-   - Agent 5 moves completed file to `done/` folder
+   - Agent 6 moves completed file to `done/` folder
 
 ## 📝 Individual Task File Structure
 
@@ -162,7 +170,7 @@ Each task file in `doing/` or `done/` folder follows this structure:
 [Implementation steps]
 
 ### Stage
-[Current stage: Planning/Review/Discovery/Executing/Complete]
+[Current stage: Planning/Review/Discovery/Executing/Visual Verification/Testing/Complete]
 
 ### Priority
 [High/Medium/Low]
@@ -273,7 +281,7 @@ cp -r /path/to/zebra-design/documentation /path/to/your-project/
 **The Solution:** Obsidian + Kanban plugin provides:
 
 1. **🎯 Visual Pipeline Management**
-   - See all tasks across 7 stages at once
+   - See all tasks across 8 stages at once
    - Instantly identify bottlenecks and blocked tasks
    - Drag-and-drop tasks between stages visually
 
@@ -374,7 +382,7 @@ When you discover improvements:
 ```
 
 **Agent workflow:**
-Planning → Review → Discovery → Execution → Complete
+Planning → Review → Discovery → Execution → Visual Verification → Testing → Complete
 
 **Parallel development:**
 - Stable: `npm run dev:stable` (port 3000)

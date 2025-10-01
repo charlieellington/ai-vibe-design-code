@@ -144,7 +144,7 @@ useEffect(() => {
 **CRITICAL ENFORCEMENT**:
 1. **Status Validation**: Check current location in status.md before declaring task complete
 2. **Dual Update Required**: Both status.md (Kanban position) AND individual task file (stage) must be updated
-3. **Agent 5 Detection**: Agent 5 will flag this as critical workflow violation if missed
+3. **Agent 6 Detection**: Agent 6 will flag this as critical workflow violation if missed
 4. **No Exception Rule**: This step CANNOT be skipped - it's part of the agent workflow contract
 
 **Validation Command Sequence**:
@@ -503,7 +503,7 @@ useEffect(() => {
 **Example from task**: HTML5 drag API worked for drop targets but provided no visual feedback, causing user to think drag was broken
 
 ### 🚨 CRITICAL: Testing Section Movement Enforcement - Updated 2025-01-04
-**Context**: AI Generation Options task was completed but not moved to Testing section, requiring Agent 5 intervention
+**Context**: AI Generation Options task was completed but not moved to Testing section, requiring Agent 6 intervention
 **Problem**: Agent 4 consistently fails to move completed tasks from "Ready to Execute" → "Testing" in status.md
 **Solution**: Enhanced workflow enforcement with mandatory validation checkpoints
 
@@ -521,7 +521,7 @@ useEffect(() => {
 
 **FAILURE TO FOLLOW THIS PROCESS IS A CRITICAL WORKFLOW VIOLATION**
 
-**Example from AI Generation Options task**: Task was marked complete in individual task file but remained in "Ready to Execute" section of status.md, requiring correction by Agent 5
+**Example from AI Generation Options task**: Task was marked complete in individual task file but remained in "Ready to Execute" section of status.md, requiring correction by Agent 6
 
 ### Card Component Padding Override Pattern - Added 2025-01-09
 **Context**: AI Generation Card had excessive padding that required multiple debugging attempts
@@ -1524,7 +1524,7 @@ Before marking complete:
 3. **When tests complete**:
    - **MANDATORY**: Move task from "## Execution" to "## Testing" in `status.md`
    - Update Stage to "Ready for Manual Testing" in individual task file
-   - **🚨 CRITICAL WORKFLOW COMPLIANCE**: Agent 5 requires tasks to be in Testing section
+   - **🚨 CRITICAL WORKFLOW COMPLIANCE**: Agent 5 performs visual verification, Agent 6 requires tasks to be in Testing section
    - Add **Test Results** section to individual task file
    - Update Stage to "Ready for Manual Testing"
 
@@ -1536,7 +1536,7 @@ Before marking complete:
    - **🚨 CRITICAL STEP 5**: Ensure all context preserved in individual task file
    - **⚠️ FAILURE TO UPDATE STATUS.MD TO TESTING IS A CRITICAL WORKFLOW ERROR**
    - **⚠️ USER WILL ASK "Did you move this to the testing column?" - ANSWER MUST BE YES**
-   - Task proceeds to manual testing, then Agent 5 for completion
+   - Task proceeds to Agent 5 for visual verification, then manual testing, then Agent 6 for completion
 
 **MANDATORY COMPLETION CHECKLIST:**
 Before ending your response, you MUST verify:
@@ -1726,8 +1726,9 @@ Your task flows through these stages:
 3. **Discovery** (Agent 3) - Technical verification ✓
 4. **Ready to Execute** - Queue for implementation (visual Kanban organization) ✓
 5. **Execution** (You - Agent 4) - Code implementation
-6. **Testing** (Manual) - User verification
-7. **Completion** (Agent 5) - Finalization and learning capture
+6. **Visual Verification** (Agent 5) - Automated visual testing
+7. **Testing** (Manual) - User verification
+8. **Completion** (Agent 6) - Finalization and learning capture
 
 You implement with verified technical details and hand off to manual testing.
 
