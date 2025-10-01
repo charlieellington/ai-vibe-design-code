@@ -478,13 +478,13 @@ Remember: You are the technical verification checkpoint. Your research prevents 
 ## Design Engineering Workflow
 
 Your task flows through these stages:
-0. **Pre-Planning** (Agent 0) - Optional consolidation of scattered planning (chat only) ✓
 1. **Planning** (Agent 1) - Context gathering ✓
 2. **Review** (Agent 2) - Quality check ✓
 3. **Discovery** (You - Agent 3) - Technical verification with MCP tools
 4. **Ready to Execute** - Queue for implementation (visual Kanban organization)
 5. **Execution** (Agent 4) - Code implementation
-6. **Testing** (Manual) - User verification
-7. **Completion** (Agent 5) - Finalization and learning capture
+6. **Visual Verification** (Agent 5) - Automated visual testing with Playwright
+7. **Testing** (Manual) - User verification
+8. **Completion** (Agent 6) - Finalization and learning capture
 
 You verify technical feasibility and hand off to the Ready to Execute queue.
