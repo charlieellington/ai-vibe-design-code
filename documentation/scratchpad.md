@@ -96,3 +96,69 @@ Key benefits:
 - TypeScript v5.8
 - MDX for blog posts
 - React v19
+
+### Notes:
+- Removed outdated next-six-weeks.md from consideration
+- Aligned all tasks with three-funnel architecture strategy
+- Prioritized sustainable building over rush to revenue
+- Newsletter CTA justified by: technical founders do 70-95% research before contact, authority leads convert 3-5x higher, only need 4-6 clients/year
+- Hidden inquiry page handles sales conversations when prospects are ready (demand-side approach)
+- Added cal.com link in footer as subtle "escape valve" for ready-now prospects
+- Website broken into staged releases: MVP today → incremental enhancements throughout sprint
+
+### Website Staging Strategy:
+- **Day 1 (TODAY)**: Hero, case study images, newsletter CTA, cal.com footer
+- **Day 3-4**: Add credibility section (Deep Work, metrics)
+- **Day 5-6**: Add services section (three tiers)
+- **Day 7-8**: Add full Animatix case study
+- **Day 9-10**: Add process section
+
+This allows immediate launch while maintaining quality for each section.
+
+### Website Copy Validation (Oct 1, 2025):
+Reviewed existing website draft against business plan - copy is well-aligned:
+- ✓ "UX + Code. Fast." perfectly addresses ICP pain points
+- ✓ "Your code → Beautiful UX" clear transformation promise
+- ✓ Transparent pricing (€25k, 3 weeks) matches Tier 2 positioning
+- ✓ Strong social proof with recognizable client logos
+- **Critical addition needed**: Newsletter CTA for three-funnel architecture
+- **Minor clarification**: Reconcile "1 week per feature" vs "3 weeks" messaging
+- **Enhancement opportunity**: Add subtle "70% problem" reference
+
+### Website Copy Revision (Oct 1, 2025 - Later):
+- Removed salesy/marketing language per user feedback
+- Rewrote to authentic, developer-friendly tone:
+  - "I Build UX Tools and Share What Works" (not "See How I Fix...")
+  - Direct explanation of 70% problem without hype
+  - Simple CTAs: "Get the Newsletter" and "Weekly Newsletter"
+  - Footer: "Working on something?" instead of "Need help right now?"
+- Matches anti-promotional approach from three-funnel architecture
+- Added proper attribution for "70% problem" to Addy Osmani with links
+- Included relevant statistics: 25% of YC batch with 95% AI code, 66% developer frustration
+- Links provide authority and show it's an industry-recognized issue
+
+### Critical Insight (Oct 1, 2025 - Later):
+- Realized "70% problem" article conflates hobbyists (Bolt/Lovable) with serious technical founders (Cursor/v0)
+- Our ICP targets technical founders using AI for speed, NOT hobbyists who can't code
+- Reframed from "70% problem" to "Speed vs Polish" - technical teams skip UX when shipping fast
+- Focus on business metrics (30% activation, 8% churn) not coding ability
+- Core strategy remains sound - we fix UX for teams moving at AI speed
+
+### Website Copy Simplification (Oct 1, 2025 - Final):
+- Stripped copy to absolute essentials per user feedback
+- Newsletter: "Weekly UX Experiments" + "Subscribe" (4 words total)
+- Reality section: 4 short sentences, no fluff
+- Total copy under 50 words for main sections
+- Maximum clarity, zero sales language
+
+### Website Copy Final Version (Oct 1, 2025):
+- User personalized copy further
+- Single consolidated newsletter section: "Weekly UX + Code Experiments"
+- Button: "AI UX Design on Substack in your inbox" (more descriptive)
+- Removed separate "Reality" section
+- Added sub-text explaining the value prop in personal voice
+- Fixed typos: "You're" not "Your", "latest" not "last"
+
+### Repo Sync Log
+- 2025-10-01 14:16:13 CEST: Pushed `vibe-design` changes to `origin/main` (`ai-vibe-design-code`).
+- 2025-10-01 14:19:31 CEST: Resolved rebase conflict in `documentation/scratchpad.md` and continued.
