@@ -24,6 +24,51 @@ You verify technical feasibility and gather precise implementation details using
 **Example from task**: bg-surface was too transparent, needed bg-background/95 + backdrop-blur-sm for proper visibility
 **Prevention**: Always validate that styling choices achieve the intended visual result, not just technical correctness
 
+### CSS Utility Availability Verification - Added 2025-11-06
+**Context**: Polaroid carousel needed scrollbar-hide CSS utility that didn't exist in project
+**Problem**: Discovery didn't verify whether scrollbar-hide utility existed or needed to be created in globals.css
+**Solution**: Always verify availability of CSS utilities and document creation requirements
+**Agent Updated**: design-3-discovery.md
+
+**Required CSS Utility Verification**:
+1. **Utility Class Search**: Search globals.css, tailwind.config, and utility files for class availability
+2. **Cross-browser Requirements**: Check if utility needs vendor prefixes or multiple CSS rules
+3. **Creation Documentation**: If utility doesn't exist, document exact CSS needed for implementation
+4. **Alternative Approaches**: Research if Tailwind v4 provides native support
+
+**Example from task**: scrollbar-hide utility needed to be created with Webkit, Firefox, and IE/Edge specific CSS rules
+**Prevention**: When plan mentions utility classes, verify they exist or document creation requirements
+
+### Image Component Pattern Feasibility Testing - Added 2025-11-06
+**Context**: Polaroid carousel plan used Next.js Image but native img tags worked better
+**Problem**: Discovery didn't validate that Next.js Image fill prop approach would work well for simple sizing
+**Solution**: Research and validate image component patterns work for specific use case before execution
+**Agent Updated**: design-3-discovery.md
+
+**Image Pattern Validation Process**:
+1. **Use Case Analysis**: Understand sizing requirements (fixed, dynamic, responsive, aspect-ratio)
+2. **Component Capability Research**: Does Next.js Image support the needed pattern cleanly?
+3. **Local Asset Testing**: Verify Next.js Image works with public/ folder files for project
+4. **Alternative Documentation**: Document when native img might be simpler/better choice
+
+**Example from task**: Height + auto-width pattern was simpler with native `<img style={{height: '300px', width: 'auto'}}>` than Next.js Image
+**Prevention**: When discovering image implementation approaches, validate patterns against actual use case complexity
+
+### Animation Timing Best Practices Research - Added 2025-11-06
+**Context**: Polaroid carousel auto-scroll needed initialization delay that wasn't discovered upfront
+**Problem**: Discovery didn't research requestAnimationFrame initialization patterns for DOM-dependent animations
+**Solution**: Research animation initialization best practices, especially for DOM measurements
+**Agent Updated**: design-3-discovery.md
+
+**Animation Timing Research Checklist**:
+1. **DOM Measurement Dependencies**: Does animation need scrollWidth, clientWidth, or similar measurements?
+2. **Initialization Delay Patterns**: Research if setTimeout delay is needed before animation starts
+3. **React useEffect Patterns**: Verify correct dependency array for animation restarts
+4. **Cleanup Requirements**: Research proper cleanup patterns for requestAnimationFrame
+
+**Example from task**: Auto-scroll needed 100ms setTimeout to ensure container rendered before measuring scrollWidth
+**Prevention**: When discovering animation implementations, research initialization timing patterns for DOM-dependent animations
+
 ### Next.js Image Component Validation - Added 2025-01-04
 **Context**: Moodboard Image Cards task used Next.js Image component which failed with local public directory files
 **Problem**: Agent 3 didn't verify Next.js Image component compatibility with local file loading from public directory  

@@ -199,6 +199,88 @@ You are the first agent in a multi-stage development pipeline. Your primary role
 **Example from task**: Hover buttons (view, delete, download) stopped working when drag mouseDown was added
 **Prevention**: Always audit existing interactive elements and plan event handler priority/conflicts
 
+### Visual Component Positioning Precision - Added 2025-11-06
+**Context**: Polaroid Photo Carousel task required user correction for exact carousel placement
+**Problem**: Plan specified "add carousel to hero section" without precise positioning relative to existing text
+**Solution**: Always specify exact visual positioning with clear before/after context for UI elements
+**Agent Updated**: design-1-planning.md
+
+**Required Positioning Analysis**:
+1. **Existing Content Mapping**: List all text/elements in target area in order
+2. **Precise Insertion Point**: Specify "after X element, before Y element"
+3. **Visual Hierarchy Validation**: Confirm placement makes sense in visual flow
+4. **Spacing Requirements**: Specify margins/spacing around new element
+
+**Example from task**: Plan should have stated "carousel appears after 'Due 6th of December' paragraph and before 'We're so excited to welcome our little one!' description"
+**Prevention**: For any UI addition, explicitly map existing content order and specify exact insertion point
+
+### Scrollbar Visibility Planning - Added 2025-11-06
+**Context**: Polaroid carousel had visible scrollbar despite horizontal scroll requirement
+**Problem**: Plan specified scrollable container but didn't address scrollbar visibility
+**Solution**: When planning scrollable areas, explicitly specify scrollbar visibility requirements
+**Agent Updated**: design-1-planning.md
+
+**Required Scrollbar Analysis**:
+1. **Scroll Direction**: horizontal, vertical, or both
+2. **Scrollbar Visibility**: visible, hidden, or auto
+3. **CSS Implementation**: Specify utility classes or custom CSS needed (scrollbar-hide utility)
+4. **Cross-browser Compatibility**: Note if custom CSS needed for Firefox/IE/Edge/Webkit
+
+**Example from task**: Plan should have included "hide scrollbar using CSS utility while maintaining scroll functionality"
+**Prevention**: Always specify scrollbar visibility requirements for scrollable containers
+
+### Image Component Pattern Selection - Added 2025-11-06
+**Context**: Polaroid carousel required switching from Next.js Image to native img tags
+**Problem**: Plan suggested Next.js Image component which caused blur and sizing issues
+**Solution**: Analyze image use case requirements to select appropriate image rendering approach
+**Agent Updated**: design-1-planning.md
+
+**Image Component Decision Matrix**:
+1. **Simple Sizing Use Cases**: Native `<img>` tags work best for straightforward height: auto layouts
+2. **Optimization Requirements**: Next.js Image for lazy loading, AVIF/WebP, priority loading
+3. **Dynamic Aspect Ratios**: Native img with explicit width/height style props prevents complexity
+4. **Local Static Assets**: Test Next.js Image compatibility with public/ folder files before planning
+
+**Example from task**: Carousel needed simple "height: 300px, width: auto" which native img handles cleanly
+**Prevention**: When planning image display, evaluate if Next.js Image complexity is necessary or if native tags suffice
+
+### Hydration-Safe Pattern Planning - Added 2025-11-06
+**Context**: Polaroid carousel had hydration error due to Math.random() at module level
+**Problem**: Plan included random rotation generation without considering server/client rendering mismatch
+**Solution**: When planning features with randomization or client-only values, specify hydration-safe patterns
+**Agent Updated**: design-1-planning.md
+
+**Hydration Safety Checklist**:
+1. **Random Values**: Must be generated in `useState` initializer, not module-level constants
+2. **Client-Only Features**: Plan for useEffect or client-side-only rendering
+3. **Window/Document Access**: Must be inside useEffect or behind conditional checks
+4. **Dynamic Values**: Any values that differ between server/client must be handled carefully
+
+**Example from task**: Random rotation (-3° to +3°) should have been planned as `useState(() => Math.random() * 6 - 3)`
+**Prevention**: When planning randomization, animations, or browser APIs, always specify hydration-safe implementation patterns
+
+### Full-Width Breakout Layout Planning - Added 2025-11-06
+**Context**: Polaroid carousel needed full-width desktop layout breaking out of container
+**Problem**: Plan didn't specify how carousel should break out of centered container constraints
+**Solution**: When planning full-width sections within constrained layouts, specify breakout CSS technique
+**Agent Updated**: design-1-planning.md
+
+**Full-Width Breakout Pattern**:
+```css
+/* Standard technique for full-width within constrained container */
+width: 100vw;
+margin-left: calc(-50vw + 50%);
+```
+
+**Planning Requirements**:
+1. **Container Context**: Identify parent container width constraints
+2. **Breakout Technique**: Specify viewport-width calc pattern
+3. **Responsive Behavior**: Ensure breakout works at all screen sizes
+4. **Edge Cases**: Consider horizontal scroll on small screens
+
+**Example from task**: Desktop carousel needed "full-width edge-to-edge using width: 100vw and marginLeft: calc(-50vw + 50%)"
+**Prevention**: When planning full-width sections, explicitly specify CSS breakout technique and responsive considerations
+
 ### React Context vs Prop Drilling Pattern Analysis - Added 2025-01-04
 **Context**: Moodboard reset functionality failed due to cloneElement approach for passing handlers
 **Problem**: cloneElement with dynamic props causes timing issues and unreliable prop passing across renders
@@ -315,6 +397,87 @@ Each task gets its own file in the `doing/` folder:
 - Include all mentioned requirements, constraints, and preferences
 - If the request references previous context, include that context explicitly
 - Preserve the user's exact language and terminology
+
+### Currency and Localization Context Gathering - Added 2025-11-06
+**Context**: Baby Gift List landing page implementation used dollars ($) by default, required user correction to euros (€)
+**Problem**: Planning didn't explicitly identify currency or localization requirements for pricing features
+**Solution**: Always check for currency/locale indicators when planning features that display prices or regional content
+**Agent Updated**: design-1-planning.md
+
+**Required Analysis for Pricing/Currency Features**:
+1. **Check project context**: Look for location indicators (company location, target market, existing currency usage)
+2. **Search codebase**: grep for existing price formatting patterns or currency symbols
+3. **Ask explicitly**: If pricing is involved and currency isn't specified, ask user for currency preference
+4. **Document clearly**: Include currency format in plan (e.g., "Display prices in euros: €XX.XX")
+
+**Example from task**: Build plan had price examples without currency symbol, implementation defaulted to $ instead of € for European target audience
+**Prevention**: When planning price display features, explicitly identify and document currency format requirements
+
+### Backend + Frontend Decomposition Requirement - Added 2025-11-06
+**Context**: Privacy Controls implementation forgot user-facing UI checkboxes despite complete backend infrastructure
+**Problem**: Agent 4 implemented database schema, TypeScript types, and Server Actions but completely forgot to add Checkbox UI components to forms
+**Solution**: When planning features with user interaction, explicitly decompose into BOTH backend requirements AND frontend UI requirements
+**Agent Updated**: design-1-planning.md
+
+**Root Cause**: Planning specified "privacy controls" without clearly separating data layer from user interface layer, leading to execution tunnel vision on backend infrastructure
+
+**Required Planning Decomposition for Interactive Features**:
+1. **Backend Requirements Section**:
+   - Database schema changes (migrations, columns, indexes)
+   - Type definitions (TypeScript interfaces)
+   - Server Actions / API endpoints
+   - Data validation and business logic
+
+2. **Frontend Requirements Section**:
+   - User input controls (checkboxes, radio buttons, text inputs)
+   - Form integration points (which forms need these controls)
+   - State management (React state, form values)
+   - UI labels and help text
+
+3. **User Journey Mapping**:
+   - Where does the user interact with this feature?
+   - What UI elements allow them to control the feature?
+   - What feedback do they see after interaction?
+
+**Example Prevention from Privacy Controls Task**:
+```markdown
+### Plan
+
+#### Backend Requirements:
+**Step 1**: Create database migration for privacy flags
+- Add `is_public BOOLEAN DEFAULT true` to contributions table
+- Add `is_public BOOLEAN DEFAULT true` to messages table
+- Create performance indexes
+
+**Step 2**: Update TypeScript types
+- Add `is_public: boolean` to Contribution interface
+- Add `is_public: boolean` to Message interface
+
+**Step 3**: Update Server Actions
+- Modify payment actions to accept `isPublic` parameter
+- Modify message action to accept `isPublic` parameter
+
+#### Frontend Requirements:
+**Step 4**: Add privacy checkbox to IBAN payment form
+- Import Checkbox component from shadcn/ui
+- Add state: `const [isPublic, setIsPublic] = useState(true)`
+- Add checkbox UI with label "Show my contribution publicly"
+- Pass `isPublic` to Server Action
+
+**Step 5**: Add privacy checkbox to PayPal payment form
+- [Same pattern as Step 4]
+
+**Step 6**: Add privacy checkbox to thank-you message form
+- [Same pattern as Step 4, with message-specific wording]
+```
+
+**Prevention Checklist**:
+- [ ] For any feature with user control, explicitly list ALL UI input controls needed
+- [ ] Map each backend capability to its corresponding frontend UI element
+- [ ] Use "User Journey" section to trace from user action to data storage
+- [ ] Never assume UI elements are "obvious" - make them explicit in the plan
+
+**Example from task**: Privacy controls needed checkboxes on 3 different forms - this should have been explicit in planning, not discovered during user testing
 
 ### User Feedback Iteration Patterns - Added 2025-01-04
 **Context**: Moodboard scroll fix required multiple user corrections and approach changes
@@ -1087,3 +1250,146 @@ When planning changes to onboarding flow:
 **Example from task**: User said "everything else on the site fades out" but initial implementation only dimmed links/buttons, required clarification and multiple iterations
 
 **Prevention**: When requirements use broad terms, always enumerate what's included/excluded and ask for specific scope clarification
+
+### Visual Hiding vs Behavioral Logic Change Planning - Added 2025-11-10
+**Context**: Baby Gift List "Show All" button task required user correction for display logic
+**Problem**: Plan specified "hide Show All button on desktop" which was implemented by adding CSS class (md:hidden), but user expected all items to actually display on desktop by default, not just button hiding
+**Solution**: When planning to "hide" or "remove" UI elements, analyze whether underlying behavior/logic also needs to change
+**Agent Updated**: design-1-planning.md
+
+**Critical Distinction**:
+- **Visual Hiding**: CSS classes that hide elements (display:none, visibility:hidden, md:hidden)
+- **Behavioral Change**: JavaScript logic changes that affect what is rendered or displayed
+
+**Required Analysis**:
+1. **Purpose of Hidden Element**: What functionality does the hidden element provide?
+2. **Logic Dependencies**: Does hiding the element require changing the underlying display logic?
+3. **User Expectations**: Should desktop users see different content or just different controls?
+4. **Mobile vs Desktop Parity**: Should both platforms show same content with different UI, or different content entirely?
+
+**Example from task**:
+- **What was planned**: "Hide 'Show All' button on desktop" → added `md:hidden` to button wrapper
+- **What was needed**: "Desktop shows all items by default" → required JavaScript logic change using `window.matchMedia` to detect device and change `displayedItems` calculation from `showAll ? all : slice(3)` to `!isMobile || showAll ? all : slice(3)`
+
+**Prevention**: When planning to hide UI controls on specific viewports, always ask "Does hiding this control mean the behavior should also change for that viewport?"
+
+### Platform-Specific UX Pattern Research - Added 2025-11-10
+**Context**: Payconiq payment implementation required mobile/desktop UX difference user correction
+**Problem**: Planned QR code display for all devices, but mobile users cannot scan QR codes with the same device they're viewing on
+**Solution**: Research platform-specific UX constraints and interaction patterns before planning mobile features
+**Agent Updated**: design-1-planning.md
+
+**Critical Platform Considerations**:
+1. **Device Capability Limitations**: What can/cannot be done on the physical device?
+   - Mobile: Cannot scan QR codes displayed on same screen
+   - Desktop: Cannot use mobile-specific payment apps without phone handoff
+   - Touch devices: Different hover interaction patterns
+
+2. **Alternative Interaction Patterns by Platform**:
+   - **Mobile QR Code Replacement**: Deep links, direct app opening, copy-to-clipboard
+   - **Desktop App Integration**: Web-to-app handoff, SMS/email bridges, manual entry fallbacks
+   - **Payment-Specific Patterns**: Research how similar apps (PayPal, Venmo, banking apps) handle cross-device payments
+
+**Required Research Questions**:
+- "How does [similar service] handle this on mobile vs desktop?"
+- "Can users physically complete this interaction on the device they're using?"
+- "What's the native platform pattern for this type of interaction?"
+
+**Example from task**:
+- **Initial plan**: Display Payconiq QR code images (mobile + desktop versions) for all users to scan
+- **User correction**: "If they're on a mobile device they need to go to the link not scan the QR code"
+- **Fixed implementation**: Conditional rendering - mobile gets direct payment link button opening Payconiq app, desktop gets QR code for phone scanning
+
+**Prevention**: Before planning mobile features involving external apps, QR codes, or device handoffs, research how established payment/banking apps handle the same user flow
+
+### Context-Aware Content and Instructions Planning - Added 2025-11-10
+**Context**: Baby Gift List payment instructions required user simplification after initial implementation
+**Problem**: Instructions included redundant "Choose your contribution" step when users had already selected full/partial payment before reaching instructions page
+**Solution**: Analyze user workflow state and context before planning content/instructions to avoid redundancy
+**Agent Updated**: design-1-planning.md
+
+**User Journey Context Analysis**:
+1. **Previous User Actions**: What has the user already done/selected before reaching this page?
+2. **Information Already Known**: What context is already established that doesn't need repeating?
+3. **Workflow State**: Where is the user in the multi-step process?
+4. **Decision Points Already Passed**: Which choices have already been made?
+
+**Content Adaptation Strategy**:
+- **Early Flow Instructions**: Can be comprehensive with all steps and options
+- **Mid-Flow Instructions**: Should acknowledge previous selections and focus on current/next steps only
+- **Post-Decision Instructions**: Assume user has made choice, provide execution details only
+
+**Example from task**:
+- **Route Flow**: Home → Item Modal (select full/partial) → Payment Method Selection → Payment Instructions
+- **Initial instructions**: 3 steps including "1. Choose your contribution: full or partial"
+- **User feedback**: "Instructions can be even simpler since they've already selected full or contribution"
+- **Fixed instructions**: 2 steps - "1. Send Money" and "2. We'll purchase the gift" (removed redundant choice step)
+
+**Prevention Checklist**:
+- [ ] Map complete user journey from entry point to current page
+- [ ] Identify all decision points user has passed through
+- [ ] Mark which information user has already seen/selected
+- [ ] Tailor instructions to assume previous context, not repeat it
+- [ ] Use language like "You selected..." to acknowledge previous choices
+
+**Example Prevention Pattern**:
+```markdown
+### User Journey Analysis
+Entry: Home Page → Item Modal (selects item + full/partial) → Choose Payment Method (selects IBAN/Payconiq) → **Current: Payment Instructions Page**
+
+Context Already Known by User:
+- ✅ Which item they're gifting (seen in modal)
+- ✅ Full vs partial contribution (selected in modal)
+- ✅ Payment method preference (just selected on previous page)
+
+Instructions Should Focus On:
+- ❌ DO NOT repeat: item details, contribution choice, payment method selection
+- ✅ DO include: actual payment execution steps, account details, confirmation process
+```
+
+### Privacy-Sensitive Feature Amount Display Planning - Added 2025-11-10
+**Context**: Donation-Only Items task included visible suggested amounts in plan, user requested complete removal
+**Problem**: Plan specified showing "Suggested contribution: €X" and "Open for Contributions" badge on gift cards and modal, but user wanted zero amount visibility for maximum privacy
+**Solution**: When privacy/social sensitivity is explicitly mentioned in requirements, plan for MAXIMUM privacy first, not adequate privacy
+**Agent Updated**: design-1-planning.md
+
+**Root Cause Analysis**:
+- **Original Requirement**: "NO visible contribution amounts anywhere in public UI" + "don't want to look like money grabbing pigs"
+- **Plan Included**: Displaying suggested_amount ("Suggested: €20") and decorative badge ("Open for Contributions")
+- **Technical vs Social Interpretation**: Plan interpreted "contribution amounts" as running totals only, but user meant ANY money references
+- **Privacy Spectrum Misalignment**: Plan positioned at "minimal money display" when user wanted "zero money display"
+
+**Critical Questions for Money-Sensitive Features**:
+1. **Clarify "Amount" Scope**: "When you say 'no amounts visible', does this include:
+   - Suggested/example amounts?
+   - Price comparisons or reference values?
+   - Any numeric money displays including guidance?"
+
+2. **Privacy Intensity Assessment**: "On a scale from:
+   - Adequate: Show suggested amounts but hide totals
+   - High: Hide all running totals and comparisons
+   - **Maximum**: Zero money references, completely minimal presentation
+   Which level of privacy is appropriate for this feature?"
+
+3. **Social Sensitivity Context**: When users mention social concerns ("money grabbing", "pressure", "uncomfortable"), assume **maximum privacy** as the default, not adequate privacy
+
+**Required Analysis for Privacy-Sensitive Money Features**:
+1. **Interpret "No Amounts" Broadly**: ANY money display (suggested, examples, totals, comparisons) should be considered
+2. **Social Pressure Indicators**: Words like "pressure", "comparison", "uncomfortable", "grabbing" indicate need for maximum privacy
+3. **Cultural Context**: Consider cultural attitudes toward money display and asking for contributions
+4. **Default to Minimal**: When in doubt, plan the most minimal money display first, then add only if explicitly requested
+
+**Example from task**:
+- **Requirement**: "NO visible contribution amounts" + social sensitivity about appearing money-focused
+- **Plan Mistake**: Included "Suggested: €20" and "Open for Contributions" badge
+- **User Correction**: "Bene doesn't want 'Suggested contribution: €999.00 Open for Contributions' can you remove this"
+- **Fixed Implementation**: Complete removal - gift cards show only category badge, modal shows only action button with help text
+
+**Prevention Checklist**:
+- [ ] When requirements emphasize "NO amounts" or privacy, interpret broadly to include ALL money references
+- [ ] Social sensitivity keywords ("money grabbing", "pressure") → plan for maximum privacy
+- [ ] Suggested amounts are still money displays → include in privacy restrictions
+- [ ] Default to most minimal presentation, add displays only if explicitly requested
+- [ ] Cultural/social context around money should bias toward hiding, not showing
+
+**Example Prevention**: If user says "we don't want to show contribution totals because it looks like we're money grabbing pigs", plan should include ZERO money displays (no totals, no suggested amounts, no comparisons) - only show item titles, descriptions, and action buttons.

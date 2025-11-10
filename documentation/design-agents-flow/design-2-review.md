@@ -83,6 +83,119 @@ You are the quality assurance checkpoint that ensures the plan is complete, accu
 
 **Prevention**: When reviewing UI plans, always ask "How will users discover this functionality?" and validate multiple pathways
 
+### User Interaction Validation - Added 2025-11-06
+**Context**: Privacy Controls implementation completed backend infrastructure but forgot user-facing UI checkboxes
+**Problem**: Review stage failed to validate that "privacy controls" feature required both backend AND frontend UI components
+**Solution**: Always validate that features with user interaction have explicit UI component specifications in the plan
+**Agent Updated**: design-2-review.md
+
+**Root Cause**: Review accepted "privacy controls" plan that focused on data layer without verifying user-facing interaction points
+
+**Required Validation Questions for Interactive Features**:
+1. **UI Component Check**: "Does this feature require user input? Are UI controls (checkboxes, buttons, inputs) explicitly specified?"
+2. **Form Integration Check**: "Which forms/pages need these UI controls? Are they all listed in the plan?"
+3. **User Journey Validation**: "Can users actually interact with this feature through the UI as described?"
+4. **Backend-Frontend Mapping**: "For each backend capability, is there a corresponding frontend UI element?"
+
+**Example from Privacy Controls Task**:
+```markdown
+❌ INSUFFICIENT PLAN:
+Step 1: Add is_public column to database
+Step 2: Update TypeScript types
+Step 3: Modify Server Actions to accept isPublic parameter
+
+✅ COMPLETE PLAN AFTER REVIEW:
+Step 1: Add is_public column to database
+Step 2: Update TypeScript types
+Step 3: Modify Server Actions to accept isPublic parameter
+Step 4: Add privacy checkbox to IBAN payment form (UI)
+Step 5: Add privacy checkbox to PayPal payment form (UI)
+Step 6: Add privacy checkbox to thank-you message form (UI)
+```
+
+**Prevention Checklist**:
+- [ ] For features with user control, verify ALL UI input controls are explicitly listed
+- [ ] Check that plan maps backend changes to frontend UI components
+- [ ] Validate User Journey section exists and traces user interaction to data storage
+- [ ] Ask: "If I follow this plan, will users be able to actually USE this feature?"
+
+**Example from task**: Privacy controls needed checkboxes on 3 forms - review should have caught that plan only covered database/types/actions without any UI component specifications
+
+### Image Component Implementation Validation - Added 2025-11-06
+**Context**: Polaroid carousel plan suggested Next.js Image which caused blur and sizing complications
+**Problem**: Review accepted Next.js Image pattern without validating it would work for simple sizing use case
+**Solution**: Always validate image component selection against actual use case requirements
+**Agent Updated**: design-2-review.md
+
+**Required Image Pattern Validation**:
+1. **Sizing Complexity Check**: Is Next.js Image fill prop + container sizing necessary, or would native img suffice?
+2. **Dynamic Dimensions Validation**: Does the use case need dynamic aspect ratios? (favor native img)
+3. **Local Asset Compatibility**: Verify Next.js Image works with public/ folder static assets
+4. **Blur Prevention**: Check if optimization settings might cause blur for specific sizing approaches
+
+**Example from task**: Plan used Next.js Image with complex sizing when native `<img style={{height: '300px', width: 'auto'}}>` was simpler and worked better
+**Prevention**: When reviewing image implementation plans, validate component choice matches use case complexity
+
+### Scrollbar Visibility Validation - Added 2025-11-06
+**Context**: Polaroid carousel plan didn't specify scrollbar hiding requirement
+**Problem**: Review failed to catch that scrollable container would show visible scrollbar without explicit hiding
+**Solution**: Always validate scrollbar visibility requirements for scrollable containers
+**Agent Updated**: design-2-review.md
+
+**Scrollbar Validation Checklist**:
+1. **Visibility Requirement**: Check if plan specifies scrollbar should be hidden or visible
+2. **CSS Implementation**: Verify plan includes scrollbar-hide utility or custom CSS
+3. **Cross-browser Support**: Validate approach works for Webkit, Firefox, IE/Edge
+4. **User Experience**: Confirm scroll functionality preserved when hiding scrollbar
+
+**Example from task**: Plan had overflow-x-scroll but didn't specify scrollbar-hide utility, causing visible scrollbar
+**Prevention**: When reviewing scrollable containers, always validate scrollbar visibility is explicitly addressed
+
+### Shadow and Visual Effect Placement Validation - Added 2025-11-06
+**Context**: Polaroid carousel had shadow on container div instead of actual image element
+**Problem**: Review didn't validate that shadow class would be on the correct DOM element
+**Solution**: Always validate visual effects are applied to intended elements, not wrapper containers
+**Agent Updated**: design-2-review.md
+
+**Visual Effect Placement Validation**:
+1. **Target Element Identification**: Which element should receive the visual effect (shadow, border, etc.)?
+2. **Wrapper vs Content**: Is effect on container or actual content element?
+3. **Rotation/Transform Considerations**: If elements are rotated, where should shadow appear?
+4. **Visual Hierarchy**: Does effect placement make semantic sense?
+
+**Example from task**: Shadow needed to be on `<img>` element, not wrapper div, to properly outline polaroid image
+**Prevention**: When reviewing visual styling plans, explicitly validate which DOM element receives each effect class
+
+### Animation Initialization Timing Validation - Added 2025-11-06
+**Context**: Polaroid carousel auto-scroll didn't start on page load without delay
+**Problem**: Review didn't anticipate that requestAnimationFrame needs container to be fully rendered
+**Solution**: Validate that animations depending on DOM measurements include initialization timing considerations
+**Agent Updated**: design-2-review.md
+
+**Animation Timing Validation Checklist**:
+1. **DOM Dependency Check**: Does animation need to measure DOM elements (scrollWidth, clientWidth)?
+2. **Initialization Delay**: Should animation include setTimeout delay for render completion?
+3. **useEffect Dependencies**: Are dependencies correct for animation to restart appropriately?
+4. **Edge Cases**: What happens if user navigates away during animation initialization?
+
+**Example from task**: Auto-scroll needed 100ms setTimeout before requestAnimationFrame to ensure container was rendered
+**Prevention**: When reviewing animation plans, validate timing considerations for DOM-dependent measurements
+
+### Rotation Clipping Prevention Validation - Added 2025-11-06
+**Context**: Polaroid carousel rotated images clipped at top/bottom requiring padding adjustments
+**Problem**: Review didn't validate that rotation angles would require extra padding to prevent clipping
+**Solution**: Always validate that rotated elements have sufficient padding/space to prevent clipping
+**Agent Updated**: design-2-review.md
+
+**Rotation Clipping Validation**:
+1. **Rotation Angle Range**: What are min/max rotation values? (e.g., -3° to +3°)
+2. **Element Dimensions**: What are the height/width of rotated elements?
+3. **Required Padding**: Calculate padding needed for rotation without clipping (test at max angles)
+4. **Shadow Considerations**: Account for shadows extending beyond element bounds
+
+**Example from task**: Images with -3° to +3° rotation needed container with 380px height and 40px top/bottom padding
+**Prevention**: When reviewing plans with rotated elements, validate sufficient padding exists to prevent clipping at maximum rotation angles
+
 ### Mobile/Touch UX Pattern Validation - Added 2025-01-04
 **Context**: AI Generation Options task required UX pattern changes from hover to click interaction
 **Problem**: Failed to validate interaction patterns against mobile/touch requirements during review
@@ -715,16 +828,60 @@ You are the quality checkpoint that prevents context degradation. If you delete 
 - **Implementation**: Progressive disclosure, demo-ready content, smooth transitions
 - **Validation**: Check that flow is intuitive and showcases app capabilities effectively
 
-## Design Engineering Workflow
+### Privacy/Sensitivity Requirement Validation - Added 2025-11-10
+**Context**: Donation-Only Items plan included visible money displays despite explicit "no amounts" requirement
+**Problem**: Review failed to catch contradiction between "NO visible contribution amounts" requirement and plan to show "Suggested: €X" and badges
+**Solution**: When requirements emphasize privacy or social sensitivity, validate for MAXIMUM privacy compliance, not just adequate privacy
+**Agent Updated**: design-2-review.md
 
-Your task flows through these stages:
-1. **Planning** (Agent 1) - Context gathering ✓
-2. **Review** (You - Agent 2) - Quality check and clarifications
-3. **Discovery** (Agent 3) - Technical verification with MCP tools
-4. **Ready to Execute** - Queue for implementation (visual Kanban organization)
-5. **Execution** (Agent 4) - Code implementation
-6. **Visual Verification** (Agent 5) - Automated visual testing with Playwright
-7. **Testing** (Manual) - User verification
-8. **Completion** (Agent 6) - Finalization and learning capture
+**Root Cause Analysis**:
+- **Requirement**: "NO visible contribution amounts anywhere in public UI" + social sensitivity concern ("don't want to look like money grabbing pigs")
+- **Plan Included**: Displaying suggested_amount and "Open for Contributions" badge on public cards/modals
+- **Review Miss**: Failed to recognize that suggested amounts are still money displays and violate privacy requirement
+- **Spectrum Error**: Requirement indicated maximum privacy needed, but plan provided only adequate privacy
 
-You validate the plan and hand off to Discovery.
+**Required Privacy Validation Checkpoints**:
+1. **Privacy Keyword Detection**: When requirements include "NO amounts", "privacy", "don't want to show", "social pressure", flag for strict interpretation
+2. **Broad Amount Interpretation**: "Amounts" should be interpreted to include:
+   - Running totals ✓
+   - Suggested/example amounts ✓
+   - Price comparisons ✓
+   - ANY numeric money displays ✓
+
+3. **Social Sensitivity Indicators**: Keywords like "money grabbing", "uncomfortable", "pressure", "comparison" indicate maximum privacy needed
+4. **Privacy Spectrum Validation**: Check plan against privacy levels:
+   - Adequate: Hide running totals only
+   - High: Hide totals and comparisons
+   - **Maximum**: Zero money references anywhere
+
+5. **Contradiction Detection**: Flag when plan includes ANY money display despite "no amounts" requirement
+
+**Example from Task**:
+```markdown
+❌ PLAN VS REQUIREMENT CONTRADICTION:
+- Requirement: "NO visible contribution amounts anywhere in public UI"
+- Plan Step 3: "Show 'Suggested: €20' on gift cards"
+- Plan Step 4: "Display 'Open for Contributions' badge on modal"
+- Social Context: "don't want to look like money grabbing pigs"
+
+✅ REVIEW SHOULD HAVE FLAGGED:
+- Suggested amounts are money displays → violates "NO amounts"
+- Badges still draw attention to money → creates social pressure
+- Social sensitivity indicates need for MAXIMUM privacy (zero money displays)
+- Plan should remove ALL money references, not just running totals
+
+✅ CORRECT APPROACH:
+- Gift cards: Show only category badge (no price, no suggested amount, no special badge)
+- Item modal: Show only action button with help text (no amount references)
+- Payment forms: Accept amounts but don't display suggestions prominently
+- Thank you page: "Thank you for your donation!" (no amount shown)
+```
+
+**Prevention Checklist**:
+- [ ] When "NO amounts" appears in requirements, interpret broadly to include ALL money displays
+- [ ] Social sensitivity keywords trigger maximum privacy validation (not adequate privacy)
+- [ ] Check every plan step that displays numbers, prices, suggestions, or comparisons
+- [ ] Validate that plan matches the privacy intensity level indicated by social context
+- [ ] Flag any money display (including helpful suggestions) for explicit user confirmation
+
+**Example Prevention**: If requirements say "NO visible amounts" and mention social concerns about appearing money-focused, review must validate plan includes ZERO money displays (no totals, no suggested amounts, no comparison badges) - only titles, descriptions, and actions.

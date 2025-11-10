@@ -8,6 +8,132 @@
 - **System Repository**: https://github.com/charlieellington/ai-vibe-design-code
 
 ## Recent Changes
+- 📅 2025-11-10: **Quick Change** - Made "Due 6th of December" text bold
+  - File(s): components/gift-list/hero-section.tsx
+  - Change: Added font-bold class to due date paragraph
+  - Reason: Emphasize the important due date information
+  - Visual verification: No - simple font weight change
+  - Status: ✅ Complete
+- 📅 2025-11-10: **Quick Change** - "Browse Gifts" button now scrolls to welcome message
+  - File(s): components/gift-list/hero-section.tsx
+  - Change: Updated scroll target from `[data-gifts-section]` to `[data-welcome-message]`, added data attribute to welcome message paragraph
+  - Reason: Button now scrolls to "We're so excited to welcome our little one!" text instead of gift grid
+  - Visual verification: No - simple scroll target change
+  - Status: ✅ Complete
+- 📅 2025-11-10: **Quick Change** - Added 4px rounded corners to gift card images
+  - File(s): components/gift-list/gift-card.tsx
+  - Change: Changed `object-contain` to `object-cover`, inner container has `overflow-hidden rounded-[4px]`
+  - Reason: Images now have subtle curved edges for polished appearance
+  - Technical: object-cover fills container completely, overflow clips to rounded corners
+  - Visual verification: No - border-radius adjustment
+  - Status: ✅ Complete
+- 📅 2025-11-10: **Quick Change** - Added colorful category pills matching palette
+  - File(s): components/gift-list/gift-card.tsx, components/gift-list/category-filter.tsx
+  - Change: 
+    - Essentials: Primary coral/pink (bg-primary)
+    - Experiences: Secondary orange (bg-secondary)
+    - Big Items: Accent warm tone (bg-accent)
+    - Donation: Golden yellow (hsl(43.66,87.07%,54.51%))
+    - Favorites: Destructive red (bg-destructive)
+  - Reason: Visual distinction for each category using our warm color palette
+  - Visual verification: No - simple color mapping using semantic tokens
+  - Status: ✅ Complete
+- 📅 2025-11-10: **Quick Change** - Added padding inside purple/pink background area
+  - File(s): components/gift-list/gift-card.tsx
+  - Change: Added p-5 padding to bg-muted container + inner wrapper div for proper Image fill positioning
+  - Reason: Images no longer touch edges of purple/pink background - creates 20px visual border effect
+  - Technical: Added inner `<div className="relative w-full h-full">` so Image fill respects outer padding
+  - Visual verification: No - padding adjustment with structural wrapper
+  - Status: ✅ Complete
+- 📅 2025-11-06: **Quick Change** - Applied pure white background to homepage gift cards only
+  - File(s): components/gift-list/gift-card.tsx
+  - Change: Added bg-white class to gift card component (not global --card variable)
+  - Reason: Pure white (#FFFFFF) for homepage gift cards only, preserving warm peachy tone for other UI cards
+  - Visual verification: No - simple class addition
+  - Status: ✅ Complete
+- 📅 2025-11-06: **Quick Change** - Implemented live contribution amount summary for partial payments
+  - File(s): app/payment/iban/payment-form.tsx, app/payment/paypal/paypal-payment-form.tsx
+  - Change:
+    - Top summary now shows "Your contribution" label for partial payments
+    - Display shows "Enter amount below" when amount is 0, otherwise shows live amount (€XX.XX)
+    - Added "Suggested: €XX.XX" hint below the summary
+    - Enhanced bottom input with better label: "Enter Your Contribution Amount (€) *"
+    - Added placeholder "25.00" and larger text styling (text-lg font-medium)
+    - Improved helper text: "Suggested amount: €XX.XX • Any contribution helps!"
+  - Reason: Eliminated confusing "€0" display, created clear UX hierarchy with live feedback
+  - Visual verification: No - state already synced, improved labels only
+  - Status: ✅ Complete (applied to both IBAN and PayPal payment flows)
+- 📅 2025-11-06: **Quick Change** - Reordered gift code field and restored purple highlighting
+  - File(s): app/payment/iban/payment-form.tsx
+  - Change: 
+    - Moved gift code field to bottom of payment details card (after IBAN and Account Name)
+    - Added purple border highlighting to gift code input (border-primary)
+    - Added visual separator (border-t with pt-2) above gift code section
+  - Reason: Better visual hierarchy with gift code highlighted at end, draws attention after user sees payment details
+  - Visual verification: No - simple reordering and styling adjustment
+  - Status: ✅ Complete
+- 📅 2025-11-06: **Quick Change** - Merged gift code into payment details card on IBAN page
+  - File(s): app/payment/iban/payment-form.tsx
+  - Change: Combined "Your Gift Code" card with "Payment Details" card into single unified card
+  - Reason: Simplified UI - two separate cards was too complex and confusing for users
+  - Visual verification: No - layout simplification only
+  - Status: ✅ Complete
+- 📅 2025-11-06: **Feature Add** - Added "How does this work?" section to IBAN payment page
+  - File(s): app/payment/iban/payment-form.tsx
+  - Change: Added existing details/summary expandable section with 4-step process explanation
+  - Reason: Provide clarity and transparency about the payment flow to users
+  - Visual verification: No - reused existing component pattern from other pages
+  - Status: ✅ Complete
+- 📅 2025-11-06: **Quick Change** - Fixed spacing system and added large responsive spacing
+  - File(s): components/gift-list/hero-section.tsx
+  - Change: 
+    - Removed `space-y-4` utility that was blocking custom margins
+    - Added individual margin classes to each element
+    - Welcome message: mt-8 mb-8 on mobile, md:mt-24 md:mb-24 on desktop (~96px)
+  - Reason: space-y-4 was overriding custom margins; removed it to allow ~100px spacing on desktop
+  - Visual verification: No - simple spacing adjustment
+  - Status: ✅ Complete
+- 📅 2025-11-06: **Quick Change** - Added top spacing to hero section
+  - File(s): components/gift-list/hero-section.tsx
+  - Change: Added mt-8 class to increase spacing above "Baby Charlie and Bene" header
+  - Reason: Improve visual breathing room at top of page
+  - Visual verification: No - simple spacing adjustment
+  - Status: ✅ Complete
+- 📅 2025-11-06: **Quick Change** - Added smooth upward hover animation to cards
+  - File(s): components/gift-list/gift-card.tsx
+  - Change: Added hover:-translate-y-px with transition-all duration-300 for smooth 1px lift
+  - Reason: Enhanced hover interaction - cards physically lift up as shadow expands
+  - Visual verification: ✅ Complete - Smooth 300ms animation combining movement + shadow
+  - Status: ✅ Complete
+- 📅 2025-11-06: **Quick Change** - Removed card borders
+  - File(s): components/ui/card.tsx
+  - Change: Removed `border` class from Card component default styling
+  - Reason: Cleaner look with shadows only, no outline stroke
+  - Visual verification: ✅ Complete - Cards now borderless
+  - Status: ✅ Complete
+- 📅 2025-11-06: **Quick Change** - Customized card shadows per user specs
+  - File(s): components/gift-list/gift-card.tsx, app/globals.css
+  - Change: 
+    - Default shadow-sm: 18px blur, 0.35 opacity (coral #E77376)
+    - Hover shadow-md: 42px blur, 0.30 opacity (5% decrease)
+    - Fixed shadow CSS variables (moved from @theme inline to :root/:dark for Tailwind v3)
+  - Reason: Perfect balance of subtle default with dramatic hover effect
+  - Visual verification: ✅ Complete - Exact specs from tweakcn: 0.35 opacity, 18px → 42px blur on hover
+  - Status: ✅ Complete
+  - Note: Hover reduces opacity by 5% and more than doubles blur radius for smooth lift effect
+- 📅 2025-11-06: **Quick Change** - Applied tweakcn.com theme + proper shadow integration
+  - File(s): app/globals.css, app/layout.tsx, tailwind.config.ts
+  - Change: 
+    - Updated CSS variables with warm coral/peach HSL color palette
+    - Integrated Google Fonts: Poppins (sans), Fraunces (headings), IBM Plex Mono (mono)
+    - Auto-applied Fraunces to all h1-h6 headings with font-weight: 600
+    - **Fixed shadow integration**: Added boxShadow config to Tailwind, updated opacity to 0.4
+    - Custom shadows with coral tint (#E77376): 1px 1px 18px -2px with 0.4 opacity
+    - Added sidebar theme variables, larger radius (0.8rem)
+  - Reason: Complete theme transformation with proper shadow utilities working
+  - Visual verification: ✅ Complete - Shadows now properly applied via Tailwind utilities
+  - Status: ✅ Complete
+  - Note: Fixed shadow integration by adding boxShadow mapping in tailwind.config.ts
 - ✅ Set up Spotlight template with all dependencies
 - ✅ Created git repository and pushed to GitHub
 - ✅ Added design agents flow system from previous project
