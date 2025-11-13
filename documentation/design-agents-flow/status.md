@@ -45,6 +45,8 @@ kanban-plugin: board
 
 ## Testing
 
+- [ ] [Gift List Payment Flow and UI Fixes](doing/gift-list-payment-flow-and-ui-fixes.md)
+
 <!-- Tasks move here when implementation complete -->
 
 ## Complete

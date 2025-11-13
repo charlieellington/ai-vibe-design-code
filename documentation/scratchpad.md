@@ -8,6 +8,13 @@
 - **System Repository**: https://github.com/charlieellington/ai-vibe-design-code
 
 ## Recent Changes
+- 📅 2025-11-13: **Quick Change** - Updated border radius on uploaded images inside cards
+  - File(s): components/gift-list/rounded-image.tsx
+  - Change: Updated borderRadius from '4px' to '10px' in imageStyle inline CSS
+  - Reason: Increased corner rounding for more prominent visual softness on gift card images
+  - Previous value: 4px → New value: 10px
+  - Visual verification: No - simple border-radius value change
+  - Status: ✅ Complete
 - 📅 2025-11-10: **Quick Change** - Made "Due 6th of December" text bold
   - File(s): components/gift-list/hero-section.tsx
   - Change: Added font-bold class to due date paragraph
