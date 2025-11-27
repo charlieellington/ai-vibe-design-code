@@ -1,0 +1,379 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Tailwind CSS Guidelines
+
+## Core Principles
+
+- **Utility-First Approach**
+  - Use Tailwind's utility classes directly in markup
+  - Prefer utility composition over custom CSS
+  - Extract components for repeated patterns, not for styling alone
+
+- **Modern Portfolio Design (Zebra Design Standards)**
+  - Use consistent spacing and sizing
+  - Follow the project's design system established in `tailwind.css`
+  - Maintain responsive design patterns
+  - Ensure good contrast ratios for accessibility
+  - Prefer semantic CSS custom properties over hardcoded values
+
+## Organization
+
+- **Component Patterns**
+  - Group related utilities using consistent order:
+    1. Layout (display, position, etc.)
+    2. Box model (width, height, padding, margin)
+    3. Visual (background, border, etc.)
+    4. Typography
+    5. Miscellaneous
+  ```tsx
+  // ✅ DO: Organize utilities in a consistent order
+  <div className="
+    flex items-center justify-between
+    w-full h-12 px-4 my-2
+    bg-white rounded-lg border border-gray-200
+    text-sm font-medium
+    hover:bg-gray-50 transition-colors
+  ">
+    Content
+  </div>
+  ```
+
+- **Responsive Design**
+  - Use mobile-first approach with responsive modifiers
+  - Define breakpoints in consistent order
+  ```tsx
+  // ✅ DO: Use mobile-first approach with responsive modifiers
+  <div className="
+    w-full
+    md:w-1/2
+    lg:w-1/3
+    xl:w-1/4
+  ">
+    Responsive content
+  </div>
+  ```
+
+## Custom Extensions
+
+- **Theme Extension**
+  - Extend Tailwind's theme in `tailwind.config.js` for project-specific values
+  - Add custom colors, spacing, fonts in the theme config
+  ```js
+  // ✅ DO: Extend the theme with project-specific values
+  module.exports = {
+    theme: {
+      extend: {
+        colors: {
+          primary: {
+            50: '#f0f9ff',
+            100: '#e0f2fe',
+            // ...other shades
+            900: '#0c4a6e',
+          },
+          secondary: {
+            // ...custom color palette
+          },
+        },
+        spacing: {
+          '18': '4.5rem',
+        },
+        // ...other extensions
+      }
+    }
+  }
+  ```
+
+- **Custom Utilities**
+  - Create custom utilities only when necessary
+  - Document all custom utilities in code comments
+
+## Classes Organization
+
+- **Complex Components**
+  - For complex components, use template literals or clsx/cn utility
+  - Group related classes using variables or functions
+  ```tsx
+  // ✅ DO: Use template literals or clsx/cn for complex components
+  import { cn } from "@/lib/utils";
+  
+  function Button({ variant, size, className, ...props }) {
+    return (
+      <button
+        className={cn(
+          "rounded font-medium transition-colors",
+          variant === "primary" && "bg-blue-600 text-white hover:bg-blue-700",
+          variant === "secondary" && "bg-gray-200 text-gray-800 hover:bg-gray-300",
+          size === "sm" && "px-2 py-1 text-sm",
+          size === "md" && "px-4 py-2 text-base",
+          size === "lg" && "px-6 py-3 text-lg",
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+  ```
+
+## Dark Mode & Tailwind CSS v4 Compatibility
+
+- **Tailwind v4 CSS Variable Format (CRITICAL)**
+  - **REQUIRED**: All CSS variables must be wrapped in `hsl()` functions
+  - **FORBIDDEN**: Raw HSL values like `--background: 225 6% 13%;`
+  - **REQUIRED**: Use `--background: hsl(225 6% 13%);` format
+  ```css
+  /* ❌ DON'T: Tailwind v3 format (BROKEN in v4) */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+  }
+  .dark {
+    --background: 225 6% 13%;
+    --foreground: 0 0% 93%;
+  }
+  
+  /* ✅ DO: Tailwind v4 format (REQUIRED) */
+  :root:not(.dark) {
+    --background: hsl(0 0% 100%);
+    --foreground: hsl(240 10% 3.9%);
+  }
+  .dark {
+    --background: hsl(225 6% 13%);
+    --foreground: hsl(0 0% 93%);
+  }
+  
+  /* ✅ REQUIRED: @theme inline directive for v4 */
+  @theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+  }
+  ```
+
+- **CSS Layer Structure for v4**
+  - **REQUIRED**: Move CSS variables OUTSIDE @layer base for proper specificity
+  - **REQUIRED**: Consolidate @layer base blocks (only one allowed)
+  - **FORBIDDEN**: Multiple @layer base declarations
+  ```css
+  /* ✅ DO: Proper v4 structure */
+  /* Variables at root level - OUTSIDE layers */
+  :root:not(.dark) { --background: hsl(0 0% 100%); }
+  .dark { --background: hsl(225 6% 13%); }
+  
+  /* Theme mapping for v4 */
+  @theme inline {
+    --color-background: var(--background);
+  }
+  
+  /* Single consolidated layer */
+  @layer base {
+    body { background-color: var(--background); }
+  }
+  ```
+
+- **Dark Mode Support**
+  - Use semantic color tokens instead of `dark:` variants when possible
+  - CSS variables handle theme switching automatically
+  ```tsx
+  // ✅ DO: Use semantic tokens (automatically theme-aware)
+  <div className="bg-background text-foreground border-border">
+    Automatically switches between light/dark themes
+  </div>
+  
+  // ✅ DO: Use dark: variants only when needed for different styling
+  <div className="
+    bg-card text-foreground
+    dark:shadow-lg
+    border border-border
+  ">
+    Content with conditional dark mode styling
+  </div>
+  ```
+
+## Animation
+
+- **Transitions and Animations**
+  - Use Tailwind's transition utilities for common animations
+  - Add custom animations to the theme when needed
+  ```tsx
+  // ✅ DO: Use Tailwind's transition utilities
+  <button className="
+    bg-blue-500 hover:bg-blue-600
+    transform hover:-translate-y-0.5
+    transition-all duration-200
+  ">
+    Animated Button
+  </button>
+  ```
+
+## Performance Considerations
+
+- **Purging Unused Styles**
+  - Ensure content paths are correctly configured in `tailwind.config.js`
+  - Avoid dynamic class string construction that might bypass PurgeCSS
+  ```js
+  // ❌ DON'T: Use dynamic class concatenation that bypasses PurgeCSS
+  const dynamicClass = `text-${color}-500`; // This may not be purged correctly
+  
+  // ✅ DO: Use conditional classes instead
+  const classes = {
+    'text-red-500': color === 'red',
+    'text-blue-500': color === 'blue',
+  };
+  ```
+
+## Zebra Design Color System
+
+- **Consistent Color Usage**
+  - **PREFER**: CSS custom properties defined in `tailwind.css`
+  - **AVOID**: Hardcoded hex colors when possible
+  - **CONSIDER**: Semantic color tokens for maintainability
+  - **USE**: Tailwind's built-in color system when appropriate
+
+- **Recommended Color Classes**
+  ```tsx
+  // ✅ PREFERRED: Use Tailwind's semantic colors
+  bg-white dark:bg-gray-900     // Main backgrounds
+  bg-gray-50 dark:bg-gray-800   // Cards and elevated content  
+  text-gray-900 dark:text-white // Primary text
+  text-gray-600 dark:text-gray-300 // Secondary text
+  border-gray-200 dark:border-gray-700 // Borders
+  
+  // ✅ GOOD: Interactive states
+  hover:bg-gray-100 dark:hover:bg-gray-800
+  focus:ring-blue-500 focus:border-blue-500
+  
+  // ✅ CUSTOM: Use project-defined custom properties
+  // (Define in tailwind.css @theme block as needed)
+  ```
+
+- **Component Customization**
+  ```tsx
+  // ✅ DO: Use Headless UI components with Tailwind
+  import { Button } from '@headlessui/react';
+  
+  <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded px-4 py-2">
+    Properly themed button
+  </Button>
+  
+  // ✅ DO: Interactive components with proper states
+  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+    Interactive card
+  </div>
+  
+  // ⚠️ CONSIDER: Hardcoded colors are sometimes necessary
+  <Button className="bg-[#your-brand-color] hover:bg-[#your-brand-color-dark]">
+    Brand-specific styling when needed
+  </Button>
+  
+  // ✅ GOOD: Consistent color patterns
+  <div className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white">
+    Consistent light/dark theming
+  </div>
+  ```
+
+## Color System Guidelines
+
+- **Code Quality**
+  - Maintain consistent color usage across components
+  - Consider accessibility and contrast ratios
+  - Use meaningful color names and patterns
+
+- **Best Practices**
+  - Prefer established color patterns in the project
+  - Document custom color choices
+  - Test colors in both light and dark modes when applicable
+
+- **Common Patterns for Portfolio Site**
+  ```tsx
+  // ✅ GOOD: Hero sections
+  <div className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+  
+  // ✅ GOOD: Card components
+  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+  
+  // ✅ GOOD: Interactive elements
+  <button className="bg-blue-600 hover:bg-blue-700 text-white">
+  
+  // ✅ GOOD: Muted content
+  <p className="text-gray-600 dark:text-gray-400">
+  ```
+
+- **Common Patterns for Portfolio Site**
+  ```tsx
+  // Background patterns
+  bg-white dark:bg-gray-900        // Main page backgrounds
+  bg-gray-50 dark:bg-gray-800      // Section backgrounds
+  bg-white dark:bg-gray-800        // Card backgrounds
+  
+  // Text patterns
+  text-gray-900 dark:text-white    // Primary headings
+  text-gray-700 dark:text-gray-200 // Body text
+  text-gray-600 dark:text-gray-400 // Muted text
+  text-gray-500 dark:text-gray-500 // Subtle text
+  
+  // Border patterns
+  border-gray-200 dark:border-gray-700 // Standard borders
+  border-gray-300 dark:border-gray-600 // Stronger borders
+  
+  // Interactive patterns
+  hover:bg-gray-100 dark:hover:bg-gray-700 // Hover backgrounds
+  focus:ring-blue-500 focus:border-blue-500 // Focus states
+  ```
+
+## Troubleshooting Common Issues
+
+- **White Background on Dark Theme (Tailwind v4)**
+  - **Symptom**: App shows white background despite `className="dark"` on HTML element
+  - **Root Cause**: CSS variables in v3 format not compatible with Tailwind v4
+  - **Solution**: Wrap all CSS variables in `hsl()` functions
+  - **Check**: Ensure all variables follow `hsl(225 6% 13%)` format, not raw `225 6% 13%`
+
+- **CSS Variables Not Working**
+  - **Symptom**: CSS variables appear undefined in DevTools
+  - **Root Cause**: Variables defined inside `@layer base` have lower specificity
+  - **Solution**: Move CSS variables outside all `@layer` directives
+  - **Check**: Ensure variables are at root level, not nested in layers
+
+- **@apply Not Working with CSS Variables**
+  - **Symptom**: `@apply bg-background` not applying correct background
+  - **Root Cause**: Tailwind v4 handles `@apply` differently with CSS variables
+  - **Solution**: Use direct CSS properties: `background-color: var(--background);`
+  - **Alternative**: Ensure `@theme inline` directive is properly configured
+
+- **Multiple @layer base Issues**
+  - **Symptom**: Styles not applying consistently across components
+  - **Root Cause**: Multiple `@layer base` blocks causing cascade conflicts
+  - **Solution**: Consolidate all base styles into single `@layer base` block
+  - **Check**: Search for duplicate `@layer base` declarations in CSS files
+
+- **Missing @theme inline Directive**
+  - **Symptom**: Tailwind utilities not recognizing CSS variables
+  - **Root Cause**: Tailwind v4 requires explicit theme mapping
+  - **Solution**: Add `@theme inline` block with `--color-*` mappings
+  - **Template**:
+    ```css
+    @theme inline {
+      --color-background: var(--background);
+      --color-foreground: var(--foreground);
+      /* Map all other variables */
+    }
+    ```
+
+## Version-Specific Notes
+
+- **Tailwind CSS v4.0.0+**
+  - CSS variables MUST be wrapped in color functions (`hsl()`, `oklch()`)
+  - `@theme inline` directive is REQUIRED for variable mapping
+  - Multiple `@layer` blocks of same type cause conflicts
+  - `@apply` behavior changed significantly from v3
+
+- **Migration Checklist from v3 to v4**
+  1. ✅ Wrap all CSS variables in `hsl()` functions
+  2. ✅ Move variables outside `@layer base`
+  3. ✅ Add `@theme inline` mapping block
+  4. ✅ Consolidate duplicate `@layer base` blocks
+  5. ✅ Replace `@apply` with direct CSS where needed
+  6. ✅ Update PostCSS config to use `@tailwindcss/postcss`
+  7. ✅ Test dark/light theme switching functionality

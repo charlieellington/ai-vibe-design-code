@@ -1,0 +1,361 @@
+---
+description: Reference guide for potential shadcn/ui component creation
+globs: *.tsx
+alwaysApply: false
+---
+# shadcn/ui Guidelines (REFERENCE ONLY)
+
+**⚠️ NOTE FOR ZEBRA-DESIGN PROJECT**:
+This project currently uses **Headless UI** components, not shadcn/ui. These guidelines serve as:
+- **Reference patterns** for creating custom components  
+- **Future consideration** if adding shadcn/ui to the project
+- **Best practices** for component composition and accessibility
+
+**Current Stack**: Next.js + Tailwind CSS + Headless UI + TypeScript
+
+---
+
+## Core Principles
+
+- **Component-First Design**
+  - Use shadcn/ui components as building blocks
+  - Maintain consistency across the application
+  - Customize through props and Tailwind classes
+  - Focus on composition over modification
+
+- **Component Installation**
+  - Install components via CLI: `npx shadcn-ui@latest add [component]`
+  - Customize components by modifying files in `components/ui/`
+  - Keep component modifications minimal and documented
+
+## MCP Server Integration
+
+### Official shadcn MCP Server (Claude Code)
+
+When working with **Claude Code**, use the official shadcn MCP server configured in `.cursor/mcp.json`:
+
+```json
+"shadcn": {
+  "command": "npx",
+  "args": ["-y", "@modelcontextprotocol/server-shadcn"],
+  "env": {}
+}
+```
+
+**Available MCP Tools (Actual):**
+- `mcp_shadcn-ui-server_list-components` - List all available shadcn/ui components
+- `mcp_shadcn-ui-server_get-component-docs` - Get component documentation
+- `mcp_shadcn-ui-server_install-component` - Install component command
+- `mcp_shadcn-ui-server_list-blocks` - List available blocks
+- `mcp_shadcn-ui-server_get-block-docs` - Get block documentation
+
+**MCP Usage Pattern:**
+1. **Discovery**: Use `mcp_shadcn-ui-server_list-components` to find available components
+2. **Documentation**: Use `mcp_shadcn-ui-server_get-component-docs` to get component details
+3. **Installation**: Use `mcp_shadcn-ui-server_install-component` for setup commands
+
+### Alternative MCP Server (Third-party)
+
+These rules also govern how to plan and implement UI when using the **third-party shadcn-UI MCP server** (see repository [shadcn-ui-mcp-server](https://github.com/heilgar/shadcn-ui-mcp-server)).
+
+### Planning
+
+1. **Discover Assets**  
+   Use `list_components()` and `list_blocks()` to fetch the catalogue of available components and blocks.
+
+2. **Map Request to Assets**  
+   Analyse the user's UI request and map each required UI element to the most suitable component or block.
+
+3. **Prioritise Blocks**  
+   Prefer blocks via `get_block(block_name)` for common, complex UI patterns (e.g. login pages, calendars, dashboards).  
+   Use individual components via `get_component(component_name)` when a more granular or unique element is required.
+
+### Implementation
+
+1. **Preview Before Use**  
+   Always call `get_component_demo(component_name)` before integrating a component. This clarifies props, structure, and behaviour.
+
+2. **Retrieve the Code**  
+   • Single component ⇒ `get_component(component_name)`  
+   • Composite block ⇒ `get_block(block_name)`
+
+3. **Integrate & Customise**  
+   Insert the fetched code into the application, wiring the required props and adding any custom logic or styling to fulfil the user's request.
+
+## Component Usage
+
+- **Basic Usage**
+  - Import components from the local UI directory, not from shadcn/ui package
+  ```tsx
+  // ✅ DO: Import from local components directory
+  import { Button } from "@/components/ui/button";
+  
+  // ❌ DON'T: Import directly from shadcn/ui (it's not a package)
+  import { Button } from "shadcn/ui"; // WRONG
+  ```
+
+- **Variants and Sizes**
+  - Use predefined variants for consistency
+  - Use appropriate sizes for different contexts
+  ```tsx
+  // ✅ DO: Use predefined variants and sizes
+  <Button variant="destructive" size="sm">Delete</Button>
+  <Button variant="outline" size="lg">Cancel</Button>
+  ```
+
+## Customization & Semantic Color System
+
+- **Dark Theme Implementation (REFERENCE)**
+  - **CRITICAL**: Use ONLY semantic color tokens - NEVER hardcoded hex colors
+  - Example shows a 5-layer dark color system pattern
+  - All colors controlled via CSS custom properties for consistent theming
+  
+  ```css
+  /* Example Color System Pattern - Adapt for your project */
+  .dark {
+    /* Core shadcn variables mapped to our 5-layer palette */
+    --background: 225 6% 13%;        /* base: #1F2023 */
+    --foreground: 0 0% 93%;         /* text primary: #ECE4D9 */
+    --card: 220 6% 16%;             /* surface: #28292C - UPDATED */
+    --card-foreground: 0 0% 93%;
+    --popover: 220 6% 16%;          /* same as card */
+    --popover-foreground: 0 0% 93%;
+    --primary: 0 0% 93%;            /* text primary for primary buttons */
+    --primary-foreground: 225 6% 13%; /* base for primary button text */
+    --secondary: 223 7% 19%;        /* overlay-dark: #2D2F34 */
+    --secondary-foreground: 0 0% 93%;
+    --muted: 223 7% 19%;            /* same as overlay-dark */
+    --muted-foreground: 0 0% 93% / 0.7; /* 70% opacity */
+    --accent: 218 6% 23%;           /* overlay-light: #393B40 - UPDATED */
+    --accent-foreground: 0 0% 93%;
+    --border: 218 6% 23%;           /* overlay-light: #393B40 - UPDATED */
+    --input: 218 6% 23%;            /* same as border */
+    --ring: 218 6% 23% / 0.5;       /* focus rings with 50% opacity */
+    
+    /* Sidebar specific */
+    --sidebar: 0 0% 0.4%;           /* overflow: #010101 */
+    --sidebar-foreground: 0 0% 93%;
+    --sidebar-border: 218 6% 23%;   /* #393B40 - UPDATED */
+    --sidebar-ring: 218 6% 23% / 0.5;
+    
+    /* Additional layer system tokens */
+    --color-overflow: 0 0% 0.4%;      /* #010101 */
+    --color-base: 225 6% 13%;         /* #1F2023 */
+    --color-surface: 220 6% 16%;      /* #28292C - UPDATED */
+    --color-overlay-dark: 223 7% 19%; /* #2D2F34 */
+    --color-overlay-light: 218 6% 23%; /* #393B40 - UPDATED */
+  }
+  ```
+
+- **Component-Specific Customization**
+  - **ALWAYS** use semantic color tokens through className prop
+  - **NEVER** use hardcoded hex colors or arbitrary Tailwind values
+  ```tsx
+  // ✅ DO: Use semantic color tokens
+  <Card className="bg-card border-border">
+    <CardHeader className="pb-2">
+      <CardTitle className="text-foreground">Semantic Colors</CardTitle>
+      <CardDescription className="text-muted-foreground">Proper theming</CardDescription>
+    </CardHeader>
+    <CardContent className="text-foreground">
+      Content with consistent theming
+    </CardContent>
+  </Card>
+  
+  // ✅ DO: Use additional layer tokens when needed
+  <div className="bg-surface border border-border hover:bg-overlay-dark/50">
+    Interactive element with proper hover states
+  </div>
+  
+  // ❌ DON'T: Use hardcoded hex colors - FORBIDDEN
+  <Card className="bg-[#27292D] border-[#383B40]">
+    Never use hardcoded colors
+  </Card>
+  
+  // ❌ DON'T: Use non-semantic Tailwind colors
+  <Card className="bg-gray-800 text-gray-100">
+    Don't use generic gray scale
+  </Card>
+  ```
+
+- **Advanced Customization**
+  - When needed, modify component source in `components/ui/`
+  - Document all modifications for team awareness
+  - Keep close to the original API to maintain consistency
+
+## Component Composition
+
+- **Form Elements**
+  - Use Form component with FormField, FormItem, etc.
+  - Maintain proper nesting hierarchy
+  ```tsx
+  // ✅ DO: Use proper form composition
+  <Form {...form}>
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <FormField
+        control={form.control}
+        name="email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Email</FormLabel>
+            <FormControl>
+              <Input placeholder="email@example.com" {...field} />
+            </FormControl>
+            <FormDescription>
+              Enter your email address
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <Button type="submit">Submit</Button>
+    </form>
+  </Form>
+  ```
+
+- **Dialog and Modals**
+  - Use proper component nesting
+  - Include proper accessibility attributes
+  ```tsx
+  // ✅ DO: Use proper dialog composition
+  <Dialog>
+    <DialogTrigger asChild>
+      <Button variant="outline">Open Dialog</Button>
+    </DialogTrigger>
+    <DialogContent className="sm:max-w-[425px]">
+      <DialogHeader>
+        <DialogTitle>Dialog Title</DialogTitle>
+        <DialogDescription>
+          Dialog description goes here
+        </DialogDescription>
+      </DialogHeader>
+      <div className="py-4">
+        {/* Dialog content */}
+      </div>
+      <DialogFooter>
+        <Button type="submit">Save</Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+  ```
+
+## Modern UI Guidelines
+
+- **Consistent Spacing**
+  - Use shadcn/ui's built-in spacing
+  - Add additional spacing with Tailwind classes
+  ```tsx
+  // ✅ DO: Maintain consistent spacing
+  <div className="space-y-4">
+    <Card className="p-4">Card content</Card>
+    <Card className="p-4">Another card</Card>
+  </div>
+  ```
+
+- **Color Consistency**
+  - Use shadcn/ui's color system
+  - For custom colors, define them in your theme configuration
+  ```tsx
+  // ✅ DO: Use consistent colors
+  <Button className="bg-primary text-primary-foreground">
+    Primary Action
+  </Button>
+  ```
+
+- **Animations and Transitions**
+  - Use shadcn/ui's built-in animations
+  - Add custom animations with Tailwind classes
+  ```tsx
+  // ✅ DO: Use built-in animations
+  <Collapsible>
+    <CollapsibleTrigger>Toggle</CollapsibleTrigger>
+    <CollapsibleContent>
+      Content that smoothly animates in and out
+    </CollapsibleContent>
+  </Collapsible>
+  ```
+
+## Accessibility
+
+- **Keyboard Navigation**
+  - Ensure all interactive elements are keyboard accessible
+  - Use shadcn/ui's built-in keyboard support
+
+- **Screen Readers**
+  - Use proper ARIA attributes
+  - Test with screen readers
+  ```tsx
+  // ✅ DO: Use accessible components
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="outline" size="icon">
+          <InfoIcon className="h-4 w-4" />
+          <span className="sr-only">Info</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        Additional information
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+  ```
+
+## Color System Compliance (CRITICAL)
+
+- **Mandatory Color Token Usage**
+  - **NEVER use hardcoded hex colors** like `#1F2023`, `#27292D`, `#2A2A2A`, etc.
+  - **NEVER use arbitrary Tailwind values** like `bg-[#...]`, `text-[#...]`, `border-[#...]`
+  - **ALWAYS use semantic tokens** defined in the 5-layer system
+
+- **Approved Color Classes**
+  ```tsx
+  // ✅ ALWAYS USE: Core semantic tokens
+  bg-background        // Main page background
+  bg-card             // Elevated content (cards, panels)
+  bg-sidebar          // Sidebar and chrome areas
+  text-foreground     // Primary text
+  text-muted-foreground // Secondary text
+  border-border       // All borders and dividers
+  
+  // ✅ ALWAYS USE: Layer system tokens (when semantic tokens aren't enough)
+  bg-overflow         // Deepest backgrounds (#010101)
+  bg-base            // Main backgrounds (#1F2023)  
+  bg-surface         // Card backgrounds (#27292D)
+  bg-overlay-dark    // Hover states (#2D2F34)
+  bg-overlay-light   // Active states, borders (#383B40)
+  
+  // ✅ ALWAYS USE: Interaction states
+  hover:bg-overlay-dark/50    // Hover states
+  hover:text-foreground       // Hover text
+  active:bg-overlay-light     // Active states
+  focus:ring-ring            // Focus indicators
+  ```
+
+- **Common Patterns**
+  ```tsx
+  // ✅ DO: Interactive elements
+  <Button className="bg-secondary hover:bg-overlay-dark text-foreground">
+    Properly themed button
+  </Button>
+  
+  // ✅ DO: Cards and panels  
+  <Card className="bg-card border-border">
+    <CardContent className="text-foreground">
+      Semantic content
+    </CardContent>
+  </Card>
+  
+  // ✅ DO: Navigation items
+  <Link className={cn(
+    "text-foreground/70 hover:text-foreground hover:bg-overlay-dark/50",
+    isActive && "bg-overlay-light text-foreground"
+  )}>
+    Navigation item
+  </Link>
+  ```
+
+- **Enforcement**
+  - Code reviews must reject any hardcoded hex colors
+  - Use ESLint rules to catch `bg-[#`, `text-[#`, `border-[#` patterns
+  - All components must pass the semantic color audit
