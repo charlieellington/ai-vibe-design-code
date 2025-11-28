@@ -5,5 +5,5 @@
 - **Active tasks**: `doing/[task-slug].md`
 - **Completed tasks**: `done/[task-slug].md`
 
-See `../README.md` for details on the new structure.
+See `README.md` in this directory for details on the new structure.
 
