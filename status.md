@@ -35,7 +35,6 @@ kanban-plugin: board
 
 ## 🧪 Testing (Manual)
 
-- [ ] Screen 5: Pricing & Signup - `/pricing`
 
 
 ## 👁️ Visual Verification (Design-5)
@@ -162,6 +161,32 @@ kanban-plugin: board
   - 🔧 Dependencies: All existing - no new installations (Button, createClient, Link, lucide-react icons all verified available)
   - 💡 Notes: Complete POC replacement with MVP marketing content; pricing €49/month vs competitors $99-699; bring-your-own-testers differentiator highlighted
   - 🧪 Testing: TypeScript 0 errors, Next.js build successful, ESLint issues resolved (HTML entities properly escaped)
+
+- [x] Screen 5: Pricing & Signup - `/pricing` ✅ Completed 2025-11-27
+  **Implementation Notes:**
+  - ✅ Full functionality: Pricing page with 3 tiers (Free Beta, Pro €49/mo, Expert Analysis €300/test)
+  - ✅ Full functionality: Email capture form with terms checkbox using Radix Checkbox component
+  - ✅ Full functionality: API integration with `/api/auth/signup-with-test` endpoint
+  - ✅ Full functionality: Storage management (read `anonymous_session`, write `first_test_token`, cleanup on success)
+  - ✅ Full functionality: Progress indicator (3 filled + 1 empty, matching `/customize` pattern)
+  - ✅ Full functionality: Responsive grid layout (stacks on mobile), tier selection state
+  - 📁 Files Created: `app/pricing/page.tsx` (~300 lines)
+  - 🔧 Dependencies: All existing - no new installations
+  - 💡 Notes: Dashboard redirect will 404 until Screen 6 implemented; Terms/Privacy links placeholder
+  - 🧪 Testing: TypeScript 0 errors, build passed, static page generated
+
+- [x] Stage 4: Stripe Code Implementation ✅ Completed 2025-11-27
+  **Implementation Notes:**
+  - ✅ Full functionality: Stripe client library with price constants (`lib/stripe.ts`)
+  - ✅ Full functionality: Checkout API route for Pro/Expert tier upgrades (`app/api/stripe/checkout/route.ts`)
+  - ✅ Full functionality: Webhook handler for subscription lifecycle events (`app/api/stripe/webhook/route.ts`)
+  - ✅ Full functionality: Magic link fallback for existing users in signup route
+  - ✅ Full functionality: Conditional UI messaging on pricing page (button text, footer text)
+  - 📁 Files Created: `lib/stripe.ts`, `app/api/stripe/checkout/route.ts`, `app/api/stripe/webhook/route.ts`
+  - 📁 Files Modified: `app/api/auth/signup-with-test/route.ts`, `app/pricing/page.tsx`
+  - 🔧 Dependencies: Uses existing `stripe` and `@stripe/stripe-js` packages
+  - 💡 Notes: Pro = subscription mode, Expert = one-time payment; Webhook uses Supabase admin client for user metadata updates
+  - 🧪 Testing: Visual verification passed - conditional button/footer text working correctly
 
 - [x] Stage 1: Foundation Setup - Database, Environment, and Core Utilities ✅ Completed 2025-01-18
   **Implementation Notes:**
