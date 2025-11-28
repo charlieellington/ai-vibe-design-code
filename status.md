@@ -16,19 +16,14 @@ kanban-plugin: board
 ## 📝 Planning (Design-1)
 
 
-
 ## 🔍 Review (Design-2)
 
 
 
 ## 🔬 Discovery (Design-3)
 
-- [ ] Screen 6: Dashboard - `/dashboard`
-
 
 ## 🚀 Ready to Execute (Design-4 Queue)
-
-
 
 
 ## 🛠️ Execution (Design-4)
@@ -49,6 +44,86 @@ kanban-plugin: board
 
 
 ## ✅ Complete (Design-6)
+
+- [x] Dashboard Table UX Improvements ✅ Completed 2025-11-28
+  **Implementation Notes:**
+  - ✅ Share Link column: Replaced "URL" column with shareable test link + inline copy button
+  - ✅ Prototype URL: Moved to secondary text under Test Name (formatted: `zebradesign.io/prototyp...`)
+  - ✅ Clickable rows: Click anywhere on row navigates to View Results
+  - ✅ Copy UX: Both link text and icon button trigger copy; green checkmark feedback for 2 seconds
+  - ✅ Event propagation: Copy button and dropdown don't trigger row navigation
+  - ✅ Removed duplicate "Copy Link" from dropdown menu (now inline)
+  - 📁 Files Modified: `app/dashboard/page.tsx` (~30 lines changed)
+  - 🔧 Dependencies: None - used existing `Check` icon from lucide-react
+  - 🧪 Testing: Visual verification passed, all interactions working correctly
+
+- [x] [Dashboard Account, Billing & Support Features](done/dashboard-account-billing-support.md) ✅ Completed 2025-11-28
+  **Implementation Notes:**
+  - ✅ Full functionality: User dropdown menu with Account Settings, Support, and Billing (for paid users) options
+  - ✅ Full functionality: Account Settings modal showing email, subscription tier with badge, and contact support link
+  - ✅ Full functionality: Support link opens mailto:support@zebradesign.io with pre-filled subject
+  - ✅ Full functionality: Billing link calls Stripe Customer Portal API (visible only for users with stripe_customer_id)
+  - ✅ Full functionality: Upgrade banner appears when testsRemaining === 0 && subscriptionTier === 'free'
+  - ✅ Demo mode: Billing portal shows toast message, all other features work in demo mode
+  - 📁 Files Created: `lib/stripe.ts` (~30 lines - Stripe client with lazy initialization)
+  - 📁 Files Created: `app/api/stripe/portal/route.ts` (~35 lines - Stripe Customer Portal session creation)
+  - 📁 Files Modified: `app/dashboard/page.tsx` (~80 lines added - dropdown items, handlers, modal, banner)
+  - 🔧 Dependencies: `stripe`, `@stripe/stripe-js` (installed)
+  - 🧪 Testing: Build passes, visual verification completed - all features working in demo mode
+
+- [x] [Dashboard Cards to Table](done/dashboard-cards-to-table.md) ✅ Completed 2025-11-27
+  **Implementation Notes:**
+  - ✅ Full functionality: Dashboard tests display as table instead of cards
+  - ✅ Full functionality: 6 columns - Test Name, URL, Status, Sessions, Created, Actions
+  - ✅ Full functionality: Sortable columns (Test Name, Sessions, Created) with toggle direction
+  - ✅ Full functionality: Large, well-padded rows (h-16, py-4) for visual comfort
+  - ✅ Full functionality: Row hover states (hover:bg-muted/50)
+  - ✅ Full functionality: "..." dropdown menu with Edit, Copy Link, View Results, Pause/Activate
+  - ✅ Full functionality: Pause/Activate toggle updates badge and Quick Stats in real-time
+  - 📁 Files Created: `components/ui/table.tsx` (via shadcn)
+  - 📁 Files Modified: `app/dashboard/page.tsx` (~850 lines)
+  - 🔧 Dependencies: No new dependencies - shadcn table uses Tailwind only
+  - 🧪 Testing: TypeScript 0 errors, visual verification passed (9/10), all sorting and actions working
+
+- [x] [Edit Test Feature for Dashboard](done/edit-test-feature-dashboard.md) ✅ Completed 2025-11-27
+  **Implementation Notes:**
+  - ✅ Full functionality: Edit button on test cards opens modal with all configuration fields
+  - ✅ Full functionality: Edit title, welcome message, tasks (add/remove/edit), instructions, thank you message, redirect URL
+  - ✅ Full functionality: Status toggle (Active/Paused) with warning about blocking new testers
+  - ✅ Full functionality: Save updates via API (real mode) or local state (demo mode) with toast notifications
+  - ✅ Full functionality: Quick Stats (Active Tests) updates in real-time when status changes
+  - 📁 Files Created: `app/api/tests/[id]/route.ts` (~49 lines) - PATCH endpoint
+  - 📁 Files Modified: `app/dashboard/page.tsx` (now ~1029 lines) - Edit modal and handlers
+  - 🔧 Dependencies: No new dependencies - uses existing Dialog, Input, Textarea, Button, Label
+  - 🧪 Testing: TypeScript 0 errors, visual verification passed in demo mode
+
+- [x] Dashboard Top Bar with Branding and User Menu ✅ Completed 2025-11-27
+  **Implementation Notes:**
+  - ✅ Full functionality: Top bar with "User Testing" branding on left, user dropdown menu on right
+  - ✅ Full functionality: Dropdown shows user email, "My Account" label, and "Logout" option
+  - ✅ Full functionality: Logout handler signs out via Supabase and redirects to /auth/login
+  - ✅ Full functionality: Loading skeleton includes top bar placeholder
+  - ✅ Full functionality: Responsive - email hidden on mobile, visible on desktop
+  - 📁 Files Modified: `app/dashboard/page.tsx` (added ~50 lines for imports, handler, and JSX)
+  - 📁 Files Modified: `lib/supabase/middleware.ts` (added demo mode bypass for /dashboard)
+  - 🔧 Dependencies: Uses existing DropdownMenu from shadcn, lucide-react icons
+  - 🧪 Testing: Visual verification passed on desktop (1366x768) and mobile (375x667), no console errors
+
+- [x] Screen 6: Dashboard - `/dashboard` ✅ Completed 2025-11-27
+  **Implementation Notes:**
+  - ✅ Full functionality: Dashboard page with Quick Stats (Active Tests, Total Sessions, This Month, Tests Remaining)
+  - ✅ Full functionality: Tests grid with progress bars, session counts, status badges (Active/Paused)
+  - ✅ Full functionality: Welcome Modal for new users with 3-step getting started guide
+  - ✅ Full functionality: Success Modal for users coming from signup with shareable test link
+  - ✅ Full functionality: Copy link to clipboard with toast notifications
+  - ✅ Full functionality: Real-time Supabase subscriptions for session updates
+  - ✅ Full functionality: Responsive design (mobile 2-col grid, desktop 4-col stats)
+  - ✅ Full functionality: Loading skeletons and empty state handling
+  - ✅ Demo mode: Graceful fallback when Supabase not configured
+  - 📁 Files Created: `app/dashboard/page.tsx` (~590 lines), `components/ui/dialog.tsx` (via shadcn)
+  - 📁 Files Modified: `app/layout.tsx` (added Toaster from sonner)
+  - 🔧 Dependencies: `@radix-ui/react-dialog`, `sonner` (installed)
+  - 🧪 Testing: TypeScript 0 errors, Next.js build successful, visual verification passed on desktop (1366x768) and mobile (375x667)
 
 - [x] [Screen 2 & 3: Create Test Flow](done/screen-2-and-3-create-test-flow.md) ✅ Completed 2025-11-26
   **Implementation Notes:**

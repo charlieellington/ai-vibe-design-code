@@ -67,13 +67,24 @@ Please check your MCP server configuration:
 **Example from task**: bg-surface was too transparent, needed bg-background/95 + backdrop-blur-sm for proper visibility
 **Prevention**: Always validate that styling choices achieve the intended visual result, not just technical correctness
 
+### Authentication Middleware Validation - Added 2025-11-27
+**Context**: Dashboard top bar task couldn't be visually tested because middleware blocked demo mode access
+**Problem**: Agent 3 didn't check middleware configuration when implementing pages that require authentication bypass for testing
+**Solution**: Always verify middleware/authentication configuration when modifying protected pages
+
+**Example from task**: `/dashboard?demo=true` was blocked by middleware redirecting to `/auth/login` before client-side demo mode could take effect
+**Prevention**:
+1. **Middleware Check**: For any protected route, check `lib/supabase/middleware.ts` for auth bypass requirements
+2. **Demo Mode Compatibility**: Verify server-side middleware allows demo/testing query parameters
+3. **Route Protection Review**: Document which routes need middleware modifications for visual testing
+
 ### Next.js Image Component Validation - Added 2025-01-04
 **Context**: Moodboard Image Cards task used Next.js Image component which failed with local public directory files
-**Problem**: Agent 3 didn't verify Next.js Image component compatibility with local file loading from public directory  
+**Problem**: Agent 3 didn't verify Next.js Image component compatibility with local file loading from public directory
 **Solution**: Added mandatory Next.js configuration and component behavior validation for image-related tasks
 
 **Example from task**: Next.js Image fill prop failed with local demo images, required switch to regular img tags
-**Prevention**: 
+**Prevention**:
 1. **Next.js Image Config Check**: Verify next.config.js remotePatterns allows intended image sources
 2. **Local File Compatibility**: Test Next.js Image component with actual files from public directory
 3. **Alternative Documentation**: Document when regular img tags are preferred over Next.js Image component
