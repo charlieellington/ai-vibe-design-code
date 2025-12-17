@@ -368,6 +368,53 @@ Each task gets its own file in the `doing/` folder:
 **Example from task**: User said "more a dynamic state management solution that is more code and bot rather than styling" - should have planned JavaScript solution from start
 **Prevention**: Parse user technical preferences and guidance to select appropriate implementation approach during planning
 
+### 1b. Capture Reference Images (ALL Sources) - Added for Gemini 3 Pro Integration
+
+**CRITICAL**: Reference images come from MANY sources, not just Figma:
+- Screenshots from other apps (Stripe, Linear, Notion, etc.)
+- Figma exports or links
+- User sketches or mockups
+- Inspiration from websites
+- Previous implementation screenshots
+
+**Conductor Image Storage**:
+When user attaches images in Conductor, they are stored at:
+`/Users/charlieellington1/Library/Application Support/com.conductor.app/uploads/originals/[UUID].png`
+
+**CRITICAL**: Capture the full path from the system instruction when images are attached.
+The path appears in format:
+```
+<system_instruction>
+The user has attached these files. Read them before proceeding.
+- /Users/.../com.conductor.app/uploads/originals/[UUID].png
+</system_instruction>
+```
+
+**For EVERY image attached to the request:**
+
+1. **Document in task file** with description and Conductor path:
+   ```markdown
+   ### Reference Images
+   | Image | Conductor Path | Source | Description | Purpose |
+   |-------|----------------|--------|-------------|---------|
+   | Landing ref | /Users/.../uploads/originals/5b060c9c-....png | Ramp Network | Hero + testimonials layout | layout-reference |
+   | Nav sidebar | /Users/.../uploads/originals/[UUID].png | Linear | Collapsible navigation | component-reference |
+   ```
+
+2. **Categorize by purpose**:
+   - `layout-reference`: Overall structure/grid inspiration
+   - `component-reference`: Specific component styling
+   - `interaction-reference`: Behavior/animation patterns
+   - `color-reference`: Palette/theme inspiration
+   - `flow-reference`: User journey/navigation patterns
+
+3. **Note primary visual direction**:
+   ```markdown
+   **Primary Visual Direction**: [Which image(s) should guide the main aesthetic]
+   ```
+
+**WHY THIS MATTERS**: These image paths will be used by Agent 2 and Agent 4 to call Gemini 3 Pro for visual analysis and code generation.
+
 **Examples**:
 
 **When user provides direct request:**
