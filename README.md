@@ -53,6 +53,7 @@ design-agents-flow/
 - **Cursor IDE** with MCP support, OR
 - **Conductor** (Mac app for parallel AI agents)
 - **Figma API access** (optional, for design-to-code workflow)
+- **Gemini API key** (optional, for visual reference analysis)
 - **Obsidian** with Kanban plugin (optional, for status tracking)
 
 ### Setup with Cursor
@@ -67,6 +68,7 @@ design-agents-flow/
 
 3. **Configure MCP servers** (optional):
    - Figma MCP for design spec extraction
+   - Gemini MCP for visual reference analysis (see below)
    - Filesystem MCP for code access
 
 4. **Set up parallel development environments:**
@@ -177,6 +179,56 @@ The workflow uses model selection cascading:
 - **Agents 5-6 (Verification):** Medium model
 
 Prompt caching reduces token costs by 75-90% for repeated patterns.
+
+## Gemini 3 Pro Integration
+
+Agents 2 and 4 can use Gemini 3 Pro for visual reference analysis and UI code generation.
+
+### Setup
+
+1. **Install the Gemini MCP server:**
+   ```bash
+   # Clone and build
+   git clone https://github.com/Garblesnarff/gemini-mcp-server.git ~/.claude/mcp-servers/gemini-mcp-full
+   cd ~/.claude/mcp-servers/gemini-mcp-full && npm install
+
+   # Create .env with your API key
+   echo "GEMINI_API_KEY=your-api-key-here" > .env
+
+   # Add to Claude Code (user-level, works across all projects)
+   claude mcp add gemini -s user -e GEMINI_API_KEY=your-api-key-here -- node ~/.claude/mcp-servers/gemini-mcp-full/gemini-server.js
+   ```
+
+2. **Verify connection:**
+   ```bash
+   claude mcp list | grep gemini
+   # Should show: gemini: ... - ✓ Connected
+   ```
+
+### Available Tools
+
+| Tool | Purpose |
+|------|---------|
+| `gemini-analyze-image` | Analyze UI reference images for layout, components, colors |
+| `gemini-chat` | General queries and code generation |
+| `gemini-generate-image` | Generate images from prompts |
+| `gemini-edit-image` | Edit existing images |
+
+### How It's Used
+
+- **Agent 2 (Review)**: Analyzes reference images to create "Visual Reference Analysis" before execution
+- **Agent 4 (Execution)**: Uses visual analysis for component code generation (visual tasks only)
+
+### Usage Reporting
+
+When Gemini is used, agents report:
+```
+🤖 GEMINI 3 PRO PREVIEW USED
+
+Calls Made: 2
+Purpose: Analyzed reference images for layout direction
+Estimated Total Cost: ~$0.03
+```
 
 ## Reference Documentation
 

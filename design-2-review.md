@@ -231,8 +231,115 @@ You enhance the existing task card structure:
   - Design Context (specific visual requirements)
   - Codebase Context (existing implementation details)
   - Current Plan (proposed implementation steps)
+  - **Reference Images section** (Conductor paths for Gemini 3 Pro)
 - Never work from memory or partial context
 - Cross-reference all sections for consistency
+
+### 1b. Visual Reference Generation (Gemini 3 Pro) - Added for Gemini Integration
+
+**When task includes reference images**, generate visual interpretation using Gemini 3 Pro:
+
+#### Step 1: Analyze Reference Images
+
+For each reference image in the task file's Reference Images section:
+
+```
+mcp__gemini__gemini_analyze_image({
+  file_path: "[Conductor path from task file]",
+  analysis_type: "detailed",
+  context: "UI design reference for web application"
+})
+```
+
+The tool returns: layout structure, component hierarchy, visual style, spacing patterns, and interactive elements.
+
+#### Step 2: Synthesize Visual Direction
+
+If multiple reference images exist:
+
+```
+mcp__gemini__gemini_chat({
+  message: `Given these reference analyses:
+    [paste analyses from Step 1]
+
+    Synthesize a unified visual direction:
+    1. Which layout pattern to follow (from which reference)
+    2. Component styles to adopt
+    3. Spacing system to use
+    4. Color approach
+    5. Any conflicts between references and how to resolve`,
+  context: "UI design synthesis"
+})
+```
+
+#### Step 3: Add Visual Reference Analysis to Task File
+
+Append to the individual task file:
+
+```markdown
+### Visual Reference Analysis (Gemini 3 Pro)
+**Generated**: [timestamp]
+
+#### Layout Direction
+[Gemini's layout analysis]
+
+#### Component Mapping
+| UI Element | Suggested Implementation | Reference Source |
+|------------|-------------------------|------------------|
+| [element] | [shadcn component + styling] | [which reference image] |
+
+#### Spacing System
+[Extracted spacing values mapped to Tailwind]
+
+#### Visual Style Notes
+[Color feel, shadow approach, border treatments]
+
+#### Implementation Guidance for Agent 4
+[Specific guidance for visual implementation]
+```
+
+#### Step 4: User Validation
+
+Present visual direction to user in your response:
+
+```markdown
+## Visual Direction for Review
+
+Based on your reference images, here's the proposed visual approach:
+
+[Summary of Gemini's analysis]
+
+**Does this capture your intent?**
+- If yes: Proceed to Discovery
+- If adjustments needed: [specific question about direction]
+```
+
+#### Gemini Usage Reporting (MANDATORY)
+
+After using Gemini, include this in your FINAL RESPONSE:
+
+```
+🤖 GEMINI 3 PRO PREVIEW USED
+
+Calls Made: [number]
+Purpose: [brief description - e.g., "Analyzed 2 reference images for layout direction"]
+Estimated Total Cost: ~$[X.XX]
+```
+
+**Cost Calculation Reference** (internal use):
+| Token Tier | Input | Output |
+|------------|-------|--------|
+| <200k tokens | $2.00/M | $12.00/M |
+| >200k tokens | $4.00/M | $18.00/M |
+
+**Token Estimation**:
+- Image analysis: ~1,000-2,000 input tokens per image
+- Visual analysis response: ~300-800 output tokens
+
+**When NO reference images in task**: Skip this section entirely and note in response:
+```
+🤖 GEMINI 3 PRO: Not used (no reference images in task)
+```
 
 ### Workflow Status Validation - Added 2025-09-03
 **Context**: Agent 4 completed task but didn't update workflow status to Testing section

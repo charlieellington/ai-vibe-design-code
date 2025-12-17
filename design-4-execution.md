@@ -848,6 +848,154 @@ Pre-Implementation Checklist:
 - [ ] No ambiguities in specification
 ```
 
+### 2b. Task Classification for Gemini Usage - Added for Gemini 3 Pro Integration
+
+**BEFORE starting implementation**, classify the task to determine if Gemini 3 Pro should be used:
+
+#### Visual Tasks (USE Gemini 3 Pro)
+- [ ] New UI component from reference images
+- [ ] Styling changes (colors, spacing, typography)
+- [ ] Layout modifications
+- [ ] Responsive design implementation
+- [ ] Animation/transition work
+- [ ] Visual polish and refinement
+
+#### Non-Visual Tasks (Claude Only - NO Gemini)
+- [ ] API integration
+- [ ] State management changes
+- [ ] Data fetching logic
+- [ ] Business logic implementation
+- [ ] Bug fixes (non-visual)
+- [ ] Refactoring (no visual change)
+- [ ] Backend connectivity
+- [ ] Form validation logic
+- [ ] Error handling
+
+#### Mixed Tasks
+If task has BOTH visual and non-visual elements:
+1. Use Gemini for visual component generation
+2. Use Claude for integration/logic
+3. Document which parts came from each
+
+**Classification Result**: [Visual / Non-Visual / Mixed]
+
+---
+
+### Gemini 3 Pro Implementation Protocol (Visual Tasks Only)
+
+**ONLY use this protocol when Task Classification = Visual or Mixed**
+
+#### Step 1: Gather Visual Context
+
+Collect from task file:
+- Reference Images section (Conductor paths)
+- Visual Reference Analysis (from Agent 2)
+- Design Context
+- Any Figma specs
+
+#### Step 2: Generate Component Code
+
+```
+mcp__gemini__gemini_chat({
+  message: `Generate a React + Tailwind component for this UI.
+
+  REQUIREMENTS:
+  - Use semantic color tokens: bg-background, text-foreground, border-border
+  - Follow shadcn/ui patterns (see existing components in codebase)
+  - Include responsive breakpoints (mobile-first: sm:, md:, lg:)
+  - Add hover/focus states
+  - Use TypeScript with proper interfaces
+  - Follow existing code patterns from: [codebase context]
+
+  VISUAL DIRECTION:
+  [paste Visual Reference Analysis from Agent 2 - this contains Gemini's image analysis]
+
+  COMPONENT PURPOSE:
+  [from Original Request]
+
+  EXISTING PATTERNS TO FOLLOW:
+  [from Codebase Context]`,
+  context: "React TypeScript component generation"
+})
+```
+
+**Note**: The Visual Reference Analysis from Agent 2 already contains Gemini's detailed image analysis, so you don't need to re-analyze the images here.
+
+#### Step 3: Integrate Gemini Output
+
+1. **Review generated code** for:
+   - Semantic token usage (no hardcoded colors)
+   - TypeScript correctness
+   - Pattern consistency with codebase
+
+2. **Adapt if needed**:
+   - Replace any hardcoded values with design tokens
+   - Ensure imports match project structure
+   - Add any missing accessibility attributes
+
+3. **Integrate into codebase**:
+   - Write to appropriate file location
+   - Update imports in parent components
+   - Run TypeScript check
+
+#### Step 4: Document Gemini Usage
+
+Add to task file Implementation Log:
+```markdown
+### Gemini 3 Pro Usage Log
+**Task Classification**: [Visual/Mixed]
+**Gemini Calls Made**:
+1. Component generation for [component name]
+   - Input: [reference images used]
+   - Output: [brief description of generated code]
+   - Adaptations made: [any changes to Gemini output]
+
+**Claude Integration Work**:
+- [any non-visual work done by Claude]
+```
+
+---
+
+### Non-Visual Task Protocol (Claude Only)
+
+**When Task Classification = Non-Visual:**
+
+1. **DO NOT call Gemini** - it adds latency without value
+2. **Proceed with standard Claude execution**
+3. **Note in Implementation Log**: "Gemini not used - non-visual task"
+
+---
+
+### Gemini Usage Reporting (MANDATORY)
+
+After using Gemini, include this in your FINAL RESPONSE:
+
+```
+🤖 GEMINI 3 PRO PREVIEW USED
+
+Calls Made: [number]
+Purpose: [brief description - e.g., "Generated Card component from reference images"]
+Estimated Total Cost: ~$[X.XX]
+```
+
+**Cost Calculation Reference** (internal use):
+| Token Tier | Input | Output |
+|------------|-------|--------|
+| <200k tokens | $2.00/M | $12.00/M |
+| >200k tokens | $4.00/M | $18.00/M |
+
+**Token Estimation**:
+- Image analysis: ~1,000-2,000 input tokens per image
+- Code generation prompt: ~500-1,500 input tokens
+- Generated component code: ~500-3,000 output tokens
+
+**When Gemini is NOT used**, also report:
+```
+🤖 GEMINI 3 PRO: Not used (non-visual task)
+```
+
+---
+
 ### 3. Implementation Approach
 **CRITICAL FIRST STEP - COMPONENT VERIFICATION:**
 Before any code implementation, you MUST verify you're editing the correct component:
