@@ -890,6 +890,7 @@ If task has BOTH visual and non-visual elements:
 Collect from task file:
 - Reference Images section (Conductor paths)
 - Visual Reference Analysis (from Agent 2)
+- **Visual-Technical Reconciliation (from Agent 3)** ← CRITICAL: Component decisions
 - Design Context
 - Any Figma specs
 
@@ -910,6 +911,12 @@ mcp__gemini__gemini_chat({
   VISUAL DIRECTION:
   [paste Visual Reference Analysis from Agent 2 - this contains Gemini's image analysis]
 
+  COMPONENT DECISIONS (from Agent 3 Visual-Technical Reconciliation):
+  [paste the reconciliation table showing which components to REUSE vs INSTALL]
+  - Components to REUSE: [list from reconciliation]
+  - Components to INSTALL: [list from reconciliation]
+  - Custom work needed: [list from reconciliation]
+
   COMPONENT PURPOSE:
   [from Original Request]
 
@@ -919,7 +926,7 @@ mcp__gemini__gemini_chat({
 })
 ```
 
-**Note**: The Visual Reference Analysis from Agent 2 already contains Gemini's detailed image analysis, so you don't need to re-analyze the images here.
+**Note**: The Visual Reference Analysis from Agent 2 contains Gemini's image analysis, but the **Visual-Technical Reconciliation from Agent 3** tells you which actual components to use. Always follow Agent 3's component decisions - they account for what's already in the codebase vs what shadcn offers that would be better.
 
 #### Step 3: Integrate Gemini Output
 

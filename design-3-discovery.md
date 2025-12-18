@@ -263,6 +263,98 @@ Before any other technical research, verify the correct component was identified
 - [ ] Design specs extractable (if Figma link)
 - [ ] Dependencies installable
 - [ ] No blocking technical issues
+- [ ] Visual-Technical Reconciliation complete (see below)
+```
+
+### 2b. Visual-Technical Reconciliation - Added 2025-12-18
+
+**Purpose**: Reconcile Agent 2's visual component suggestions with codebase reality and shadcn possibilities.
+
+**When task includes Visual Reference Analysis from Agent 2**, perform this reconciliation:
+
+#### Step 1: Extract Agent 2's Component Suggestions
+
+From the task file's "Visual Reference Analysis" section, note:
+- Suggested components (e.g., "Card with gradient header", "Tabs for navigation")
+- Layout patterns (e.g., "2-column grid", "sticky sidebar")
+- Interactive elements (e.g., "dropdown menu", "accordion")
+
+#### Step 2: Check Codebase for Existing Implementations
+
+```bash
+# Search for similar patterns in codebase
+grep -r "Card" components/ui/
+grep -r "Tabs" components/
+# Check if similar layouts exist
+ls components/features/
+```
+
+#### Step 3: Query shadcn MCP for Better Alternatives
+
+For each suggested component, check if shadcn has a component that:
+- Better matches the visual direction
+- Provides functionality we don't currently have
+- Would be cleaner than our existing implementation
+
+```typescript
+mcp_shadcn-ui-server_list-components()
+mcp_shadcn-ui-server_get-component-docs({ component: "[suggested component]" })
+```
+
+#### Step 4: Make Component Decision
+
+**Decision Matrix**:
+
+| Scenario | Decision | Reasoning |
+|----------|----------|-----------|
+| Codebase has suitable component | ✅ **REUSE** existing | Consistency, less bloat |
+| shadcn has better component we don't have | ✅ **INSTALL** new shadcn | Better design fit, worth the addition |
+| Neither fits well | ✅ **CUSTOM** build | Document why existing options insufficient |
+| Agent 2 suggested non-existent component | ⚠️ **MAP** to real alternative | Find closest shadcn/codebase match |
+
+#### Step 5: Document Reconciliation
+
+Add to task file:
+
+```markdown
+### Visual-Technical Reconciliation
+**Agent 2 Suggested** → **Discovery Decision** → **Reasoning**
+
+| Visual Suggestion | Codebase Has | shadcn Has | Decision | Why |
+|-------------------|--------------|------------|----------|-----|
+| "Gradient Card" | Card.tsx (basic) | Card (same) | REUSE + extend | Add gradient via className |
+| "Command Menu" | ❌ None | ✅ Command | INSTALL new | Perfect fit for search UX |
+| "Fancy Accordion" | Collapsible.tsx | Accordion | REUSE existing | Our Collapsible works, no need to switch |
+| "Data Table" | ❌ None | ✅ Table + DataTable | INSTALL new | Complex requirements justify new component |
+
+**Components to Install**: `npx shadcn-ui add command table`
+**Existing Components to Reuse**: Card, Collapsible
+**Custom Work Needed**: Gradient extension for Card
+```
+
+#### Decision Guidelines
+
+**PREFER REUSE when**:
+- Existing component can achieve 80%+ of visual direction with styling
+- Switching would require migrating other usages
+- Visual difference is minor (spacing, colors)
+
+**PREFER NEW SHADCN when**:
+- Component provides significantly better UX for this use case
+- We don't have anything similar
+- The visual design specifically calls for this pattern
+- It's a common pattern we'll likely reuse elsewhere
+
+**Example Reconciliation**:
+```markdown
+Agent 2 suggested: "Dropdown with search"
+Codebase has: Select.tsx (basic dropdown, no search)
+shadcn has: Command (searchable command palette), Combobox (searchable select)
+
+Decision: INSTALL Combobox
+Reasoning: Agent 2's visual reference shows search-in-dropdown UX which our
+Select.tsx doesn't support. Combobox is purpose-built for this and we'll
+likely use it in other places (user search, tag selection).
 ```
 
 ### 3. Component Research Example
