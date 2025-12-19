@@ -53,41 +53,32 @@ Please check your MCP server configuration:
 
 **RATIONALE**: MCP tools are essential for accurate technical verification. Manual research may miss critical details that MCP tools provide (exact APIs, version compatibility, installation commands).
 
-### Component Styling Validation - Added 2025-01-09
-**Context**: Moodboard drag affordance task used bg-surface which resulted in overly transparent, unreadable styling
-**Problem**: Agent 3 failed to validate actual visual appearance of proposed styling choices in context
-**Solution**: Always verify component styling choices work visually in their intended usage context
+## Learnings Reference (MANDATORY CHECK)
 
-**Required Styling Validation**:
-1. **Color/opacity testing**: Check actual visual result of background colors and opacity values
-2. **Semantic token validation**: Verify semantic color tokens (bg-surface, bg-background) produce intended visual results
-3. **Layering verification**: Ensure z-index and layering work properly with backdrop-blur effects
-4. **Readability testing**: Confirm text remains readable over background styling choices
+**BEFORE starting discovery**, scan `learnings.md` for relevant patterns:
 
-**Example from task**: bg-surface was too transparent, needed bg-background/95 + backdrop-blur-sm for proper visibility
-**Prevention**: Always validate that styling choices achieve the intended visual result, not just technical correctness
+**Relevant Categories for Agent 3 (Discovery)**:
+- Component Patterns
+- Data & APIs
+- CSS & Styling
+- TypeScript Patterns
 
-### Authentication Middleware Validation - Added 2025-11-27
-**Context**: Dashboard top bar task couldn't be visually tested because middleware blocked demo mode access
-**Problem**: Agent 3 didn't check middleware configuration when implementing pages that require authentication bypass for testing
-**Solution**: Always verify middleware/authentication configuration when modifying protected pages
+**How to Use**:
+1. Search for keywords related to the technical research task
+2. Review the relevant categories listed above
+3. Apply prevention patterns to avoid known technical issues
 
-**Example from task**: `/dashboard?demo=true` was blocked by middleware redirecting to `/auth/login` before client-side demo mode could take effect
-**Prevention**:
-1. **Middleware Check**: For any protected route, check `lib/supabase/middleware.ts` for auth bypass requirements
-2. **Demo Mode Compatibility**: Verify server-side middleware allows demo/testing query parameters
-3. **Route Protection Review**: Document which routes need middleware modifications for visual testing
+### Key Discovery Considerations (See learnings.md for details)
 
-### Next.js Image Component Validation - Added 2025-01-04
-**Context**: Moodboard Image Cards task used Next.js Image component which failed with local public directory files
-**Problem**: Agent 3 didn't verify Next.js Image component compatibility with local file loading from public directory
-**Solution**: Added mandatory Next.js configuration and component behavior validation for image-related tasks
+When performing technical discovery, validate against these patterns from learnings.md:
+- **Component Styling**: Verify actual visual result of styling choices, not just technical correctness
+- **Database Constraints**: Always read actual migration files, never assume field nullability
+- **API Interfaces**: Verify function signatures include all parameters needed by the plan
+- **Next.js Compatibility**: Check Image component config and local file compatibility
+- **Middleware/Auth**: Check auth bypass requirements for protected routes during testing
+- **Component Architecture**: Map render hierarchy to identify structural differences
 
-**Example from task**: Next.js Image fill prop failed with local demo images, required switch to regular img tags
-**Prevention**:
-1. **Next.js Image Config Check**: Verify next.config.js remotePatterns allows intended image sources
-2. **Local File Compatibility**: Test Next.js Image component with actual files from public directory
-3. **Alternative Documentation**: Document when regular img tags are preferred over Next.js Image component
+---
 
 **When tagged with @design-3-discovery.md [Task Title]**, you automatically:
 1. **IMMEDIATELY open** the individual task file in `doing/` folder with the exact task title (kebab-case)
@@ -118,76 +109,7 @@ You receive context from individual task file and **APPEND ONLY** your findings:
 - Required adjustments
 - Resource availability
 
-#### Component Interaction and Event System Validation - Added 2025-01-09
-**Context**: Drag system required complete rewrite due to HTML5 drag API incompatibility with React component patterns
-**Problem**: Didn't research component interaction patterns and event system compatibility before implementation
-**Solution**: Always validate event system choices against existing component structures and React patterns
-
-**Research checklist for interactive features**:
-1. Examine existing component structure for conditional rendering patterns
-2. Check if HTML5 drag API vs mouse events is more appropriate for the component architecture
-3. Research Portal requirements for elements that need to render outside component tree
-4. Validate event propagation patterns against existing interactive elements
-
-**Example from task**: HTML5 drag broke when container conditionally rendered child, mouse events worked better
-**Prevention**: Always research component lifecycle implications of chosen event systems
-
-#### Debug and Development Tool Research - Added 2025-01-09
-**Context**: Multiple debug elements caused user confusion and required iterations to remove cleanly
-**Problem**: No research into clean debug patterns and removal strategies for React components
-**Solution**: Research debug patterns that can be toggled or removed without affecting functionality
-
-**Debug research checklist**:
-1. Investigate console.log alternatives that can be easily removed
-2. Research visual debug indicators that don't interfere with actual UI
-3. Check for existing debug patterns in the codebase to maintain consistency
-4. Validate that debug removals won't cause layout shifts or functionality breaks
-
-**Prevention**: Research debug patterns as first-class development concerns, not afterthoughts
-
-#### Backend Schema Validation - Added 2025-09-03
-**Context**: Story Versions task failed because missing parentStoryId field prevented flat structure
-**Problem**: Didn't verify that backend schema matched the intended data relationships
-**Solution**: Always check backend schema files and mutation implementations for required fields
-**Prevention**: For any feature involving data relationships, examine both schema definitions and mutation logic
-
-**Research checklist for data relationship features**:
-1. Check `convex/schema.ts` for field definitions and relationships
-2. Examine mutation functions for all fields being set during creation
-3. Verify query functions return expected data structure
-4. Cross-reference frontend assumptions with actual backend implementation
-
-**Example from task**: Frontend assumed parentStoryId would be set, but backend mutation didn't include it
-
-#### Database Constraint Verification - Added 2025-01-05
-**Context**: Simplify Onboarding Flow task plan incorrectly stated "email already nullable" when it had NOT NULL constraint
-**Problem**: Planning agent made assumption about database schema nullability without verifying actual migration files
-**Solution**: Always verify database constraints by reading actual migration files, never assume field nullability
-**Prevention**: For any task involving optional field updates, examine database schema definition files
-
-**Research checklist for database field modifications**:
-1. Read database migration files in `supabase/migrations/` or schema definition files
-2. Check for NOT NULL, DEFAULT, UNIQUE, and CHECK constraints on target fields
-3. Verify if passing empty string vs NULL is acceptable for NOT NULL fields
-4. Document constraint workarounds if schema changes are not feasible for MVP
-
-**Example from task**: `tester_email TEXT NOT NULL` required empty string workaround instead of NULL
-**Prevention**: Never trust plan assumptions about nullable fields - always verify actual schema
-
-#### API Interface Completeness Verification - Added 2025-01-05
-**Context**: Simplify Onboarding Flow required updating email at completion, but updateTestSession interface didn't include tester_email parameter
-**Problem**: Planning stage didn't verify that API functions had all required parameters for the intended functionality
-**Solution**: Always verify API/function interfaces include all parameters needed by the implementation plan
-**Prevention**: When plan involves updating existing records, check that update functions accept those fields
-
-**Research checklist for API parameter validation**:
-1. Read session management files (`lib/session.ts`, `lib/api.ts`, etc.) to check function signatures
-2. Verify update/mutation functions include all fields the plan intends to modify
-3. Check TypeScript interfaces for optional vs required parameters
-4. Document any missing parameters as BLOCKING issues that must be fixed before execution
-
-**Example from task**: `updateTestSession` interface missing `tester_email?: string` parameter - would have blocked email collection
-**Prevention**: Always verify function interfaces support all planned field updates before marking as "Ready for Execution"
+#### Research Findings (See learnings.md for validation patterns)
 ```
 
 ## MCP Tool Usage Guidelines
@@ -231,27 +153,6 @@ Before any other technical research, verify the correct component was identified
 - ✅ SOLUTION: Update plan to target `StoryboardElementCard.tsx`
 ```
 
-### CSS Component Integration Verification - Added 2025-09-03
-**Context**: Workspace card task required multiple iterations due to shadcn Card component conflicts
-**Problem**: Agent 3 didn't verify that custom layout requirements would conflict with Card default styling
-**Solution**: Add systematic verification of component default styles and override requirements
-
-**New Required Verification Steps**:
-- **Component Default Styles Check**: Use MCP tools to verify actual default styles of shadcn components
-- **Layout Conflict Analysis**: Check if planned custom layout conflicts with component defaults
-- **Override Strategy Validation**: Verify that planned CSS overrides will work correctly
-- **Visual Debugging Recommendation**: Suggest debug colors for complex layout changes
-
-**Example CSS Integration Research**:
-```markdown
-### Card Component Default Styles Research
-- **Component**: @radix-ui/react-tabs via shadcn
-- **Default Classes**: "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"
-- **Conflict Risk**: ⚠️ HIGH - Full-width image layout conflicts with py-6 and gap-6
-- **Override Required**: p-0 gap-0 on Card element, manual padding on content wrapper
-- **Debug Strategy**: Add bg-red-100 to isolate padding sources during implementation
-```
-
 ```markdown
 ## Technical Discovery Checklist
 - [ ] **CRITICAL**: Component identification verified - correct component confirmed for target page
@@ -266,7 +167,7 @@ Before any other technical research, verify the correct component was identified
 - [ ] Visual-Technical Reconciliation complete (see below)
 ```
 
-### 2b. Visual-Technical Reconciliation - Added 2025-12-18
+### 2b. Visual-Technical Reconciliation
 
 **Purpose**: Reconcile Agent 2's visual component suggestions with codebase reality and shadcn possibilities.
 
@@ -569,73 +470,6 @@ You:
 8. Append findings
 9. Update status documents
 10. Complete in <10 minutes
-```
-
-### Component Architecture Analysis - Added 2025-02-09
-```markdown
-**Purpose**: Prevent layout inconsistencies by identifying architectural pattern differences between related components
-
-**When to perform**: For tasks involving layout consistency between similar components (cards, forms, lists, etc.)
-
-**ARCHITECTURE ANALYSIS CHECKLIST**:
-1. **Component Structure Mapping**
-   - Map the complete render hierarchy for each component variant
-   - Document wrapper layers: Component → Wrapper1 → Wrapper2 → Content
-   - Identify any structural differences (single-layer vs multi-layer patterns)
-
-2. **Pattern Consistency Verification**
-   - Check if all variants follow the same architectural pattern
-   - Look for inconsistent wrapper usage (some components with extra Card/Container layers)
-   - Verify consistent prop interfaces between similar components
-
-3. **MCP Research Approach**
-   ```bash
-   # Use Read tool to examine complete component structures
-   Read components/path/ComponentA.tsx
-   Read components/path/ComponentB.tsx
-   
-   # Compare import patterns and wrapper usage
-   Grep "Card|CardHeader|Container" component-directory/ --output files_with_matches
-   
-   # Document structural differences found
-   ```
-
-**Documentation Pattern**:
-```markdown
-### Architecture Analysis Results
-**ComponentA**: Parent → ComponentA → UnifiedComponent (2 layers)
-**ComponentB**: Parent → ComponentB → Card → CardHeader → InnerComponent → UnifiedComponent (5 layers)
-**Issue Identified**: ComponentB has 3 extra wrapper layers causing layout differences
-**Recommendation**: Standardize to 2-layer pattern across all variants
-```
-
-**Recent Case Study (Feb 2025)**: Story Element Card inconsistencies
-- ImageGenerationCard: Single-layer (UnifiedImageCard direct)
-- VideoGenerationCard: Double-layer (Card+CardHeader+VideoCard→UnifiedCard)  
-- **Gap**: Discovery stage focused on prop differences, missed architectural structure differences
-- **Result**: Multiple implementation iterations needed to find root cause
-- **Prevention**: Architecture mapping would have identified the structural mismatch immediately
-```
-
-### UI Component Interaction Validation - Added 2025-01-09
-**Context**: StoryViewBar had exclusion logic that prevented History button from appearing on v2ux-frames
-**Problem**: Didn't verify that UI component conditional logic would work correctly with new requirements
-**Solution**: Always validate conditional rendering logic and component interaction patterns
-**Prevention**: Check all conditional logic that might exclude target pages or functionality
-
-**UI Interaction Research Checklist**:
-1. **Conditional Logic Audit**: Examine all if/when conditions that affect component visibility
-2. **Page-Specific Logic**: Check for pathname-based exclusions or special handling
-3. **Component State Dependencies**: Verify how component visibility depends on props/state
-4. **Cross-Component Communication**: Validate how components interact and pass data
-
-**Example Validation Pattern**:
-```markdown
-### UI Component Interaction Validation
-**Component**: StoryViewBar right sidebar button
-**Conditional Logic Found**: `!isV2UXFramesPage` exclusion
-**Issue Identified**: v2ux-frames pages were excluded from showing History button
-**Solution**: Remove or modify exclusion logic for specific functionality
 ```
 
 Remember: You are the technical verification checkpoint. Your research prevents implementation failures and ensures smooth execution.

@@ -10,6 +10,23 @@ You capture screenshots, analyze them directly, fix ALL issues (visual or functi
 
 **Fix Philosophy**: Be AGGRESSIVE with fixes. Use techniques from Agent 3 (discovery/exploration) and Agent 4 (execution) to fix problems. Don't escalate - take the time needed to fix it yourself.
 
+## Learnings Reference (MANDATORY CHECK)
+
+**BEFORE starting verification**, scan `learnings.md` for relevant patterns:
+
+**Relevant Categories for Agent 5 (Visual Verification)**:
+- Layout & Positioning
+- CSS & Styling
+- Animations
+- Component Patterns
+
+**How to Use**:
+1. Search for keywords related to the visual issues you're verifying
+2. Review the relevant categories listed above
+3. Apply fix patterns from learnings.md to resolve issues faster
+
+---
+
 **When tagged with @design-5-visual-verification.md [Task Title]**, you automatically:
 1. **IMMEDIATELY open** the individual task file in `doing/` folder with the exact task title (kebab-case)
 2. **Load COMPLETE context** from the implementation (Agent 4 notes, original requirements)

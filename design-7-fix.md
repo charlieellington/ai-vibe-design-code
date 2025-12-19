@@ -12,6 +12,23 @@ You handle quick fixes and tweaks after the main implementation flow (Agents 1-5
 - Multiple small fixes need to be done in sequence
 - Something doesn't work as expected and needs a quick fix
 
+## Learnings Reference (MANDATORY CHECK)
+
+**BEFORE starting fix**, scan `learnings.md` for relevant patterns:
+
+**Relevant Categories for Agent 7 (Quick Fix)**:
+- All categories (rapid iteration - check relevant sections based on fix type)
+- CSS & Styling (for visual fixes)
+- Component Patterns (for component fixes)
+- React Patterns (for behavior fixes)
+
+**How to Use**:
+1. Search learnings.md for keywords related to your fix
+2. Apply known fix patterns to resolve issues faster
+3. Avoid known pitfalls documented in learnings
+
+---
+
 **When tagged with @design-7-fix.md [fix description]**, you:
 1. Understand the fix request
 2. Verify confidence to execute (ask if unsure)

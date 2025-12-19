@@ -18,271 +18,41 @@ You are the first agent in a multi-stage development pipeline. Your primary role
 4. Follow zebra-design styling standards (tailwind_rules.mdc, headless UI patterns)
 5. Update the Kanban board with the new task
 
+## Learnings Reference (MANDATORY CHECK)
+
+**BEFORE starting work**, scan `learnings.md` for relevant patterns:
+
+**Relevant Categories for Agent 1 (Planning)**:
+- Workflow & Process
+- Interactions & UX
+- Layout & Positioning
+- Drag & Drop
+
+**How to Use**:
+1. Search for keywords related to your current task
+2. Review the relevant categories listed above
+3. Apply prevention patterns to avoid known issues
+
+---
+
 ## 🎯 PROTOTYPE DEVELOPMENT CONTEXT
 **CRITICAL**: We are creating **FRONT-END ONLY PROTOTYPES**:
 - **Reuse existing components** wherever possible from the app
-- **Preserve existing functionality/logic** if it doesn't break the prototype  
+- **Preserve existing functionality/logic** if it doesn't break the prototype
 - **No full backend integration required** - backend engineer will handle later
 - **Focus on UI/UX demonstration** rather than complete feature implementation
 - **Component-first approach** - leverage existing design system and patterns
 - **Mock data is acceptable** - use realistic placeholder data for demonstration
 
-### Navigation Integration Requirements - Added 2025-01-04
-**Context**: Moodboard navigation task revealed critical gap in planning navigation integrations
-**Problem**: Agent planned standalone navigation components instead of integrating with existing layout system
-**Solution**: Always analyze existing navigation architecture before planning new navigation features
+### Key Planning Considerations (See learnings.md for details)
 
-**Required Analysis for Navigation Tasks**:
-1. **Identify existing layout components**: AppSidebarStory, AppTopBar, StoryViewBar, etc.
-2. **Check current route structure**: Which layout system the new route should use
-3. **Validate integration approach**: Extend existing components vs. create standalone
-4. **Plan context sharing**: How state/data flows between existing and new components
-
-**Prevention**: When planning navigation features, ALWAYS search for existing navigation components first and plan integration rather than replacement
-
-### Critical Route Path Information - Added 2025-01-04
-**IMPORTANT**: Moodboard prototype has moved to `/moodboard` route (NOT `/ux/moodycharacters`)
-- **Current path**: `http://localhost:3001/moodboard`
-- **Route structure**: `app/(story-editing)/moodboard/`
-- **Integration**: Uses story-editing layout with AppSidebarStory, AppTopBar, StoryViewBar
-- **All future references should use /moodboard path**
-
-### Cross-Component Interaction Mapping - Added 2025-01-09
-**Context**: Moodboard drag affordance task missed crucial interaction between demo characters and AI input areas
-**Problem**: Failed to identify that demo character drag should work with BOTH main content AND AI text input areas  
-**Solution**: Always map ALL possible drop targets and interaction flows when planning drag/drop features
-
-**Required Analysis for Drag/Drop Tasks**:
-1. **Map all drag sources**: What components can be dragged and what data they carry
-2. **Identify all drop targets**: ALL areas where items might be dropped, not just obvious ones
-3. **Document interaction matrix**: Source → Target → Expected behavior for each combination
-4. **Plan communication system**: How components will communicate drag states (CustomEvents, etc.)
-5. **Validate visual feedback**: Ensure consistent affordance styling across all drop zones
-
-**Prevention**: Create explicit interaction matrix showing drag sources, drop targets, and expected behaviors before implementation
-
-### Drag and Drop Pattern Analysis - Added 2025-01-05
-**Context**: Drag Demo Characters task needed affordance pattern like existing prompt input drop zone
-**Problem**: Planning didn't identify and reference existing drag/drop patterns in the codebase
-**Solution**: Always identify existing UI patterns when planning similar functionality
-**Prevention**: Include pattern analysis in codebase context section
-
-**Required Planning Analysis:**
-1. **Search for existing patterns**: `grep -r "drop-target" components/` and `grep -r "drag" components/`
-2. **Document pattern details**: How existing drag affordance works, styling, messaging
-3. **Plan consistency**: Ensure new pattern matches existing visual language
-4. **Reference implementation**: Point to existing code as reference for implementation
-
-**Example from task**: Should have identified UnifiedPromptCard drag overlay pattern and planned main content area to use similar blue overlay with clear messaging
-
-### Prototype Specification Precision - Added 2025-01-05
-**Context**: User had to clarify wanting exactly 4 character images for prototype
-**Problem**: Planning didn't specify exact prototype behavior and data requirements
-**Solution**: For prototypes, always specify exact counts, data sets, and fallback behavior
-**Prevention**: Include prototype data specifications in plan with specific examples
-
-**Prototype Planning Requirements:**
-- **Exact counts**: "Display exactly 4 character images" not "display character versions"
-- **Data source mapping**: How demo data maps to display (parent + 3 children = 4 grid items)
-- **Fallback behavior**: What happens if data source has fewer items than UI expects
-- **Visual layout**: Specific grid arrangement (2x2) and sizing expectations
-
-### Bidirectional Functionality Analysis Requirement - Added 2025-01-06
-**Context**: Demo Asset Library task required multiple iterations due to missing bidirectional functionality planning
-**Problem**: Agent only planned one-way drag (moodboard → demo section) but user expected reverse functionality (demo → AI input)
-**Solution**: Always analyze and explicitly plan bidirectional workflows when implementing drag-and-drop or reference systems
-
-**Required Analysis for Interactive Features**:
-1. **Identify all interaction directions**: What can be dragged FROM each component TO each other component
-2. **Plan reverse workflows**: If A→B is implemented, consider if B→A is also needed
-3. **Document interaction matrix**: Create explicit mapping of all possible interactions
-4. **Validate with user expectations**: Interactive systems often need full bidirectionality
-
-**Prevention**: When planning interactive features, ALWAYS ask "What should users be able to do in the reverse direction?" and plan accordingly
-
-### Post-Completion Behavior Analysis for User Flows - Added 2025-11-26
-**Context**: Screen 4 Customize Test task required mid-implementation addition of redirect URL feature
-**Problem**: Original plan didn't consider what happens after users complete the flow
-**Solution**: For user flow tasks, always analyze post-completion behaviors during planning
-
-**Required Analysis for User Flow Tasks**:
-1. **Completion Actions**: What happens when the user finishes this step/flow?
-2. **Redirect Options**: Should users be redirected elsewhere? (survey, thank you page, external URL)
-3. **Data Handoff**: What information needs to persist for the next step?
-4. **User Control**: Should users have options for post-completion behavior?
-
-**Example from task**: Customize Test page needed "redirect URL" option for post-test redirection - this was added mid-implementation rather than planned upfront
-
-**Prevention**: When planning user flow screens, always ask "What options should users have after completing this step?" and document post-completion behaviors in the plan
-
-### UI Constraint and Space Analysis Requirements - Added 2025-01-13
-**Context**: Cards/List Toggle task required multiple layout iterations due to insufficient space analysis
-**Problem**: Agent planned features without analyzing available space and existing UI element constraints
-**Solution**: Always analyze layout constraints and space allocation before planning UI additions
-**Agent Updated**: design-1-planning.md
-
-**Example from task**: Toggle buttons planned for header section, but space constraints required compact layout and label shortening
-**Prevention**:
-1. **Container Space Analysis**: Measure or estimate available horizontal/vertical space for new UI elements
-2. **Existing Element Priority**: Identify which existing elements are essential vs. can be shortened/moved
-3. **Label Length Planning**: Plan for shortened labels when adding new elements to constrained spaces
-4. **Progressive Enhancement Planning**: Plan initial compact version that can be enhanced if more space available
-
-### UX Discoverability Planning Requirement - Added 2025-01-06
-**Context**: Demo Asset Library required multiple UI affordances after user couldn't discover functionality
-**Problem**: Agent planned focus-based discovery but user needed explicit UI elements for discoverability
-**Solution**: Always plan multiple discovery patterns for interactive features, especially in professional interfaces
-
-**Required Discoverability Analysis**:
-1. **Identify primary interaction patterns**: Focus-based, hover-based, click-based discovery
-2. **Plan explicit UI affordances**: Buttons, labels, visual indicators for complex functionality
-3. **Consider progressive disclosure**: Start with visible elements, enhance with advanced interactions
-4. **Plan multiple entry points**: Different users discover features different ways
-
-**Prevention**: When planning interactive features, always plan at least 2-3 different ways users can discover the functionality
-
-### Mode System Analysis Requirement - Added 2025-01-04
-**Context**: AI Generation Options task required three iterations because mode-specific behavior wasn't analyzed during planning
-**Problem**: Agent didn't examine existing mode system (Character/Image/Video modes) to understand feature restrictions
-**Solution**: For UI features that might be mode-dependent, always analyze the existing mode/tab system first
-
-**Required Analysis for Mode-Dependent Features**:
-1. **Identify existing mode systems**: Tab components, conditional rendering, state management
-2. **Check mode-specific behaviors**: What features are enabled/disabled in different modes
-3. **Plan mode integration**: How new features should behave across different modes
-4. **Document mode restrictions**: Clearly specify which modes the feature applies to
-
-**Example from task**: "Apply this only when the character mode is on. not image and video mode" - this should have been identified during planning by analyzing the UnifiedPromptCard's mode system.
-
-### Gradient/Fade Effect Requirement Clarification - Added 2025-01-04
-**Context**: Moodboard scroll fix task initially misunderstood user gradient requirements
-**Problem**: Agent planned opacity fade instead of background gradient mask, requiring user correction
-**Solution**: When users mention "fade effect" or "gradient", clarify the exact visual behavior before planning
-
-**Critical Clarification Questions for Fade/Gradient Requests**:
-1. **Fade Type**: Opacity fade (element transparency) vs. background gradient mask (content disappears behind)
-2. **Visual Reference**: User mentioned "ChatGPT does something similar" - research similar patterns
-3. **Scope**: Which elements should be affected (content behind vs. UI element itself)
-4. **Visual Goals**: "Clean separation" vs. "harsh lines" - understand aesthetic requirements
-
-**Required Analysis for Gradient/Fade Tasks**:
-- **Visual Examples**: Ask for screenshots or specific app references when possible
-- **CSS Approach**: Background gradient (bg-gradient-to-t) vs. opacity animations vs. backdrop filters
-- **Positioning**: Fixed elements with gradients need careful z-index and container planning
-- **Responsive Behavior**: How gradient should adapt to different container sizes (sidebar collapse, etc.)
-
-**Prevention**: Always clarify whether "fade" means element opacity or background masking effect before creating implementation plan
-
-### Component Lifecycle and Drag System Planning - Added 2025-01-09
-**Context**: Drag system implementation revealed critical gaps in component lifecycle planning
-**Problem**: Initial plan used HTML5 drag API without considering React component unmounting issues
-**Solution**: Always analyze component lifecycle implications when planning interactive features
-
-**Required Analysis for Interactive Features**:
-1. **Component rendering patterns**: Will state changes cause unmounting/remounting?
-2. **Event system requirements**: Mouse events vs HTML5 API trade-offs
-3. **Cross-component communication**: Custom events vs context vs prop drilling
-4. **Portal requirements**: When will elements need to render outside component tree?
-
-**Example from task**: Drag state changes caused container to conditionally render child, breaking drag operation mid-stream
-**Prevention**: When planning drag systems, always consider mouse events over HTML5 drag for complex React interactions
-
-### Debug UI and Development Experience Planning - Added 2025-01-09
-**Context**: Multiple iterations required to remove debug elements that confused the user
-**Problem**: No systematic plan for debug UI cleanup and development vs production states
-**Solution**: Always plan debug UI as toggleable/removable from the start
-
-**Debug UI Planning Checklist**:
-1. **Development-only indicators**: Plan console.log removal, debug borders, placeholder text
-2. **Progressive reveal strategy**: How debug elements will be removed without breaking layout
-3. **Visual debugging approach**: Red placeholders, console outputs, state indicators - all must be cleanly removable
-4. **Testing without debug noise**: Ensure core functionality works without debug crutches
-
-**Prevention**: Plan debug UI as first-class concern, not afterthought, with clear removal strategy
-
-### Event Propagation and Button Interaction Planning - Added 2025-01-09
-**Context**: Drag handlers interfered with existing button functionality requiring multiple fixes
-**Problem**: Didn't plan for event propagation conflicts between drag system and existing UI
-**Solution**: Always map existing interactive elements before adding new event handlers
-
-**Interactive Element Conflict Analysis**:
-1. **Existing event handlers**: What buttons, hovers, clicks already exist on the component?
-2. **Event bubbling strategy**: How will new handlers coexist with existing ones?
-3. **Conditional event handling**: When should drag start vs when should buttons work?
-4. **stopPropagation patterns**: Plan explicit event stopping where interactions conflict
-
-**Example from task**: Hover buttons (view, delete, download) stopped working when drag mouseDown was added
-**Prevention**: Always audit existing interactive elements and plan event handler priority/conflicts
-
-### React Context vs Prop Drilling Pattern Analysis - Added 2025-01-04
-**Context**: Moodboard reset functionality failed due to cloneElement approach for passing handlers
-**Problem**: cloneElement with dynamic props causes timing issues and unreliable prop passing across renders
-**Solution**: Use React Context pattern for cross-component communication instead of prop drilling through layout layers
-**Prevention**: When planning state management that crosses multiple layout boundaries, prefer Context over cloneElement
-
-**Planning Checklist Addition**:
-- [ ] If state/handlers need to pass through layout components, plan for React Context pattern
-- [ ] Avoid cloneElement for dynamic prop injection in layout components
-- [ ] Consider useRef pattern for handler registration when Context consumers may remount
-
-### HTML Structure Validation Requirements - Added 2025-01-04
-**Context**: Nested Button components caused React hydration errors in sidebar navigation
-**Problem**: Planning didn't include validation of HTML semantic structure in interactive elements
-**Solution**: Add explicit HTML structure validation during component architecture planning
-**Prevention**: Always validate that interactive elements don't nest (buttons, links, inputs)
-
-**Planning Checklist Addition**:
-- [ ] Validate HTML semantic structure - no nested interactive elements
-- [ ] Check for button-in-button, link-in-button, or similar invalid nesting
-- [ ] Plan alternative layouts (div + button) for complex interactive components
-
-### Existing Component Discovery Requirements - Added 2025-01-09
-**Context**: AI Generation Card task failed due to creating new components instead of modifying existing ones
-**Problem**: Agent created entirely new AIGenerationCard component instead of identifying and modifying existing UnifiedPromptCard
-**Solution**: Always examine the target page/route thoroughly to identify existing components before planning new implementations
-**Prevention**: Use explicit component discovery process when tasks involve modifying existing interfaces
-
-**Mandatory Discovery Process**:
-1. **Visit the target URL** mentioned in the request to understand current interface
-2. **Examine page source and components** to identify existing implementations
-3. **Search codebase** for related component files before assuming new components needed
-4. **Verify modification vs creation approach** - prefer extending existing components
-5. **Document existing component structure** and plan minimal modifications
-
-**Planning Checklist Addition**:
-- [ ] Visit target page URL to examine existing interface
-- [ ] Identify existing components that match the modification requirement
-- [ ] Search for component files related to the functionality
-- [ ] Plan modification of existing components rather than creating new ones
-- [ ] Document existing component structure and required changes
-
-### Database Constraint and API Interface Verification - Added 2025-01-05
-**Context**: Simplify Onboarding Flow task plan incorrectly assumed email field was nullable and missed required API interface updates
-**Problem**: Agent planned optional field updates without verifying database constraints or checking if API functions supported those updates
-**Solution**: Always explicitly check database schema constraints and API interface completeness when planning field updates
-**Prevention**: For tasks involving optional database fields or update operations, verify both schema and API compatibility
-
-**Required Pre-Planning Verification**:
-1. **Database Constraint Check**: When planning optional field updates, read actual migration files to verify:
-   - NOT NULL vs NULL constraints
-   - DEFAULT values
-   - UNIQUE constraints
-   - CHECK constraints
-2. **API Interface Verification**: Check that update/mutation functions include all planned fields:
-   - Read session/API management files (lib/session.ts, lib/api.ts, etc.)
-   - Verify function signatures include all required parameters
-   - Check TypeScript interfaces for optional vs required parameters
-   - Document missing parameters as requirements for execution
-
-**Example from task**:
-- Plan stated "email already nullable" but database had `tester_email TEXT NOT NULL` - required workaround
-- updateTestSession interface missing `tester_email?: string` parameter - would have blocked implementation
-
-**Planning Checklist Addition**:
-- [ ] If plan involves optional field updates, verify actual database constraints in migration files
-- [ ] Check that API/session management functions accept all fields the plan intends to update
-- [ ] Document constraint workarounds if schema changes aren't feasible for MVP
-- [ ] Flag missing API parameters as requirements that must be added during execution
+When planning tasks, check `learnings.md` for relevant patterns in these areas:
+- **Navigation Tasks**: Check existing layout components before creating standalone
+- **Drag/Drop Tasks**: Map all sources, targets, and interaction flows
+- **User Flows**: Plan post-completion behaviors and redirect options
+- **UI Additions**: Analyze space constraints and existing element priorities
+- **Mode-Dependent Features**: Analyze existing mode/tab systems
+- **Interactive Features**: Plan multiple discovery patterns and bidirectional workflows
 
 ## Working Document Structure
 
@@ -359,16 +129,7 @@ Each task gets its own file in the `doing/` folder:
 - If the request references previous context, include that context explicitly
 - Preserve the user's exact language and terminology
 
-### User Feedback Iteration Patterns - Added 2025-01-04
-**Context**: Moodboard scroll fix required multiple user corrections and approach changes
-**Problem**: Planning stage missed that user guidance ("java over css", "dynamic state management") indicates CSS-only solutions insufficient
-**Solution**: Include user technical preference analysis - when users specify implementation approaches, prioritize those in initial plan
-**Agent Updated**: design-1-planning.md
-
-**Example from task**: User said "more a dynamic state management solution that is more code and bot rather than styling" - should have planned JavaScript solution from start
-**Prevention**: Parse user technical preferences and guidance to select appropriate implementation approach during planning
-
-### 1b. Capture Reference Images (ALL Sources) - Added for Gemini 3 Pro Integration
+### 1b. Capture Reference Images (ALL Sources)
 
 **CRITICAL**: Reference images come from MANY sources, not just Figma:
 - Screenshots from other apps (Stripe, Linear, Notion, etc.)
@@ -578,62 +339,7 @@ For UI modifications, you MUST identify the exact component that renders on the 
    - Current implementation details
    - Dependencies and relationships
 
-### Component Identification Debugging - Added 2025-09-02
-**Context**: Previous tasks had multiple iterations due to editing wrong components
-**Problem**: Edited components in wrong location or wrong component entirely, causing user confusion
-**Solution**: Use visual debugging to confirm component location before making changes
-
-**New Required Steps**:
-4. **Visual Component Confirmation:**
-   - When unsure about component location, add temporary debug colors/borders
-   - Example: `className="border-4 border-red-500"` to highlight component
-   - Ask user to confirm correct component is highlighted before proceeding
-   - Remove debug styling after confirmation
-
-5. **Multi-Component Scenarios:**
-   - Search for duplicate component names across the codebase
-   - Document ALL instances found and their usage context
-   - Example: Found "Button in HeaderNav.tsx" AND "Button in ActionPanel.tsx"
-   - Confirm which one matches user's description before editing
-
-**Example Prevention**:
-```markdown
-Found two button implementations:
-1. components/layout/HeaderNav.tsx (lines 45-68)
-2. components/features/onboarding/ActionPanel.tsx (lines 192-234)
-
-User described: "The main action button in the center of the onboarding screen"
-→ Adding debug colors to confirm: ActionPanel.tsx is the target
-```
-
-### CSS Component Inheritance Analysis - Added 2025-09-03
-**Context**: Workspace card task required 4+ iterations to resolve padding/spacing issues
-**Problem**: Failed to recognize that shadcn Card component has built-in styling that conflicts with custom layouts
-**Solution**: Add systematic CSS inheritance analysis to prevent layout conflicts
-
-**New Required Steps for UI Component Planning**:
-6. **Component Default Styling Analysis:**
-   - When using shadcn/ui components, document their default styles
-   - Example: Card component has default `py-6` padding and `gap-6` flex gap
-   - Check if custom layout requires overriding these defaults
-   - Plan for proper overrides using utility classes (p-0, gap-0)
-
-7. **CSS Debugging Methodology:**
-   - When user reports visual layout issues, recommend visual debugging approach
-   - Suggest adding temporary background colors or borders to isolate problem areas
-   - Example: `className="bg-red-100"` to highlight specific elements
-   - Include debugging colors in initial implementation for user verification
-
-**Example Component Analysis**:
-```markdown
-Card Component Analysis:
-- Default styles: bg-card, text-card-foreground, rounded-xl, border, py-6, shadow-sm
-- Default flex settings: flex flex-col gap-6
-- Potential conflicts: Custom full-width image at top requires p-0 override
-- Override plan: Add p-0 gap-0 to Card, use px-4 py-5 on content wrapper
-```
-
-**Additional Codebase Analysis:**
+**Additional Codebase Analysis (see learnings.md for component identification patterns):**
 - Use the Shadcn UI component connector to identify existing components
 - Search the repository for related implementations using:
   - Component names

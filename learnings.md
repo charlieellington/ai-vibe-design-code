@@ -4,7 +4,23 @@ A categorized reference of patterns, debugging techniques, and lessons learned f
 
 **How to Use**: Search for keywords related to your current task. Check relevant categories before writing code.
 
-**Last Updated**: 2025-12-18
+**Last Updated**: 2025-12-19
+
+---
+
+## Agent Relevance Index
+
+Which categories each agent should prioritize:
+
+| Agent | Primary Categories | Secondary Categories |
+|-------|-------------------|---------------------|
+| **Agent 1 (Planning)** | Workflow & Process, Interactions & UX | Layout & Positioning, Drag & Drop |
+| **Agent 2 (Review)** | All categories | Validation checkpoint - review all |
+| **Agent 3 (Discovery)** | Component Patterns, Data & APIs | CSS & Styling, TypeScript Patterns |
+| **Agent 4 (Execution)** | CSS & Styling, React Patterns | Component Patterns, Layout & Positioning |
+| **Agent 5 (Verification)** | Layout & Positioning, CSS & Styling | Animations, Component Patterns |
+| **Agent 6 (Complete)** | Workflow & Process, Success Patterns | All categories (for learning capture) |
+| **Agent 7 (Quick Fix)** | All categories | Rapid iteration - check relevant |
 
 ---
 
@@ -88,6 +104,40 @@ const DEBUG = false; // Single flag to control all debug output
 - Feedback Systems: Ensure users get visual confirmation
 - Professional Polish: Validate smooth transitions
 
+### Prototype Specification Precision
+**Added**: 2025-01-05
+**Context**: User had to clarify wanting exactly 4 character images for prototype
+**Problem**: Planning didn't specify exact prototype behavior and data requirements
+**Solution**: For prototypes, always specify exact counts, data sets, and fallback behavior
+**Prevention**: Include prototype data specifications in plan with specific examples
+- Exact counts: "Display exactly 4 character images" not "display character versions"
+- Data source mapping: How demo data maps to display
+- Fallback behavior: What happens if data source has fewer items than UI expects
+
+### User Feedback Iteration Patterns
+**Added**: 2025-01-04
+**Context**: Moodboard scroll fix required multiple user corrections
+**Problem**: Planning stage missed user guidance indicating CSS-only solutions insufficient
+**Solution**: Include user technical preference analysis - when users specify implementation approaches, prioritize those in initial plan
+**Prevention**: Parse user technical preferences to select appropriate implementation approach during planning
+
+### Architectural Decision Anticipation
+**Added**: 2025-09-03
+**Context**: Story Versions task revealed hierarchical vs flat structure wasn't considered
+**Problem**: User discovered nested hierarchy issue after implementation, requiring architectural pivot
+**Solution**: For features involving data relationships, explicitly consider architectural patterns upfront
+**Prevention**: Include architectural decision questions in planning phase:
+- "Should this create a nested hierarchy or flat structure?"
+- "How should users navigate between related items?"
+- "What context should be preserved when switching between items?"
+
+### CSS Scope Clarification Requirements
+**Added**: 2025-10-02
+**Context**: Site-Wide Focus Hover Effect task had ambiguous scope
+**Problem**: User expected entire page content to dim, plan only targeted interactive elements
+**Solution**: Always clarify exact scope when dealing with broad terms like "everything" or "all content"
+**Prevention**: When requirements use broad terms, enumerate what's included/excluded and ask for specific scope clarification
+
 ---
 
 ## CSS & Styling
@@ -157,6 +207,15 @@ style={{ height: '36px !important' }} // ✅ Force override
 // ✅ Correct - explicitly override Card defaults
 <Card className="py-3 gap-0 space-y-0">
 ```
+
+### Gradient/Fade Effect Clarification
+**Added**: 2025-01-04
+**Context**: Moodboard scroll fix task initially misunderstood user gradient requirements
+**Problem**: Agent planned opacity fade instead of background gradient mask
+**Solution**: When users mention "fade effect" or "gradient", clarify the exact visual behavior before planning
+**Prevention**: Always clarify whether "fade" means element opacity or background masking effect
+- Fade Type: Opacity fade (element transparency) vs. background gradient mask
+- CSS Approach: Background gradient (bg-gradient-to-t) vs. opacity animations vs. backdrop filters
 
 ### CSS Positioning with Tailwind Values
 **Added**: 2025-09-04
@@ -311,6 +370,20 @@ const handleMouseDown = (e: React.MouseEvent) => {
 3. Adjust vertical positioning incrementally
 4. Test with actual content, not empty states
 
+### Cross-Component Interaction Mapping
+**Added**: 2025-01-09
+**Context**: Moodboard drag affordance task missed crucial interaction between demo characters and AI input areas
+**Problem**: Failed to identify that demo character drag should work with BOTH main content AND AI text input areas
+**Solution**: Always map ALL possible drop targets and interaction flows when planning drag/drop features
+**Prevention**: Create explicit interaction matrix showing drag sources, drop targets, and expected behaviors
+
+### Drag and Drop Pattern Analysis
+**Added**: 2025-01-05
+**Context**: Drag Demo Characters task needed affordance pattern like existing prompt input drop zone
+**Problem**: Planning didn't identify and reference existing drag/drop patterns in the codebase
+**Solution**: Always identify existing UI patterns when planning similar functionality
+**Prevention**: Search for existing patterns (`grep -r "drop-target" components/`) and document pattern details
+
 ---
 
 ## Interactions & UX
@@ -380,6 +453,34 @@ const [isCarouselHovered, setIsCarouselHovered] = useState(false)
 </Button>
 ```
 
+### Bidirectional Functionality Analysis
+**Added**: 2025-01-06
+**Context**: Demo Asset Library required multiple iterations due to missing bidirectional functionality planning
+**Problem**: Agent only planned one-way drag (moodboard → demo section) but user expected reverse functionality
+**Solution**: Always analyze and explicitly plan bidirectional workflows when implementing drag-and-drop
+**Prevention**: When planning interactive features, ALWAYS ask "What should users be able to do in the reverse direction?"
+
+### Post-Completion Behavior Analysis
+**Added**: 2025-11-26
+**Context**: Screen 4 Customize Test task required mid-implementation addition of redirect URL feature
+**Problem**: Original plan didn't consider what happens after users complete the flow
+**Solution**: For user flow tasks, always analyze post-completion behaviors during planning
+**Prevention**: Ask "What options should users have after completing this step?" and document post-completion behaviors
+
+### UX Discoverability Planning
+**Added**: 2025-01-06
+**Context**: Demo Asset Library required multiple UI affordances after user couldn't discover functionality
+**Problem**: Agent planned focus-based discovery but user needed explicit UI elements
+**Solution**: Always plan multiple discovery patterns for interactive features
+**Prevention**: Plan at least 2-3 different ways users can discover the functionality
+
+### Mode System Analysis
+**Added**: 2025-01-04
+**Context**: AI Generation Options task required three iterations because mode-specific behavior wasn't analyzed
+**Problem**: Agent didn't examine existing mode system (Character/Image/Video modes)
+**Solution**: For UI features that might be mode-dependent, always analyze the existing mode/tab system first
+**Prevention**: Identify existing mode systems and document mode restrictions before planning
+
 ---
 
 ## Layout & Positioning
@@ -445,6 +546,23 @@ const [isCarouselHovered, setIsCarouselHovered] = useState(false)
 - [x] Complete screen
 ```
 
+### Navigation Integration Requirements
+**Added**: 2025-01-04
+**Context**: Moodboard navigation task revealed critical gap in planning navigation integrations
+**Problem**: Agent planned standalone navigation components instead of integrating with existing layout system
+**Solution**: Always analyze existing navigation architecture before planning new navigation features
+**Prevention**: Search for existing navigation components first and plan integration rather than replacement
+
+### UI Constraint and Space Analysis
+**Added**: 2025-01-13
+**Context**: Cards/List Toggle task required multiple layout iterations
+**Problem**: Agent planned features without analyzing available space and existing UI element constraints
+**Solution**: Always analyze layout constraints and space allocation before planning UI additions
+**Prevention**:
+1. Container Space Analysis: Measure available horizontal/vertical space
+2. Existing Element Priority: Identify essential vs. moveable elements
+3. Label Length Planning: Plan for shortened labels in constrained spaces
+
 ---
 
 ## Animations
@@ -470,6 +588,22 @@ max-h-0 → max-h-20 + overflow-hidden
 **Problem**: Complex mouse tracking when simple hover was sufficient
 **Guideline**: Start with simplest interaction pattern, add complexity only when validated
 
+### Animation Implementation Approach Analysis
+**Added**: 2025-10-01
+**Context**: Logo Carousel task required multiple iterations due to wrong animation approach
+**Problem**: Agent chose fade in/out animation instead of continuous scrolling
+**Solution**: When users describe continuous motion, analyze movement patterns before selecting animation technique
+**Prevention**: Parse animation descriptions for keywords like "continuous", "scrolling", "running" to select appropriate techniques
+
+### Animation Speed and User Control Planning
+**Added**: 2025-10-01
+**Context**: Logo Carousel required multiple speed adjustments
+**Problem**: Didn't plan for user interaction effects on animation speed
+**Solution**: For animated elements with user interaction, plan specific speed values and interaction effects upfront
+**Prevention**: Specify exact timing values and interaction effects rather than vague "speed up on hover" descriptions
+- Base Animation Speed: Specific duration values (e.g., 8 seconds for full cycle)
+- Interaction Speed Modifiers: Exact multipliers for hover, proximity, focus states
+
 ---
 
 ## Data & APIs
@@ -494,6 +628,13 @@ max-h-0 → max-h-20 + overflow-hidden
 **Added**: 2025-01-05
 **Problem**: is_text_mode field discovered retroactively
 **Prevention**: Plan database structure upfront for features with multiple modes
+
+### Dynamic vs Static Content Planning
+**Added**: 2025-10-01
+**Context**: Newsletter CTA expected dynamic content from external source (Substack RSS)
+**Problem**: Agent didn't clarify whether content should be static examples or dynamically fetched
+**Solution**: Always specify data source expectations - static, dynamic, API, RSS, mock data, etc.
+**Prevention**: Add "Data Source" section to plan when content display is involved
 
 ---
 
@@ -540,6 +681,17 @@ max-h-0 → max-h-20 + overflow-hidden
 1. Search entire codebase for component references
 2. Remove all imports in all files
 3. Run compilation check immediately after cleanup
+
+### Existing Component Discovery Requirements
+**Added**: 2025-01-09
+**Context**: AI Generation Card task failed due to creating new components instead of modifying existing ones
+**Problem**: Agent created entirely new component instead of identifying and modifying existing UnifiedPromptCard
+**Solution**: Always examine the target page/route thoroughly to identify existing components before planning
+**Prevention**: Use explicit component discovery process:
+1. Visit the target URL mentioned in the request
+2. Examine page source and components to identify existing implementations
+3. Search codebase for related component files
+4. Verify modification vs creation approach - prefer extending existing components
 
 ---
 
