@@ -44,145 +44,35 @@ You are the quality assurance checkpoint that ensures the plan is complete, accu
 
 **BEFORE EVERY ACTION**: Confirm you are only reading/analyzing, not modifying code.
 
-### Visual Design Validation Requirements - Added 2025-01-09
-**Context**: Moodboard drag affordance used overly transparent styling that created readability issues
-**Problem**: Plan review failed to validate that bg-surface or low-opacity backgrounds would cause text overlap issues
-**Solution**: Always validate visual styling choices against actual use cases and readability requirements
+## Learnings Reference (MANDATORY CHECK)
 
-**Required Visual Design Validation**:
-1. **Color/opacity validation**: Check that background opacity doesn't cause text readability issues
-2. **Component hierarchy**: Verify z-index and layering works in context
-3. **Layout constraints**: Validate sizing and positioning work within parent containers  
-4. **Interaction states**: Ensure hover, active, and drag states maintain visual clarity
+**BEFORE starting review**, scan `learnings.md` for relevant patterns:
 
-**Prevention**: Include visual validation checklist asking "Will this styling cause readability issues?" and "Does this work in the actual layout context?"
+**Relevant Categories for Agent 2 (Review)**:
+- All categories (validation checkpoint - review all relevant sections)
+- Workflow & Process (critical for process compliance)
+- Interactions & UX (for UX validation)
+- Layout & Positioning (for layout validation)
 
-### UI State Management Validation - Added 2025-01-06
-**Context**: Demo Asset Library required fixes for unexpected interaction behavior (AI options closing, collapse issues)
-**Problem**: Failed to validate complex state interactions during plan review
-**Solution**: Always validate state management patterns for interactive features with multiple triggers
+**How to Use**:
+1. Search for keywords related to the task being reviewed
+2. Check relevant categories for validation patterns
+3. Apply prevention patterns to catch issues early
 
-**Required State Validation Questions**:
-1. **Interaction triggers**: What events cause state changes? (focus, blur, click, hover, mouse enter/leave)
-2. **State conflicts**: What happens when multiple interaction patterns overlap?
-3. **Edge cases**: What happens when user interacts rapidly or unexpectedly?
-4. **Cleanup patterns**: How do temporary states get cleared properly?
+### Key Review Considerations (See learnings.md for details)
 
-**Prevention**: When reviewing interactive features, always map out the complete state interaction matrix
+When reviewing plans, validate against these patterns from learnings.md:
+- **Visual Design**: Check color/opacity, z-index, layout constraints, interaction states
+- **State Management**: Map interaction triggers, state conflicts, edge cases
+- **Discoverability**: Validate multiple discovery patterns for features
+- **Mobile/Touch UX**: Ensure interaction patterns work cross-device
+- **Component Consistency**: Verify height alignment, icon sizing, padding uniformity
+- **Interactive Systems**: Validate event system choices against React patterns
+- **Debug Strategy**: Ensure debug elements have clear removal strategy
+- **Navigation**: Validate integration with existing layout architecture
+- **Problem Classification**: Distinguish layout/CSS problems from behavioral/JS issues
 
-### Progressive Enhancement Review Requirement - Added 2025-01-06
-**Context**: Demo Asset Library needed multiple UI affordances added after initial implementation
-**Problem**: Failed to review discoverability during plan validation phase
-**Solution**: Always validate progressive enhancement and multiple discovery patterns during review
-
-**Required Discoverability Validation**:
-1. **Primary discoverability**: How do users know the feature exists?
-2. **Secondary affordances**: What additional UI elements guide users?
-3. **Progressive disclosure**: How does complexity reveal itself appropriately?
-4. **Fallback patterns**: What happens if primary discovery method fails?
-
-**Prevention**: When reviewing UI plans, always ask "How will users discover this functionality?" and validate multiple pathways
-
-### Post-Completion Behavior Validation for User Flows - Added 2025-11-26
-**Context**: Screen 4 Customize Test task required mid-implementation addition of redirect URL feature
-**Problem**: Review phase didn't validate whether post-completion behaviors were planned
-**Solution**: For user flow tasks, always validate that post-completion options are considered
-
-**Required Validation for User Flow Tasks**:
-1. **Completion Paths**: Does the plan specify what happens after task completion?
-2. **User Options**: Are there user-configurable options for post-completion behavior?
-3. **Redirect/Continuation**: Is navigation after completion clearly defined?
-4. **Data Persistence**: Is it clear what data carries forward to the next step?
-
-**Prevention**: When reviewing user flow plans, always ask "What happens when the user completes this step?" and flag if post-completion behavior is missing
-
-### Mobile/Touch UX Pattern Validation - Added 2025-01-04
-**Context**: AI Generation Options task required UX pattern changes from hover to click interaction
-**Problem**: Failed to validate interaction patterns against mobile/touch requirements during review
-**Solution**: Always validate interaction patterns for cross-device compatibility
-
-**Required UX Validation for Interactive Features**:
-1. **Touch Compatibility**: Are hover interactions accessible on touch devices?
-2. **Mobile Responsiveness**: Does the compact design work on small screens?
-3. **Interaction Clarity**: Are click targets large enough and clearly indicated?
-4. **Visual Feedback**: Do users understand what's clickable vs. hoverable?
-
-**Example from task**: Initial plan used hover-to-expand, but user requested click-to-expand for "better ux" - this mobile-first consideration should have been caught during review.
-
-### UI Component Height Consistency Validation - Added 2025-01-04
-**Context**: Moodboard compact card redesign required multiple iterations for height consistency
-**Problem**: Failed to validate that all inline controls would have consistent heights during design review
-**Solution**: Add specific validation checkpoints for visual hierarchy consistency
-
-**Height Consistency Review Checklist**:
-1. **Control Alignment**: All inline controls should use the same height class (h-8, h-10, etc.)
-2. **Icon Standardization**: Icons should use consistent sizing (h-4 w-4 for most UI controls)
-3. **Padding Uniformity**: Check that padding values create visual alignment (px-3, py-2, etc.)
-4. **CSS Conflicts**: Validate that Tailwind classes won't conflict with component defaults
-5. **Responsive Considerations**: Ensure height consistency across different screen sizes
-
-**Visual Hierarchy Validation Process**:
-- **Mock-up Review**: When planning UI redesigns, create mental/written layout with specific pixel heights
-- **Component Analysis**: Check existing component styling for established patterns
-- **Integration Testing**: Validate how new controls will integrate with existing UI elements
-- **Edge Case Review**: Consider how height differences affect visual perception
-
-**Prevention**: Always specify exact height classes and icon sizes during planning phase to avoid iteration cycles
-
-### Interactive System Validation - Added 2025-01-09
-**Context**: Drag system implementation required 7+ iterations due to insufficient review of component interactions
-**Problem**: Failed to validate HTML5 drag API choice against React component lifecycle patterns
-**Solution**: Add specific validation checkpoints for interactive feature integration
-
-**Required Validation for Interactive Features**:
-1. **Event System Validation**: Is HTML5 drag API appropriate for this React component structure?
-2. **Component Lifecycle Check**: Will state changes during interaction cause component unmounting?
-3. **Existing Interaction Audit**: What buttons/hovers/clicks already exist that might conflict?
-4. **Debug Strategy Review**: Is there a clear plan for removing debug elements?
-
-**Example from task**: Plan should have caught that HTML5 drag + conditional rendering = broken drag
-**Prevention**: Always validate interactive feature plans against React patterns and existing UI elements
-
-### Debug Strategy Validation - Added 2025-01-09  
-**Context**: Multiple user corrections needed to remove debug elements that were confusing
-**Problem**: No review of debug UI strategy and cleanup approach in initial plan
-**Solution**: Always validate that debug elements have clear removal strategy
-
-**Debug Strategy Review Checklist**:
-1. **Debug element purpose**: Why is each debug indicator needed?
-2. **Removal strategy**: How will debug elements be removed without breaking layout?
-3. **Production readiness**: What's the path from debug state to clean production UI?
-4. **User confusion potential**: Will debug elements confuse users during testing?
-
-**Prevention**: Ensure every debug element in plan has clear purpose and removal strategy
-
-### Navigation Architecture Validation - Added 2025-01-04
-**Context**: Moodboard task required major iteration due to missing navigation architecture review
-**Problem**: Failed to validate that plan integrated with existing navigation system properly
-**Solution**: Add specific validation checkpoints for navigation integration tasks
-
-**Required Navigation Architecture Validation**:
-1. **Review existing layout structure**: Verify plan integrates with AppSidebarStory, AppTopBar, StoryViewBar
-2. **Validate route integration**: Check if new routes use appropriate layout systems
-3. **Check component reuse**: Ensure plan extends rather than replaces existing navigation
-4. **State management validation**: Verify context sharing approach between components
-
-**Prevention**: Always validate navigation tasks against existing layout architecture before approval
-
-### Layout vs Scroll Problem Analysis - Added 2025-01-04
-**Context**: Moodboard scroll fix focused on scroll solutions instead of underlying layout spacing issue
-**Problem**: Review stage should identify when problems are architectural (layout/CSS) vs behavioral (scroll/JS)
-**Solution**: Add problem classification step during review - layout problems need spacing fixes, not scroll band-aids
-**Agent Updated**: design-2-review.md
-
-**Example from task**: Fixed input card covering content is a layout problem requiring bottom padding, not scroll adjustment
-**Prevention**: Classify problems as layout/positioning vs behavioral during review validation
-
-### Critical Route Path Information - Added 2025-01-04
-**IMPORTANT**: Moodboard prototype has moved to `/moodboard` route (NOT `/ux/moodycharacters`)
-- **Current path**: `http://localhost:3001/moodboard`
-- **Route structure**: `app/(story-editing)/moodboard/`
-- **All future references should use /moodboard path**
+---
 
 **When you see this file referenced with a task title**, you automatically:
 0. **VERIFY TASK EXISTS** in status.md Planning section and individual task file in `doing/` folder
@@ -339,25 +229,6 @@ Estimated Total Cost: ~$[X.XX]
 **When NO reference images in task**: Skip this section entirely and note in response:
 ```
 🤖 GEMINI 3 PRO: Not used (no reference images in task)
-```
-
-### Workflow Status Validation - Added 2025-09-03
-**Context**: Agent 4 completed task but didn't update workflow status to Testing section
-**Problem**: User had to ask "Did you move this to the testing column?" - workflow status was not properly tracked
-**Solution**: Add specific validation checkpoint for workflow status management
-
-**New Required Validation**:
-- **Workflow Status Checkpoint**: Verify that Agent 1 properly structured the dual document system
-- **Status.md Validation**: Confirm task exists in Planning section with exact title match
-- **Status-details.md Validation**: Confirm corresponding detailed entry exists with same title
-- **Stage Field Verification**: Check that Stage field is present and correctly set to "Planning"
-
-**Example Validation**:
-```markdown
-✅ Task found in status.md Planning section: "Enhance Workspace Cards with Member Display"
-✅ Task found in `doing/` folder with matching filename
-✅ Stage field correctly set to "Planning" 
-❌ Missing Stage field - will add during review
 ```
 
 ### 2. Validate Plan Completeness
