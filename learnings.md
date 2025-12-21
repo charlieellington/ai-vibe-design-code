@@ -4,7 +4,7 @@ A categorized reference of patterns, debugging techniques, and lessons learned f
 
 **How to Use**: Search for keywords related to your current task. Check relevant categories before writing code.
 
-**Last Updated**: 2025-12-19
+**Last Updated**: 2025-12-21
 
 ---
 
@@ -104,6 +104,28 @@ const DEBUG = false; // Single flag to control all debug output
 - Feedback Systems: Ensure users get visual confirmation
 - Professional Polish: Validate smooth transitions
 
+### Gemini 3 Pro is for UI Code Generation, NOT Image Generation
+**Added**: 2025-12-21
+**Context**: Research Tech Onboarding Flow - 7 pages written manually instead of using Gemini
+**Problem**: Agent misunderstood Gemini 3 Pro as an image generation tool only
+**Solution**: Gemini 3 Pro generates complete, production-ready React + Tailwind component code. Use it for ALL visual/UI tasks.
+**Prevention**:
+1. Task Classification is MANDATORY before implementation
+2. Visual/UI tasks (pages, forms, dashboards, layouts) MUST use `mcp__gemini__gemini-chat`
+3. Only use Claude directly for non-visual tasks (API integration, state logic, business logic)
+
+**Example**:
+```typescript
+// ❌ Wrong understanding - thought it was for images
+mcp__gemini__generate_image({ prompt: "hero illustration" })
+
+// ✅ Correct - use gemini-chat for UI code
+mcp__gemini__gemini-chat({
+  message: "Generate a React + Tailwind component for a 7-page onboarding flow...",
+  context: "front-end UI code generation"
+})
+```
+
 ### Prototype Specification Precision
 **Added**: 2025-01-05
 **Context**: User had to clarify wanting exactly 4 character images for prototype
@@ -195,6 +217,36 @@ style={{ height: '36px !important' }} // ✅ Force override
 2. Stick to established color palette
 3. Match visual weight of existing elements
 4. Less is more - avoid heavy backgrounds, shadows
+
+### Reference Existing Layout Patterns Before Creating New Pages
+**Added**: 2025-12-21
+**Context**: Research Tech Onboarding created plain header instead of matching dashboard pattern
+**Problem**: Agent created minimal header and full-width layout without referencing existing patterns
+**Solution**: ALWAYS search for and reference existing header/layout patterns in codebase
+**Prevention**:
+1. Search for existing headers: `grep -r "header" app/` or glob for `**/header*.tsx`
+2. Look at dashboard/authenticated pages for established patterns
+3. Apply consistent constraints: `max-w-4xl`, `max-w-6xl` for content width
+4. Match header styling: `bg-white dark:bg-background`, `h-14`, flex layout
+
+**Example**:
+```typescript
+// ❌ Wrong - plain text header, no width constraint
+<header className="border-b">
+  <div className="container mx-auto px-4 py-4">
+    <div className="text-lg font-semibold">Zebra Design</div>
+  </div>
+</header>
+
+// ✅ Correct - matches dashboard pattern
+<header className="border-b bg-white dark:bg-background">
+  <div className="container max-w-4xl mx-auto flex h-14 items-center px-6">
+    <Link href="/" className="flex items-center font-semibold text-lg">
+      Zebra Design
+    </Link>
+  </div>
+</header>
+```
 
 ### Card Component Padding Override
 **Added**: 2025-01-09
@@ -731,6 +783,16 @@ const model = models.find(m => m.id === id) ?? null;
 - Systematic architecture planned and executed
 - Comprehensive TypeScript interfaces
 - Proper workflow compliance
+
+### Multi-Page Form Flow Success Pattern
+**Added**: 2025-12-21 (Research Tech Onboarding)
+**Success Factors**:
+- Used shadcn MCP to verify/install required components (radio-group, separator)
+- Added public routes to middleware for unauthenticated access
+- Client components (`'use client'`) for pages with interactivity
+- Server components for static content pages
+- Controlled form state with validation-based button enabling
+- Print-to-PDF via `window.print()` for simple invoice download
 
 ### Successful Landing Page MVP Pattern
 **Added**: 2025-01-20

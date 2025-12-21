@@ -68,72 +68,114 @@ Pre-Implementation Checklist:
 - [ ] No ambiguities in specification
 ```
 
-### 4. Task Classification for Gemini Usage
+### 4. Task Classification for Gemini Usage (MANDATORY)
+
+**CRITICAL: Gemini 3 Pro is a FRONT-END CODE GENERATOR, not an image generator.**
+
+Gemini 3 Pro generates complete, production-ready React + Tailwind component code. It excels at:
+- Complete dashboard UIs with data visualizations
+- Landing pages with modern design patterns (glassmorphism, gradients, dark mode)
+- Multi-page form flows and onboarding experiences
+- Complex layouts with responsive breakpoints
+- Animation and transition effects
 
 **BEFORE starting implementation**, classify the task:
 
-**Visual Tasks (USE Gemini 3 Pro)**:
-- [ ] New UI component from reference images
+**Visual/UI Tasks (MUST USE Gemini 3 Pro)**:
+- [ ] New UI pages or components
+- [ ] Form layouts and multi-step flows
+- [ ] Dashboard designs
+- [ ] Landing pages
+- [ ] Cards, modals, or complex layouts
 - [ ] Styling changes (colors, spacing, typography)
-- [ ] Layout modifications
 - [ ] Animation/transition work
 
 **Non-Visual Tasks (Claude Only)**:
-- [ ] API integration
-- [ ] State management changes
+- [ ] API integration and data fetching
+- [ ] State management logic
 - [ ] Business logic implementation
 - [ ] Bug fixes (non-visual)
+- [ ] Database operations
 
 **Classification Result**: [Visual / Non-Visual / Mixed]
 
+**IF VISUAL OR MIXED → You MUST use Gemini 3 Pro. Do NOT write UI code manually.**
+
 ---
 
-## Gemini 3 Pro Implementation Protocol (Visual Tasks Only)
+## Gemini 3 Pro Implementation Protocol (Visual Tasks)
 
-**ONLY use this protocol when Task Classification = Visual or Mixed**
+**This is NOT optional for Visual tasks. Gemini 3 Pro produces higher quality UI code faster.**
+
+### Why Use Gemini 3 Pro for UI?
+- Generates complete, polished React + Tailwind components in one prompt
+- Understands modern design patterns (dark mode, glassmorphism, minimalist)
+- Produces responsive layouts with proper breakpoints
+- Includes hover/focus states and micro-interactions
+- Creates cohesive visual systems across multiple components
 
 ### Step 1: Gather Visual Context
-- Reference Images section (Conductor paths)
+Collect from the task file:
+- Reference Images section (if any)
 - Visual Reference Analysis (from Agent 2)
-- Visual-Technical Reconciliation (from Agent 3)
-- Design Context
+- Design Context and requirements
+- Existing component patterns to match
 
-### Step 2: Generate Component Code
+### Step 2: Generate Component Code with Gemini
 ```
-mcp__gemini__gemini_chat({
-  message: `Generate a React + Tailwind component for this UI.
+mcp__gemini__gemini-chat({
+  message: `Generate a React + Tailwind component for: [DESCRIBE THE UI]
 
   REQUIREMENTS:
+  - React with TypeScript
+  - Tailwind CSS for all styling
   - Use semantic color tokens: bg-background, text-foreground, border-border
-  - Follow shadcn/ui patterns
-  - Include responsive breakpoints (mobile-first)
-  - Add hover/focus states
-  - Use TypeScript with proper interfaces
+  - Follow shadcn/ui patterns (use components like Button, Card, Input from @/components/ui)
+  - Mobile-first responsive design
+  - Include hover/focus states
+  - Clean, production-ready code
 
-  VISUAL DIRECTION:
-  [paste Visual Reference Analysis]
+  DESIGN DIRECTION:
+  [Describe the visual style: dark mode, minimalist, glassmorphism, etc.]
 
-  COMPONENT DECISIONS (from Agent 3):
-  [paste reconciliation table]
+  SPECIFIC REQUIREMENTS:
+  [List specific features: form fields, navigation, data display, etc.]
 
-  EXISTING PATTERNS TO FOLLOW:
-  [from Codebase Context]`,
-  context: "React TypeScript component generation"
+  EXISTING PATTERNS TO MATCH:
+  [Reference any existing components or styles from the codebase]`,
+  context: "front-end UI code generation"
 })
 ```
 
 ### Step 3: Integrate Gemini Output
-1. Review generated code for semantic token usage
-2. Adapt to match project structure
-3. Add missing accessibility attributes
+1. Review generated code for correct import paths (@/components/ui/*)
+2. Ensure semantic color tokens are used (not hardcoded colors)
+3. Adapt to match project file structure
+4. Add any missing shadcn/ui component imports
+5. Connect to actual data/props as needed
 
-### Step 4: Document Gemini Usage
+### Step 4: Iterate if Needed
+If the first output needs refinement:
+```
+mcp__gemini__gemini-chat({
+  message: `Refine the previous component:
+  - [specific change 1]
+  - [specific change 2]
+  Keep all other aspects the same.`,
+  context: "front-end UI refinement"
+})
+```
+
+### Step 5: Document Gemini Usage
 Add to Implementation Log and final response:
 ```
-GEMINI 3 PRO PREVIEW USED
+GEMINI 3 PRO USED FOR UI GENERATION
 Calls Made: [number]
+Components Generated: [list]
 Purpose: [description]
 ```
+
+**FAILURE TO USE GEMINI 3 PRO FOR VISUAL TASKS IS A WORKFLOW ERROR.**
 
 ---
 

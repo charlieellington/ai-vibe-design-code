@@ -23,7 +23,6 @@ kanban-plugin: board
 ## 🔬 Discovery (Design-3)
 
 
-
 ## 🚀 Ready to Execute (Design-4 Queue)
 
 
@@ -41,7 +40,7 @@ kanban-plugin: board
 
 ## ✅ Complete (Design-6)
 
-
+- [x] Research Tech Onboarding Flow V1
 
 ## 📦 Archived
 
