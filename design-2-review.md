@@ -125,67 +125,105 @@ You enhance the existing task card structure:
 - Never work from memory or partial context
 - Cross-reference all sections for consistency
 
-### 1b. Visual Reference Generation (Gemini 3 Pro) - Added for Gemini Integration
+### 1b. Visual Reference Analysis (AI Studio MCP)
 
-**When task includes reference images**, generate visual interpretation using Gemini 3 Pro:
+**When task includes reference images**, analyze them using AI Studio MCP to create clear visual direction for Agent 4.
 
-#### Step 1: Analyze Reference Images
+**CRITICAL: Use `mcp__aistudio__generate_content` NOT the older Gemini tools.**
 
-For each reference image in the task file's Reference Images section:
+AI Studio MCP is significantly better because:
+- Multi-image context (analyze all references together)
+- Combined text + visual prompts understand design intent
+- Can include codebase files for pattern matching
+- Produces actionable implementation guidance
 
-```
-mcp__gemini__gemini_analyze_image({
-  file_path: "[Conductor path from task file]",
-  analysis_type: "detailed",
-  context: "UI design reference for web application"
+#### Step 1: Gather All Reference Materials
+
+Collect paths for:
+- Reference images from task file
+- Design system / brand docs (if they exist)
+- Similar existing components (CODE files)
+- Screenshots of completed similar work
+
+#### Step 2: Analyze References with AI Studio MCP
+
+```typescript
+mcp__aistudio__generate_content({
+  user_prompt: `Analyze these UI design references for a web application.
+
+TASK CONTEXT:
+[Brief description of what we're building]
+
+ANALYZE AND PROVIDE:
+
+1. **Layout Direction**
+   - Overall structure and hierarchy
+   - Grid/flex patterns to use
+   - Responsive considerations
+
+2. **Component Mapping**
+   For each UI element, suggest:
+   - shadcn/ui component to use (or custom if needed)
+   - Key Tailwind classes
+   - Which reference image it comes from
+
+3. **Spacing System**
+   - Padding values (mapped to Tailwind: p-4, p-6, etc.)
+   - Gap values
+   - Margin patterns
+
+4. **Visual Style Notes**
+   - Color approach (semantic tokens to use)
+   - Shadow/border treatments
+   - Typography scale
+
+5. **Implementation Guidance for Agent 4**
+   - Specific code patterns to follow
+   - Potential challenges to watch for
+   - Priority order for building`,
+  files: [
+    // Reference images from task
+    { path: "[reference-image-1].png" },
+    { path: "[reference-image-2].png" },
+    // Design system (if exists)
+    { path: "docs/design-system.md" },
+    // Similar existing components (for pattern matching)
+    { path: "src/components/ui/Card.tsx" },
+    { path: "src/components/features/similar-component.tsx" },
+  ],
+  model: "gemini-2.5-pro-preview"
 })
 ```
 
-The tool returns: layout structure, component hierarchy, visual style, spacing patterns, and interactive elements.
-
-#### Step 2: Synthesize Visual Direction
-
-If multiple reference images exist:
-
-```
-mcp__gemini__gemini_chat({
-  message: `Given these reference analyses:
-    [paste analyses from Step 1]
-
-    Synthesize a unified visual direction:
-    1. Which layout pattern to follow (from which reference)
-    2. Component styles to adopt
-    3. Spacing system to use
-    4. Color approach
-    5. Any conflicts between references and how to resolve`,
-  context: "UI design synthesis"
-})
-```
+**KEY PRINCIPLE**: Include 5-10 reference files for best results. More context = better analysis.
 
 #### Step 3: Add Visual Reference Analysis to Task File
 
 Append to the individual task file:
 
 ```markdown
-### Visual Reference Analysis (Gemini 3 Pro)
+### Visual Reference Analysis (AI Studio MCP)
 **Generated**: [timestamp]
 
 #### Layout Direction
-[Gemini's layout analysis]
+[AI Studio's layout analysis]
 
 #### Component Mapping
 | UI Element | Suggested Implementation | Reference Source |
 |------------|-------------------------|------------------|
-| [element] | [shadcn component + styling] | [which reference image] |
+| [element] | [shadcn component + Tailwind classes] | [which reference] |
 
 #### Spacing System
-[Extracted spacing values mapped to Tailwind]
+| Area | Value | Tailwind |
+|------|-------|----------|
+| Card padding | 24px | p-6 |
+| Section gap | 16px | gap-4 |
 
 #### Visual Style Notes
-[Color feel, shadow approach, border treatments]
+[Color approach, shadows, borders, typography]
 
 #### Implementation Guidance for Agent 4
-[Specific guidance for visual implementation]
+[Specific patterns, code examples, priority order]
 ```
 
 #### Step 4: User Validation
@@ -197,38 +235,31 @@ Present visual direction to user in your response:
 
 Based on your reference images, here's the proposed visual approach:
 
-[Summary of Gemini's analysis]
+**Layout**: [Summary]
+**Key Components**: [List with suggested implementations]
+**Style**: [Color/typography/spacing approach]
 
 **Does this capture your intent?**
 - If yes: Proceed to Discovery
 - If adjustments needed: [specific question about direction]
 ```
 
-#### Gemini Usage Reporting (MANDATORY)
+#### AI Studio Usage Reporting (MANDATORY)
 
-After using Gemini, include this in your FINAL RESPONSE:
+After using AI Studio MCP, include in your FINAL RESPONSE:
 
 ```
-🤖 GEMINI 3 PRO PREVIEW USED
+🤖 AI STUDIO MCP USED
 
 Calls Made: [number]
-Purpose: [brief description - e.g., "Analyzed 2 reference images for layout direction"]
-Estimated Total Cost: ~$[X.XX]
+Purpose: [e.g., "Analyzed 3 reference images for layout direction"]
+Files Included: [number of reference files]
+Model: gemini-2.5-pro-preview
 ```
 
-**Cost Calculation Reference** (internal use):
-| Token Tier | Input | Output |
-|------------|-------|--------|
-| <200k tokens | $2.00/M | $12.00/M |
-| >200k tokens | $4.00/M | $18.00/M |
-
-**Token Estimation**:
-- Image analysis: ~1,000-2,000 input tokens per image
-- Visual analysis response: ~300-800 output tokens
-
-**When NO reference images in task**: Skip this section entirely and note in response:
+**When NO reference images in task**: Skip this section entirely and note:
 ```
-🤖 GEMINI 3 PRO: Not used (no reference images in task)
+🤖 AI STUDIO MCP: Not used (no reference images in task)
 ```
 
 ### 2. Validate Plan Completeness

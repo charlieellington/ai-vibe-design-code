@@ -68,20 +68,11 @@ Pre-Implementation Checklist:
 - [ ] No ambiguities in specification
 ```
 
-### 4. Task Classification for Gemini Usage (MANDATORY)
-
-**CRITICAL: Gemini 3 Pro is a FRONT-END CODE GENERATOR, not an image generator.**
-
-Gemini 3 Pro generates complete, production-ready React + Tailwind component code. It excels at:
-- Complete dashboard UIs with data visualizations
-- Landing pages with modern design patterns (glassmorphism, gradients, dark mode)
-- Multi-page form flows and onboarding experiences
-- Complex layouts with responsive breakpoints
-- Animation and transition effects
+### 4. Task Classification (MANDATORY)
 
 **BEFORE starting implementation**, classify the task:
 
-**Visual/UI Tasks (MUST USE Gemini 3 Pro)**:
+**Visual/UI Tasks (MUST USE AI Studio MCP)**:
 - [ ] New UI pages or components
 - [ ] Form layouts and multi-step flows
 - [ ] Dashboard designs
@@ -89,6 +80,7 @@ Gemini 3 Pro generates complete, production-ready React + Tailwind component cod
 - [ ] Cards, modals, or complex layouts
 - [ ] Styling changes (colors, spacing, typography)
 - [ ] Animation/transition work
+- [ ] Any work where visual appearance matters
 
 **Non-Visual Tasks (Claude Only)**:
 - [ ] API integration and data fetching
@@ -99,83 +91,177 @@ Gemini 3 Pro generates complete, production-ready React + Tailwind component cod
 
 **Classification Result**: [Visual / Non-Visual / Mixed]
 
-**IF VISUAL OR MIXED → You MUST use Gemini 3 Pro. Do NOT write UI code manually.**
+**IF VISUAL OR MIXED → You MUST use AI Studio MCP protocol below.**
 
 ---
 
-## Gemini 3 Pro Implementation Protocol (Visual Tasks)
+## Step 0: Explore Existing Patterns (MANDATORY for Visual Tasks)
 
-**This is NOT optional for Visual tasks. Gemini 3 Pro produces higher quality UI code faster.**
+**BEFORE writing ANY code**, study what already exists in the codebase.
 
-### Why Use Gemini 3 Pro for UI?
-- Generates complete, polished React + Tailwind components in one prompt
-- Understands modern design patterns (dark mode, glassmorphism, minimalist)
-- Produces responsive layouts with proper breakpoints
-- Includes hover/focus states and micro-interactions
-- Creates cohesive visual systems across multiple components
+### 0a: Read Completed Components
+
+```bash
+# Find similar components to what you're building
+ls src/components/
+ls src/components/ui/
+ls src/components/features/
+```
+
+Read every relevant `.tsx` file and document patterns:
+
+| Pattern | Example from Codebase | File |
+|---------|----------------------|------|
+| Typography scale | `text-2xl font-bold` | Header.tsx |
+| Card styling | `rounded-2xl border border-gray-100` | Card.tsx |
+| Button variants | `variant="outline"` | Button.tsx |
+| Spacing system | `p-6 gap-4` | Layout.tsx |
+
+### 0b: Identify Reusable Components
+
+Before building ANYTHING, check if it exists:
+
+| Need | Check For | Action |
+|------|-----------|--------|
+| Card layout | Card.tsx | Import and adapt |
+| Button styles | Button.tsx | Use existing variant |
+| Form inputs | Input.tsx | Import directly |
+| Modal/dialog | Dialog.tsx | Extend if needed |
+
+**If a pattern exists → import it. Don't rebuild.**
+
+### 0c: Include Code in AI Generation
+
+When generating visuals or code, include BOTH:
+1. Screenshot references (what it looks like)
+2. **Code files** (how it's built) — This is the secret sauce from Ramp
+
+---
+
+## AI Studio MCP Visual Generation Protocol (Visual Tasks)
+
+**CRITICAL: Use `mcp__aistudio__generate_content` NOT `mcp__gemini__gemini-chat`**
+
+AI Studio MCP is significantly better for visual work because:
+- Multi-image context (5-10 reference images) produces dramatically better results
+- Combined text + visual prompts understand design intent
+- Including CODE files alongside screenshots teaches implementation patterns
+- Produces production-ready React + Tailwind code
+
+### Why This Matters
+The lesson from Ramp Spotlights: sending screenshots alone produces generic code. Sending screenshots + actual code files from your codebase produces code that matches your patterns.
 
 ### Step 1: Gather Visual Context
-Collect from the task file:
+
+Collect from the task file AND codebase:
 - Reference Images section (if any)
 - Visual Reference Analysis (from Agent 2)
-- Design Context and requirements
-- Existing component patterns to match
+- Design system / brand reference docs
+- **Existing component CODE files** (critical!)
+- Screenshots of completed similar work
 
-### Step 2: Generate Component Code with Gemini
-```
-mcp__gemini__gemini-chat({
-  message: `Generate a React + Tailwind component for: [DESCRIBE THE UI]
+### Step 2: Generate Component Code with AI Studio MCP
 
-  REQUIREMENTS:
-  - React with TypeScript
-  - Tailwind CSS for all styling
-  - Use semantic color tokens: bg-background, text-foreground, border-border
-  - Follow shadcn/ui patterns (use components like Button, Card, Input from @/components/ui)
-  - Mobile-first responsive design
-  - Include hover/focus states
-  - Clean, production-ready code
+```typescript
+mcp__aistudio__generate_content({
+  user_prompt: `Generate a React + Tailwind component for: [DESCRIBE THE UI]
 
-  DESIGN DIRECTION:
-  [Describe the visual style: dark mode, minimalist, glassmorphism, etc.]
+REQUIREMENTS:
+- React with TypeScript
+- Tailwind CSS for all styling
+- Use semantic color tokens: bg-background, text-foreground, border-border
+- Follow shadcn/ui patterns (use components like Button, Card, Input from @/components/ui)
+- Mobile-first responsive design
+- Include hover/focus states
+- Clean, production-ready code
 
-  SPECIFIC REQUIREMENTS:
-  [List specific features: form fields, navigation, data display, etc.]
+DESIGN DIRECTION:
+[Describe the visual style: dark mode, minimalist, etc.]
 
-  EXISTING PATTERNS TO MATCH:
-  [Reference any existing components or styles from the codebase]`,
-  context: "front-end UI code generation"
+SPECIFIC REQUIREMENTS:
+[List specific features: form fields, navigation, data display, etc.]
+
+MATCH THESE EXISTING PATTERNS:
+The attached code files show how we build components in this codebase.
+Follow the same styling approach, import patterns, and conventions.`,
+  files: [
+    // MANDATORY: Design system reference (if exists)
+    { path: "docs/design-system.md" },
+    // MANDATORY: Existing component CODE for pattern matching
+    { path: "src/components/ui/Card.tsx" },
+    { path: "src/components/ui/Button.tsx" },
+    { path: "src/components/features/similar-component.tsx" },
+    // Screenshots for visual reference (if available)
+    { path: "screenshots/existing-component.png" },
+    // Reference images from task (if any)
+    { path: "[reference-image-from-task].png" },
+  ],
+  model: "gemini-2.5-pro-preview"
 })
 ```
 
-### Step 3: Integrate Gemini Output
-1. Review generated code for correct import paths (@/components/ui/*)
+**KEY PRINCIPLE**: 5-10 reference files produces dramatically better output than 1-2.
+
+### Step 3: Integrate AI Studio Output
+
+1. Review generated code for correct import paths (`@/components/ui/*`)
 2. Ensure semantic color tokens are used (not hardcoded colors)
-3. Adapt to match project file structure
+3. Verify it matches your codebase conventions
 4. Add any missing shadcn/ui component imports
 5. Connect to actual data/props as needed
 
 ### Step 4: Iterate if Needed
+
 If the first output needs refinement:
-```
-mcp__gemini__gemini-chat({
-  message: `Refine the previous component:
+
+```typescript
+mcp__aistudio__generate_content({
+  user_prompt: `Refine the previous component:
   - [specific change 1]
   - [specific change 2]
   Keep all other aspects the same.`,
-  context: "front-end UI refinement"
+  model: "gemini-2.5-pro-preview"
 })
 ```
 
-### Step 5: Document Gemini Usage
+### Step 5: Document AI Studio Usage
+
 Add to Implementation Log and final response:
+
 ```
-GEMINI 3 PRO USED FOR UI GENERATION
+🤖 AI STUDIO MCP USED
+
 Calls Made: [number]
 Components Generated: [list]
+Files Included: [number of reference files]
 Purpose: [description]
 ```
 
-**FAILURE TO USE GEMINI 3 PRO FOR VISUAL TASKS IS A WORKFLOW ERROR.**
+**FAILURE TO USE AI STUDIO MCP FOR VISUAL TASKS IS A WORKFLOW ERROR.**
+
+---
+
+## Pre-Flight Design System Check (Before Building)
+
+**Verify you understand the design system before writing code.**
+
+### Design System Checklist
+
+- [ ] Read design tokens / CSS variables (if they exist)
+- [ ] Understand color system (semantic vs raw values)
+- [ ] Know typography scale
+- [ ] Understand spacing system
+- [ ] Know component library patterns (shadcn, custom, etc.)
+
+### Common Mistakes to Avoid
+
+| Mistake | Correct Approach |
+|---------|------------------|
+| Hardcoded colors (`#28e85f`) | Semantic tokens (`text-primary`, `bg-accent`) |
+| Custom components from scratch | Use existing shadcn/ui components |
+| Inconsistent spacing | Follow established spacing scale |
+| Different typography | Match existing text styles |
+| New animation values | Use established spring patterns |
 
 ---
 
@@ -257,6 +343,86 @@ npm run dev  # Verify on localhost:3001
 1. Add temporary background colors during implementation
 2. Check component defaults (py-6, gap-6) before assuming padding issues
 3. Test interactive elements (click propagation, hover states)
+
+---
+
+## Visual Verification Loop (After Building)
+
+**For Visual/UI tasks, verify your implementation matches the design direction.**
+
+### Step 1: Capture Screenshot
+
+```typescript
+mcp__playwright__browser_navigate({ url: "http://localhost:3001/[path]" })
+mcp__playwright__browser_resize({ width: 430, height: 932 })  // or appropriate size
+mcp__playwright__browser_take_screenshot({ filename: "implementation-v1.png" })
+```
+
+### Step 2: AI Comparison (Optional but Recommended)
+
+```typescript
+mcp__aistudio__generate_content({
+  user_prompt: `Compare this implementation against the design direction.
+
+IMPLEMENTATION: Attached screenshot
+
+CHECK:
+1. Layout matches direction?
+2. Colors correct (semantic tokens used)?
+3. Typography consistent with codebase?
+4. Spacing appropriate?
+5. Component styling matches existing patterns?
+
+Rate: MATCHES / MINOR_DIFFERENCES / MAJOR_DIFFERENCES
+List specific issues if any.`,
+  files: [
+    { path: "screenshots/implementation-v1.png" },
+    // Include reference if available
+    { path: "reference/design-direction.png" },
+  ],
+  model: "gemini-2.5-pro-preview"
+})
+```
+
+### Step 3: Iterate if Needed
+
+| Rating | Action |
+|--------|--------|
+| MATCHES | Proceed to completion |
+| MINOR_DIFFERENCES | Fix issues, re-screenshot, verify |
+| MAJOR_DIFFERENCES | Review approach, may need rethink |
+
+**Maximum 3 iterations** before escalating to human review.
+
+---
+
+## Consistency Check (Multi-Screen Features)
+
+**If your feature spans multiple screens, verify UI consistency across all of them.**
+
+### UI Element Matrix
+
+For each element that appears on multiple screens:
+
+| Element | Screen 1 | Screen 2 | Screen N | Consistent? |
+|---------|----------|----------|----------|-------------|
+| Button labels | "Save" | ? | ? | ✅/❌ |
+| Icon usage | Lucide Check | ? | ? | ✅/❌ |
+| Typography | text-lg font-semibold | ? | ? | ✅/❌ |
+| Colors | bg-primary | ? | ? | ✅/❌ |
+| Spacing | p-6 gap-4 | ? | ? | ✅/❌ |
+
+### What to Check
+
+1. **Labels match** — Same text for same actions across screens
+2. **Icons consistent** — Same Lucide icons for equivalent actions
+3. **Colors identical** — Same tokens for same element types
+4. **Typography matched** — Same text styles for equivalent content
+5. **Spacing uniform** — Consistent padding and gaps
+
+### If Inconsistencies Found
+
+Fix before proceeding to completion. Consistency is not optional.
 
 ---
 
