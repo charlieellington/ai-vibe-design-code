@@ -4,7 +4,7 @@ A categorized reference of patterns, debugging techniques, and lessons learned f
 
 **How to Use**: Search for keywords related to your current task. Check relevant categories before writing code.
 
-**Last Updated**: 2025-12-21
+**Last Updated**: 2025-12-27
 
 ---
 
@@ -21,6 +21,7 @@ Which categories each agent should prioritize:
 | **Agent 5 (Verification)** | Layout & Positioning, CSS & Styling | Animations, Component Patterns |
 | **Agent 6 (Complete)** | Workflow & Process, Success Patterns | All categories (for learning capture) |
 | **Agent 7 (Quick Fix)** | All categories | Rapid iteration - check relevant |
+| **Agent 8 (Animation)** | Animations, motion-patterns.md | Component Patterns, React Patterns |
 
 ---
 
@@ -104,26 +105,83 @@ const DEBUG = false; // Single flag to control all debug output
 - Feedback Systems: Ensure users get visual confirmation
 - Professional Polish: Validate smooth transitions
 
-### Gemini 3 Pro is for UI Code Generation, NOT Image Generation
-**Added**: 2025-12-21
-**Context**: Research Tech Onboarding Flow - 7 pages written manually instead of using Gemini
-**Problem**: Agent misunderstood Gemini 3 Pro as an image generation tool only
-**Solution**: Gemini 3 Pro generates complete, production-ready React + Tailwind component code. Use it for ALL visual/UI tasks.
+### AI Studio MCP for Visual/UI Tasks (Replaces gemini-chat)
+**Added**: 2025-12-27
+**Context**: Ramp Spotlights project discovered AI Studio MCP is far superior for visual work
+**Problem**: Single-image prompts with `mcp__gemini__gemini-chat` produce generic, inconsistent code
+**Solution**: Use `mcp__aistudio__generate_content` with multi-image context (5-10 reference files)
 **Prevention**:
 1. Task Classification is MANDATORY before implementation
-2. Visual/UI tasks (pages, forms, dashboards, layouts) MUST use `mcp__gemini__gemini-chat`
-3. Only use Claude directly for non-visual tasks (API integration, state logic, business logic)
+2. Visual/UI tasks MUST use `mcp__aistudio__generate_content`
+3. Include BOTH screenshots AND code files for pattern matching
+4. 5-10 reference files produces dramatically better results than 1-2
 
 **Example**:
 ```typescript
-// ❌ Wrong understanding - thought it was for images
-mcp__gemini__generate_image({ prompt: "hero illustration" })
-
-// ✅ Correct - use gemini-chat for UI code
+// ❌ Wrong - single prompt, no context
 mcp__gemini__gemini-chat({
-  message: "Generate a React + Tailwind component for a 7-page onboarding flow...",
-  context: "front-end UI code generation"
+  message: "Generate a React component for a card...",
 })
+
+// ✅ Correct - multi-image context with code files
+mcp__aistudio__generate_content({
+  user_prompt: "Generate a React + Tailwind card component matching our design system...",
+  files: [
+    { path: "src/components/ui/Card.tsx" },        // Existing code patterns
+    { path: "src/components/ui/Button.tsx" },      // More code context
+    { path: "screenshots/existing-card.png" },     // Visual reference
+    { path: "docs/design-system.md" },             // Brand guidelines
+  ],
+  model: "gemini-2.5-pro-preview"
+})
+```
+
+### Visual Verification: Screenshot After Every Significant Change
+**Added**: 2025-12-27
+**Context**: Ramp Spotlights - AI comparison caught drift that manual review missed
+**Problem**: Code changes accumulate without visual verification, leading to design drift
+**Solution**: Capture screenshots via Playwright after every significant UI change
+**Prevention**:
+1. After implementing UI changes, capture screenshot immediately
+2. Use AI comparison to check against design direction
+3. Maximum 3 iterations before escalating to human review
+
+**Example**:
+```typescript
+// Capture after implementation
+mcp__playwright__browser_navigate({ url: "http://localhost:3001/page" })
+mcp__playwright__browser_resize({ width: 430, height: 932 })
+mcp__playwright__browser_take_screenshot({ filename: "implementation-v1.png" })
+
+// AI verification
+mcp__aistudio__generate_content({
+  user_prompt: "Compare implementation against design direction. Rate: MATCHES / MINOR_DIFFERENCES / MAJOR_DIFFERENCES",
+  files: [
+    { path: "screenshots/implementation-v1.png" },
+    { path: "reference/design-direction.png" },
+  ],
+  model: "gemini-2.5-pro-preview"
+})
+```
+
+### Consistency Check for Multi-Screen Features
+**Added**: 2025-12-27
+**Context**: Ramp Spotlights had multiple screens that needed identical styling
+**Problem**: Same elements styled differently across screens, breaking visual consistency
+**Solution**: Create UI element matrix checking consistency across all screens
+**Prevention**:
+1. Before completing multi-screen features, list all shared elements
+2. Compare exact styling across all screens
+3. Fix inconsistencies before marking complete
+
+**Example**:
+```markdown
+| Element | Screen 1 | Screen 2 | Screen 3 | Consistent? |
+|---------|----------|----------|----------|-------------|
+| Button labels | "Save" | "Save" | "Continue" | ❌ Fix |
+| Icon usage | Lucide Check | Lucide Check | Lucide Check | ✅ |
+| Typography | text-lg font-semibold | text-lg font-semibold | text-lg font-semibold | ✅ |
+| Colors | bg-primary | bg-primary | bg-green-500 | ❌ Fix |
 ```
 
 ### Prototype Specification Precision
@@ -519,6 +577,27 @@ const [isCarouselHovered, setIsCarouselHovered] = useState(false)
 **Solution**: For user flow tasks, always analyze post-completion behaviors during planning
 **Prevention**: Ask "What options should users have after completing this step?" and document post-completion behaviors
 
+### Clarify Interaction Type Early (Simulated vs Real)
+**Added**: 2025-12-27
+**Context**: Ramp Spotlights - confusion about whether actions were simulated or required real input
+**Problem**: Planning didn't specify if interactions were demos or actual flows
+**Solution**: During planning, explicitly clarify: Is this a demo/simulation or real user interaction?
+**Prevention**:
+- Simulated: Auto-triggered animations, scripted sequences, no real user input needed
+- Real: Actual user clicks, real data input, real API calls
+- Document interaction type in task file before implementation
+
+### Timer Auto-Action Clarity
+**Added**: 2025-12-27
+**Context**: Ramp Spotlights had auto-advancing screens that confused implementation
+**Problem**: "Then it advances to next screen" left unclear - user-triggered or auto?
+**Solution**: Always specify exact trigger mechanism for screen transitions
+**Prevention**:
+- Explicit timer: "After 3 seconds, auto-advance to Screen 2"
+- User action: "User taps 'Continue' button to advance"
+- Completion: "After animation ends, auto-transition"
+- Never use vague "then it goes to next screen"
+
 ### UX Discoverability Planning
 **Added**: 2025-01-06
 **Context**: Demo Asset Library required multiple UI affordances after user couldn't discover functionality
@@ -656,6 +735,27 @@ max-h-0 → max-h-20 + overflow-hidden
 - Base Animation Speed: Specific duration values (e.g., 8 seconds for full cycle)
 - Interaction Speed Modifiers: Exact multipliers for hover, proximity, focus states
 
+### Spring Physics Reference (Framer Motion)
+**Added**: 2025-12-27
+**Context**: Ramp Spotlights established consistent spring values for premium motion feel
+**Problem**: Arbitrary spring values lead to inconsistent motion feel across features
+**Solution**: Use established spring values from `motion-patterns.md` reference
+**Prevention**: Check motion-patterns.md before implementing any spring animations
+
+**Quick Reference** (full details in motion-patterns.md):
+| Element | Spring Values | Notes |
+|---------|---------------|-------|
+| Avatar/card entry | `spring(350, 15)` | Bouncy, with initial rotate + scale |
+| Text reveal | `spring(200, 20)` | Smooth y-slide, stagger 0.1s |
+| Button entry | `spring(400, 25)` | Quick pop |
+| Button tap | `scale: 0.92, duration: 0.05` | HARD snap, no soft ease |
+| Sheet/modal | `spring(300, 30)` | y: '100%' → '0%' |
+
+**Duration Rules**:
+- Transitions: 150-300ms
+- Stagger: 0.08-0.1s between elements
+- Ambient: 4-7s cycles (varied per element to prevent sync)
+
 ---
 
 ## Data & APIs
@@ -744,6 +844,62 @@ max-h-0 → max-h-20 + overflow-hidden
 2. Examine page source and components to identify existing implementations
 3. Search codebase for related component files
 4. Verify modification vs creation approach - prefer extending existing components
+
+### Chat UI Patterns (Typewriter, Typing Indicator)
+**Added**: 2025-12-27
+**Context**: Ramp Spotlights chat interface required specific animation patterns
+**Problem**: Chat interfaces need coordinated animations for natural feel
+**Solution**: Use proven patterns for chat UI elements
+
+**Typewriter Effect**:
+```typescript
+function TypewriterText({ text, speed = 18, onComplete }) {
+  const [displayedText, setDisplayedText] = useState('')
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText((prev) => prev + text[currentIndex])
+        setCurrentIndex((prev) => prev + 1)
+      }, speed)
+      return () => clearTimeout(timeout)
+    } else if (onComplete) {
+      onComplete()
+    }
+  }, [currentIndex, text, speed, onComplete])
+
+  return <p>{displayedText}</p>
+}
+```
+
+**Typing Indicator (Dots)**:
+```typescript
+{[0, 1, 2].map((dot) => (
+  <motion.div
+    key={dot}
+    className="w-3 h-3 bg-gray-400 rounded-full"
+    animate={{ opacity: [0.4, 1, 0.4] }}
+    transition={{
+      duration: 1,
+      repeat: Infinity,
+      delay: dot * 0.2,
+      ease: 'easeInOut',
+    }}
+  />
+))}
+```
+
+**Chat Bubble Entry**:
+```typescript
+<motion.div
+  initial={{ y: 30, scale: 0.9, opacity: 0 }}
+  animate={{ y: 0, scale: 1, opacity: 1 }}
+  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+>
+  <ChatBubble />
+</motion.div>
+```
 
 ---
 
