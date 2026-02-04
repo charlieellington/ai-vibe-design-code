@@ -65,6 +65,20 @@ Use to verify visual fixes:
 - `mcp__playwright__browser_take_screenshot` - Capture result
 - `mcp__playwright__browser_console_messages` - Check for errors
 
+### AI Studio MCP (for visual analysis — if needed)
+- `mcp__aistudio__generate_content` - Generate or analyze visual components
+- **⚠️ FILE TYPE RESTRICTIONS**:
+  - ✅ Images (PNG, JPG): Send as file attachments
+  - ❌ TSX/TS code files: DO NOT send — causes errors
+  - ❌ Markdown files (.md): DO NOT send — causes MIME type errors
+  - Instead: Embed code snippets directly in `user_prompt`
+- **⛔ ERROR HANDLING**: If AI Studio MCP fails for ANY reason:
+  1. STOP immediately
+  2. Report the full error message to user
+  3. List files that were attempted
+  4. Do not continue until resolved
+  5. NEVER proceed manually as a workaround
+
 ## Rules & Standards
 
 **MUST follow these guidelines:**

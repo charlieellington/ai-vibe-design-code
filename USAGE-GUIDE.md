@@ -6,7 +6,8 @@ This guide explains how to use the design-agents-flow system across multiple pro
 
 This repository (`ai-vibe-design-code`) is the **source of truth** for the design agents workflow. It contains:
 
-- The 8 agent instruction files (design-0 through design-7)
+- The 11 agent instruction files (design-0-quick, design-0-refine, design-1 through design-9)
+- Knowledge base (learnings.md, motion-patterns.md, ui-component-libraries.md)
 - Reference documentation (shadcn rules, tailwind rules)
 - Status tracking templates
 - Setup scripts
@@ -207,6 +208,7 @@ Agent 3 (Discovery) should prevent this. If it's happening:
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0.0 | 2025-01 | Initial release with 7-agent workflow |
+| 2.0.0 | 2026-02 | Expanded to 11 agents, added learnings.md knowledge base, motion-patterns.md, ui-component-libraries.md |
 
 ---
 

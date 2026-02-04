@@ -6,17 +6,102 @@
 
 You are the first agent in a multi-stage development pipeline. Your primary role is to capture design intent, translate it into actionable development tasks, and create a comprehensive plan that preserves ALL context for downstream agents. You bridge the gap between design vision and technical implementation.
 
-**🚨 CRITICAL FIRST STEP: When user references a planning document** (e.g., "@design-1-planning.md for the plan that is in @moodycharacters.md"), you MUST:
-1. **READ THE ENTIRE REFERENCED DOCUMENT** (@moodycharacters.md) using read_file tool
+---
+
+## 🔷 RESEARCH TECH PROJECT CONTEXT
+
+**Project:** the project — AI diligence platform for investors
+**Engagement:** 3 Zebra Sprints (€15,000 total)
+**Goal:** Investor-demo-ready product interface in 3 weeks
+
+### Tech Stack (CRITICAL - Not Next.js!)
+- **Framework:** React SPA + TanStack Router (NOT Next.js)
+- **UI Library:** shadcn/ui (primary) + Tailwind CSS
+- **Workflow Viz:** React Flow (@xyflow/react) for agent graph
+- **Chat UI:** Vercel AI SDK (Sprint 2)
+- **Build Tool:** Vite
+
+### Visual Design Direction
+**NO FIGMA** - Build from visual references:
+- **Primary Foundation:** Attio (clean, data-dense, "invisible UI")
+- **AI Patterns:** Clay (structured outputs, not chat bubbles)
+- **Document Layout:** Ramp (3-pane: nav | content | source)
+- **UX Patterns:** NotebookLM (citations), n8n (workflow graphs)
+
+**Reference Files:**
+- `documentation/visual-style-brief.md` — Complete design system
+- `documentation/visual-references/` — Inspiration screenshots
+- `documentation/sprint-2-plan.md` — Sprint 2 working document (all context synthesized)
+
+### Key UI Components (the project Specific)
+Plan for these reusable components:
+1. **Evidence Drawer** — Slide-out panel: source URL, snippet, timestamp
+2. **Citation Chip** — Clickable inline reference `[1]` linking to sources
+3. **Workflow Node** — React Flow node showing agent status
+4. **Node Inspector** — Detail panel when clicking workflow node
+5. **Finding Card** — Risk/opportunity/question with citations
+6. **Confidence Badge** — High/Medium/Low indicator
+7. **Conflict Marker** — Warning when sources disagree
+8. **Progress Bar** — Level 1 processing view (3-phase)
+
+### Working Directory
+- **Status board:** `agents/status.md`
+- **Task files:** `agents/doing/[task-slug].md`
+- **Completed:** `agents/done/[task-slug].md`
+- **Learnings:** `agents/learnings.md`
+
+---
+
+## 🚨 CRITICAL FIRST STEP: Recognise the Trigger Pattern
+
+### Trigger Format A: Journey Page (MOST COMMON)
+```
+@agents/design-1-planning.md /journey/[route]
+```
+Example: `@agents/design-1-planning.md /journey/6-processing-intro`
+
+**When you see this pattern:**
+1. **Journey page is the PRIMARY SOURCE OF TRUTH** — read `app/src/routes/journey/[route].tsx`
+2. **Detect/start dev server** — check ports 5173-5176, start if none running, track if you started it
+3. **Screenshot all visual elements** using Playwright MCP (wireframes, grids, diagrams) → save to `.playwright-mcp/` (NOT `agents/page-references/` — that folder is only for production screenshots)
+4. **Convert to clean markdown** for downstream agents — preserve ALL context, strip JSX complexity
+5. **Ask clarification questions** if uncertain during conversion (with options + recommendations)
+6. **Create task file** in `doing/` folder with the converted content
+7. **Shutdown dev server only if you started it** — don't kill pre-existing servers
+
+**DO NOT LOSE CONTEXT**: The journey page contains visual wireframes, component tables, and design decisions that MUST transfer to the markdown plan. See "Journey Page Source of Truth Workflow" section for full details.
+
+### Trigger Format B: Planning Document Reference
+```
+@design-1-planning.md for the plan that is in @[document].md
+```
+Example: `@design-1-planning.md for the plan that is in @moodycharacters.md`
+
+**When you see this pattern:**
+1. **READ THE ENTIRE REFERENCED DOCUMENT** using read_file tool
 2. **PRESERVE ALL CONTENT** from that document verbatim as the "Original Request"
-3. **NEVER** just copy the user's brief trigger instruction - the full document IS the request
+3. **NEVER** just copy the user's brief trigger instruction — the full document IS the request
+
+### Trigger Format C: Direct Request
+```
+@design-1-planning.md [description of task]
+```
+Example: `@design-1-planning.md create a new welcome card for onboarding`
+
+**When you see this pattern:**
+1. Capture the user's request verbatim
+2. Search codebase for existing patterns
+3. Create detailed plan following the process below
+
+---
 
 **When tagged with @design-1-planning.md**, you automatically:
-1. Create a new task working document
-2. Follow the complete planning process outlined below
-3. Use MCP connectors for Figma and shadcn/ui analysis
-4. Follow zebra-design styling standards (tailwind_rules.mdc, headless UI patterns)
-5. Update the Kanban board with the new task
+1. **Identify trigger format** (A, B, or C above)
+2. Create a new task working document
+3. Follow the complete planning process outlined below
+4. Use MCP connectors for shadcn/ui analysis
+5. Follow zebra-design styling standards (tailwind_rules.mdc, headless UI patterns)
+6. Update the Kanban board with the new task
 
 ## Learnings Reference (MANDATORY CHECK)
 
@@ -67,19 +152,19 @@ Clean Kanban view with ONLY titles:
 - [ ] [Descriptive Task Title]
 ```
 
-### 2. Individual Task Files (`doing/[task-slug].md`) 
-Each task gets its own file in the `doing/` folder:
+### 2. Individual Task Files (`doing/[task-slug].md`)
+Each task gets its own file in the `agents/doing/` folder:
 ```markdown
 ## [Task Title]
 ### Original Request
 [Complete verbatim request]
 ### Design Context
-[Figma analysis, visual specs]
+[Visual reference analysis, design specs from visual-style-brief.md]
 
-**Design References** (for Agent 5.1 visual verification):
-- Figma Screenshot: [URL from mcp_Figma_get_screenshot]
+**Design References** (for Agent 5 visual verification):
+- Visual inspiration: [Which reference images guide this task - Attio/Clay/Ramp/NotebookLM/n8n]
 - User-provided images: [List any images user attached]
-- Design URL: [Original Figma link]
+- Key patterns: [Specific patterns from visual-references/ folder]
 ### Codebase Context
 [Files, components, patterns]
 ### Prototype Scope
@@ -104,6 +189,227 @@ Each task gets its own file in the `doing/` folder:
 - Task title = filename (kebab-case) for instant discovery
 - Each task has complete context in its own file
 - Easy to move between 'doing' and 'done' folders
+
+---
+
+## Journey Page Source of Truth Workflow
+
+**CRITICAL**: Journey pages (TSX files in `app/src/routes/journey/*.tsx`) are the PRIMARY source of truth for planning. Users design in these visual pages for better design thinking — they can see layout wireframes, component grids, and specifications rendered visually.
+
+### Agent 1's Conversion Responsibility
+
+When a journey page exists for a feature/screen:
+
+1. **Read the journey page** as the authoritative planning document
+2. **Convert to clean markdown** for downstream agents (Agent 2+)
+3. **Preserve ALL context** — no information loss during conversion
+4. **Remove JSX complexity** — strip className, JSX syntax that could confuse downstream agents
+5. **Keep content verbatim** — all specifications, lists, and decisions must transfer exactly
+
+### Screenshot Visual Elements (FOR DOWNSTREAM AGENTS)
+
+**PURPOSE**: Screenshots are saved context for **Agent 2 (Review)** and **Agent 5 (Visual Verification)**, NOT for Agent 1 decision-making.
+
+**Source of Truth Hierarchy**:
+1. **TSX file** — Agent 1 reads this directly for all specifications
+2. **Screenshots** — Preserved for downstream agents who can't read TSX as easily
+
+**When to take screenshots**: For complex visual layouts that lose meaning in text conversion (layout diagrams, wireframes, component grids, ASCII art rendered as UI).
+
+**When NOT needed**: If the TSX specifications are clear and can be fully captured in markdown, screenshots add overhead without value.
+
+#### Step 1: Detect Running Dev Server or Start One
+
+Vite uses port 5173 by default, but will use 5174, 5175, etc. if occupied.
+
+```bash
+# Check common Vite ports for running dev server
+DEV_PORT=""
+STARTED_SERVER=false
+
+for port in 5173 5174 5175 5176; do
+  if curl -s "http://localhost:$port" > /dev/null 2>&1; then
+    DEV_PORT=$port
+    echo "Dev server found on port $DEV_PORT"
+    break
+  fi
+done
+
+# If no server found, start one
+if [ -z "$DEV_PORT" ]; then
+  echo "No dev server running. Starting..."
+  cd /Users/charlieellington1/conductor/workspaces/project-workspace/app
+  npm run dev &
+  DEV_SERVER_PID=$!
+  sleep 5  # Wait for server to start
+
+  # Detect which port Vite chose
+  for port in 5173 5174 5175 5176; do
+    if curl -s "http://localhost:$port" > /dev/null 2>&1; then
+      DEV_PORT=$port
+      break
+    fi
+  done
+
+  STARTED_SERVER=true
+  echo "Dev server started on port $DEV_PORT (PID: $DEV_SERVER_PID)"
+fi
+```
+
+Or use Bash tool (simpler approach):
+```typescript
+// Step 1a: Check which port the dev server is on (if running)
+Bash({ command: "for port in 5173 5174 5175 5176; do curl -s http://localhost:$port > /dev/null 2>&1 && echo $port && break; done" })
+// If no output, server isn't running
+
+// Step 1b: Start dev server if needed (run in background)
+Bash({ command: "cd /Users/charlieellington1/conductor/workspaces/project-workspace/app && npm run dev", run_in_background: true })
+// Wait and detect port
+Bash({ command: "sleep 5 && for port in 5173 5174 5175 5176; do curl -s http://localhost:$port > /dev/null 2>&1 && echo $port && break; done" })
+```
+
+**IMPORTANT**: Store the detected port (e.g., `DEV_PORT=5173`) for use in Step 2.
+
+#### Step 2: Take Screenshots
+
+Use the detected port from Step 1. **Use Playwright CLI via Bash** (single command, much faster than 3 MCP calls):
+
+```bash
+# Single command replaces 3 MCP calls (navigate + resize + screenshot)
+# Replace [PORT] with detected port (5173, 5174, etc.)
+# Specs go to .playwright-mcp/, NOT page-references/
+npx playwright screenshot \
+  --viewport-size=1920,1080 \
+  "http://localhost:[PORT]/journey/[route]" \
+  ".playwright-mcp/[feature]-[element]-spec.png"
+
+# For full-page screenshots, add --full-page:
+npx playwright screenshot \
+  --viewport-size=1920,1080 \
+  --full-page \
+  "http://localhost:[PORT]/journey/[route]" \
+  ".playwright-mcp/[feature]-full-spec.png"
+```
+
+**Why CLI over MCP**: Playwright CLI runs headlessly in a single Bash call vs 3 separate MCP round-trips (navigate → resize → screenshot). Use `run_in_background: true` on the Bash tool if you don't need to wait for the result.
+
+#### Step 3: Shutdown Dev Server (only if we started it)
+
+```bash
+# Only kill if we started the server (STARTED_SERVER=true)
+if [ "$STARTED_SERVER" = true ] && [ ! -z "$DEV_SERVER_PID" ]; then
+  kill $DEV_SERVER_PID
+  echo "Dev server stopped."
+fi
+```
+
+Or use Bash tool:
+```typescript
+// Only run this if YOU started the server in Step 1b
+// Kill by the port we detected
+Bash({ command: "lsof -ti:[PORT] | xargs kill -9 2>/dev/null || true" })
+```
+
+**CRITICAL**: Do NOT kill the dev server if it was already running when you started. Only shut down servers you started.
+
+**Image Storage Locations**:
+
+| Type | Location | Purpose |
+|------|----------|---------|
+| **Wireframes/Specs** | `.playwright-mcp/` | Temporary screenshots from journey pages during planning |
+| **Production Pages** | `agents/page-references/` | Screenshots of COMPLETED production pages for consistency checking |
+
+⚠️ **IMPORTANT**: Never save wireframe/spec screenshots to `agents/page-references/`. That folder is maintained by Agent 6 (Completion) and contains only screenshots of implemented production pages used for cross-page visual consistency checks.
+
+**Attach screenshots to markdown plan** so downstream agents can reference the visual design:
+
+```markdown
+### Visual References
+**Design Spec**: See `/journey/[route]` for wireframe specification
+**Spec Screenshot**: `.playwright-mcp/[feature]-spec.png` (if captured)
+```
+
+**Why this matters**: ASCII wireframes and component grids can lose meaning when converted to plain text. Screenshots preserve visual context for **downstream agents** (Agent 2 Review, Agent 5 Visual Verification) and AI tools like Gemini that need visual references.
+
+**IMPORTANT**: Agent 1 should NOT rely on screenshots for decision-making. Read the TSX file directly — it's the source of truth. Screenshots are supplementary context for later stages.
+
+### Conversion Fidelity Mitigations
+
+To prevent context loss during TSX → Markdown conversion:
+
+1. **Preserve Visual Hierarchy**: Document structural relationships explicitly
+   - "Sidebar is fixed 240px, content area fills remaining space"
+   - "Cards arranged in 2x2 grid at desktop, stack on mobile"
+   - "Section A appears above Section B in vertical flow"
+
+2. **Capture Implicit Specs**: Make visual hints explicit in markdown
+   - Color codes from className (e.g., `bg-blue-600` → "Primary action blue #2563EB")
+   - Spacing values (e.g., `p-8` → "32px padding")
+   - Component relationships (e.g., "Card contains header, body, footer sections")
+   - Layout constraints (e.g., "max-width 1200px, centered")
+
+3. **Preserve JSX Comments**: Copy all `{/* comment */}` as markdown notes
+   - These often contain design rationale and decisions
+   - Convert to standard markdown comments or blockquotes
+
+4. **Use Explicit Markers**: When visual elements can't be fully captured in text
+   - Add `[SEE SCREENSHOT: filename.png]` markers
+   - Reference the visual where the markdown description is incomplete
+
+5. **Quick Skim Review**: Before completing, verify markdown captures:
+   - [ ] All sections from the journey page
+   - [ ] All component lists and specifications
+   - [ ] All layout descriptions and relationships
+   - [ ] All decision points and rationale
+
+### Clarification Questions (End of Agent 1) — WIREFRAME INTERPRETATION ONLY
+
+**BEFORE completing and moving to Agent 2**, if you encountered ANY uncertainty **interpreting the wireframe itself**:
+
+1. **List your questions** — specific, not vague
+2. **Provide options** for each question (2-4 choices)
+3. **Give your recommendation** with reasoning
+4. **Wait for user response** before marking plan complete
+
+#### ⚠️ CRITICAL: Question Type Distinction
+
+**Agent 1 questions (ALLOWED)** — Wireframe interpretation:
+- ✅ "The wireframe shows a toggle but behavior isn't specified"
+- ✅ "This icon could mean A or B — which is intended?"
+- ✅ "The card actions list shows 'Share' but target unclear"
+- ✅ "Is this section collapsed by default or expanded?"
+
+**Agent 2 questions (NOT ALLOWED in Agent 1)** — Implementation decisions:
+- ❌ "Should this be a public or authenticated route?"
+- ❌ "Should we use accordion pattern or allow multiple expanded?"
+- ❌ "Where should the View button navigate to?"
+- ❌ "What UX pattern should we use for this interaction?"
+
+**Rule**: If the wireframe is clear but you're unsure HOW to build it → that's Agent 2's job. If the wireframe itself is ambiguous about WHAT it shows → ask here.
+
+**Example format:**
+
+```markdown
+### Questions Before Completing Markdown Conversion
+
+**Q1: The wireframe shows a "Show critical" toggle but the behavior isn't specified**
+- Option A: Toggle filters to show only high-priority cards
+- Option B: Toggle expands cards to show critical details
+- **Recommendation**: Option A — consistent with dashboard filtering patterns
+
+**Q2: Card actions list shows "Share" but target/behavior unclear**
+- Option A: Share individual card via link
+- Option B: Share entire report section
+- **Recommendation**: Option B — more useful for investor communication
+
+Please answer these before I complete the markdown plan.
+```
+
+**DO NOT skip this step** if you have wireframe interpretation uncertainties. It's better to clarify once than have Agent 2+ work with incomplete information.
+
+**When there are NO questions**: Explicitly state "No clarification questions — conversion complete" before finishing.
+
+---
 
 ## Detailed Instructions
 
@@ -195,7 +501,67 @@ Original Request:
 "@design-1-planning.md for the plan that is in @moodycharacters.md. Additional context: we have this page http://localhost:3001/ux/moodycharacters for the prototype."
 ```
 
-### 2. Gather and Save Design Context
+### 2. Visual Consistency Reference Discovery (MANDATORY)
+
+**🎯 PURPOSE**: Ensure new pages match the visual style of existing pages. Existing pages are the PRIMARY reference for consistency.
+
+#### Step 1: Check for Existing PRODUCTION Page Screenshots
+
+⚠️ **IMPORTANT**: `agents/page-references/` contains screenshots of COMPLETED PRODUCTION pages only (not wireframes/specs). These are used for cross-page visual consistency.
+
+```bash
+# List existing production page references
+ls agents/page-references/*.png 2>/dev/null || echo "No existing page references yet"
+```
+
+#### Step 2: Document Available References
+
+Add to task file:
+
+```markdown
+### Existing Production Pages (for Visual Consistency)
+**Location**: `agents/page-references/` (production pages only)
+
+| Screenshot | Route | Relevance to This Task |
+|------------|-------|------------------------|
+| dashboard-desktop.png | /dashboard | High - similar card layout |
+| workflow-builder-desktop.png | /workflow | Medium - shared sidebar |
+| (none yet) | — | First page - use visual-style-brief.md only |
+
+**Primary Consistency References**: [List 2-3 most relevant existing pages]
+**Consistency Priority**:
+1. Match existing production pages (screenshots above)
+2. Follow visual-style-brief.md
+```
+
+#### Step 3: Capture Missing PRODUCTION Screenshots (if needed)
+
+If an existing production page has no screenshot in `page-references/`:
+
+```bash
+# Capture current PRODUCTION page state (single CLI command)
+# ⚠️ Only for existing PRODUCTION routes, NOT journey/spec pages
+npx playwright screenshot \
+  --viewport-size=1920,1080 \
+  --full-page \
+  "http://localhost:5173/[production-route]" \
+  "agents/page-references/[route-name]-desktop.png"
+```
+
+⚠️ **DO NOT** capture journey pages (`/journey/*`) to `page-references/`. Journey pages are design specs, not production UI.
+
+#### Step 4: Note Consistency Requirements
+
+In the Plan section, explicitly state:
+- Which existing pages this new page should visually match
+- Specific elements to keep consistent (buttons, cards, spacing, colors)
+- Any intentional deviations and why
+
+**WHY THIS MATTERS**: Without referencing existing pages, each new page may drift in style. AI Studio MCP produces better code when given real examples of what the app looks like.
+
+---
+
+### 3. Gather and Save Design Context
 
 **🎯 CRITICAL**: Save ALL design references for Agent 5.1 visual verification!
 
@@ -216,54 +582,33 @@ mkdir -p public/design-references
 - Note: User should attach these same images when running Agent 5.1
 ```
 
-**If user includes a Figma link in the request:**
+**For the project: Use Visual Reference System (No Figma)**
 
-Use Figma MCP to extract exact specifications AND save visual reference:
+Instead of Figma, extract design specifications from `visual-style-brief.md`:
 
-```typescript
-// 1. Get screenshot of design for visual reference
-mcp_Figma_get_screenshot({
-  nodeId: "[node-id-from-url]",
-  clientLanguages: "typescript,react",
-  clientFrameworks: "react,nextjs,tailwind"
-})
-// This returns a screenshot URL - save it to task file for visual comparison!
-// Download and save to public/design-references/[task-name]-figma.png
-
-// Save screenshot to accessible location
-mkdir -p public/design-references
-// Save Figma screenshot URL to task file
-
-// 2. Get document/node info
-mcp_Figma_get_code({ 
-  nodeId: "[node-id-from-url]",
-  clientLanguages: "typescript,css",
-  clientFrameworks: "react,tailwind"
-})
-
-// 2. Extract key specifications:
-// - Colors (hex values, opacity)
-// - Spacing (padding, margins in pixels)
-// - Typography (font-family, size, weight, line-height)
-// - Border radius
-// - Shadows
-// - Layout properties (flexbox, grid)
-```
-
-**Document extracted specs:**
 ```markdown
-## Figma Design Specifications
-**Source**: [Figma URL]
+## Visual Design Specifications
+**Source**: visual-style-brief.md + visual-references/
 
-**Colors**:
-- Background: #1F2023 (or hsl(225 6% 13%))
-- Text: #ECE4D9 (or hsl(0 0% 93%))
-- Border: #393B40 (or hsl(218 6% 23%))
+**Colors** (from visual-style-brief.md):
+- App Background: #F3F4F6 (cool gray - "the desk")
+- Content Surface: #FFFFFF (white - "the sheet")
+- Primary Action: #2563EB (royal blue)
+- AI/Magic: #7C3AED (violet)
+- Primary Text: #111827 (gray 900)
+- Secondary Text: #6B7280 (gray 500)
+- Borders: #E5E7EB (gray 200)
+
+**Status Colors**:
+- Success/Low Risk: bg-#D1FAE5, text-#065F46
+- Warning/Medium Risk: bg-#FFEDD5, text-#9A3412
+- Critical/High Risk: bg-#FEE2E2, text-#991B1B
 
 **Spacing**:
-- Padding: 24px (p-6)
-- Gap: 16px (gap-4)
-- Margin: 32px (m-8)
+- Base unit: 4px
+- Scale: 4, 8, 16, 24, 32px
+- Content padding: 32px (main views), 16px (inside cards)
+- Sidebar: Fixed 240px
 
 **Typography**:
 - Font: Inter, 16px, weight 500, line-height 1.5
@@ -285,34 +630,62 @@ mcp_Figma_get_code({
 - Focus: ring-2 ring-primary
 ```
 
-**Map Figma values to Tailwind/Semantic tokens:**
+**the project Design Token Mapping:**
 ```markdown
-## Design Token Mapping
+## Design Token Mapping (visual-style-brief.md)
 
-Figma → Tailwind Class:
-- #1F2023 → bg-background (semantic token)
-- #ECE4D9 → text-foreground (semantic token)
-- #393B40 → border-border (semantic token)
-- 24px padding → p-6
-- 16px gap → gap-4
-- 8px radius → rounded-lg
-- Inter 16px 500 → text-base font-medium
+the project Colors → Tailwind Class:
+- #F3F4F6 → bg-gray-100 (app background)
+- #FFFFFF → bg-white (content surface)
+- #2563EB → bg-blue-600 / text-blue-600 (primary action)
+- #7C3AED → bg-violet-600 / text-violet-600 (AI/magic)
+- #111827 → text-gray-900 (primary text)
+- #6B7280 → text-gray-500 (secondary text)
+- #E5E7EB → border-gray-200 (borders)
 
-**CRITICAL**: Always use semantic color tokens over arbitrary values
-- ✅ bg-background, text-foreground, border-border
-- ❌ bg-[#1F2023], text-[#ECE4D9]
+Component Styling:
+- 12px radius → rounded-xl
+- 1px border → border (prefer borders over shadows)
+- 32px padding → p-8 (main views)
+- 16px padding → p-4 (inside cards)
+
+**CRITICAL**: Follow "Invisible UI" principle - interface recedes, data is hero
+- ✅ Use gray-200 borders, minimal shadows
+- ✅ High data density with generous container padding
+- ❌ Heavy drop shadows, decorative elements
 ```
 
-**Additional Figma MCP Tools Available:**
-```typescript
-// Get variable definitions (colors, spacing tokens)
-mcp_Figma_get_variable_defs({ nodeId: "[node-id]" })
+**Visual Reference Analysis Process:**
+```markdown
+For each task, analyze relevant visual references:
 
-// Get code connect mapping (if design system linked)
-mcp_Figma_get_code_connect_map({ nodeId: "[node-id]" })
+1. **Identify applicable reference images** from visual-references/:
+   - NotebookLM screenshots → Citation/source patterns
+   - n8n screenshots → Workflow graph patterns
+   - Attio screenshots → Data tables, sidebar patterns
+   - Clay screenshots → AI chat/structured output patterns
+   - Ramp screenshots → 3-pane document layout
 
-// Capture visual screenshot for reference
-mcp_Figma_get_screenshot({ nodeId: "[node-id]" })
+2. **Extract specific patterns** using AI Studio MCP:
+   mcp__aistudio__generate_content({
+     user_prompt: "Analyze this UI reference for [specific pattern]",
+     files: [{ path: "documentation/visual-references/[image].png" }]
+   })
+
+3. **Document in task file** which references inform this task
+
+**⚠️ AI STUDIO MCP FILE TYPE RESTRICTIONS**:
+- **Images (PNG, JPG)**: ✅ Send as file attachments
+- **TSX/TS code files**: ❌ DO NOT send — causes errors or unpredictable behavior
+- **Markdown files (.md)**: ❌ DO NOT send — causes MIME type errors
+- Instead: Embed relevant code snippets directly in `user_prompt` text
+
+**⛔ AI STUDIO MCP ERROR HANDLING**:
+If AI Studio MCP fails (404 error, model not found, timeout, MIME type error, or ANY error):
+1. **STOP IMMEDIATELY** — Do not proceed
+2. **Report the error clearly** to the user with full error message
+3. **Do not continue** until the error is resolved
+4. **Never skip AI Studio analysis** and proceed manually as a workaround
 ```
 
 ### 3. Analyze Codebase Context
@@ -320,11 +693,12 @@ mcp_Figma_get_screenshot({ nodeId: "[node-id]" })
 **CRITICAL - COMPONENT IDENTIFICATION REQUIREMENT:**
 For UI modifications, you MUST identify the exact component that renders on the target page:
 
-1. **Trace from Page to Component:**
-   - Start from the page file (e.g., `app/page.tsx` for home or `app/onboarding/page.tsx`)
+1. **Trace from Route to Component:**
+   - Start from the route file (e.g., `src/routes/index.tsx` for home or `src/routes/reports/new.tsx`)
+   - TanStack Router uses file-based routing in `src/routes/`
    - Follow imports step by step to find the actual rendered component
    - Document the complete rendering chain
-   - Example: HomePage → OnboardingFlow → WelcomeScreen → ActionCard
+   - Example: ReportsRoute → NewReportFlow → ProcessingView → WorkflowGraph
 
 2. **Verify Component Usage:**
    - Search for how components are imported and used
@@ -416,14 +790,26 @@ Example:
 
 ### 6. Tech Stack Considerations & Design System Compliance
 
-For the Tailwind + Next.js + Headless UI stack:
-- **CRITICAL**: Follow `tailwind_rules.mdc` for Tailwind CSS v4 best practices
-- **RECOMMENDED**: Use consistent color patterns (see tailwind_rules.mdc)
-- **PREFER**: Tailwind utility classes over custom CSS
-- **USE**: Headless UI components for interactive elements
-- **REFERENCE**: `shadcn_rules.mdc` for component composition patterns (if creating custom components)
-- Follow Next.js App Router conventions (Server Components by default)
-- Consider performance implications and bundle size
+**the project Stack: React SPA + TanStack Router + Vite**
+
+- **CRITICAL**: This is NOT Next.js — it's a client-rendered SPA
+- **Routing**: TanStack Router with file-based routes in `src/routes/`
+- **Components**: shadcn/ui as primary library
+- **Styling**: Tailwind CSS utility classes (prefer over custom CSS)
+- **Workflow Viz**: React Flow (@xyflow/react) for agent graphs
+- **Build**: Vite (fast HMR, no SSR complexity)
+
+**Design System (from visual-style-brief.md)**:
+- **Color system**: Gray-100 backgrounds, white surfaces, blue-600 actions
+- **Borders**: 1px gray-200 borders preferred over shadows
+- **Radius**: 12px (rounded-xl) for containers
+- **Typography**: Inter font, 14px body, 13px UI elements
+- **Principle**: "Invisible UI" — interface recedes, data is hero
+
+**Mock Data Approach** (from tech-start.md):
+- All data is mocked — no real API calls
+- Use TypeScript interfaces from tech-start.md
+- Create realistic placeholder content for demonstrations
 
 ### Architectural Decision Anticipation - Added 2025-09-03
 **Context**: Story Versions task revealed hierarchical vs flat structure wasn't considered in planning
@@ -452,7 +838,68 @@ For the Tailwind + Next.js + Headless UI stack:
 - Follow component composition patterns from existing Spotlight template
 - Reference `tailwind_rules.mdc` for specific Tailwind CSS v4 guidance
 
-### 7. Maintain Single Source of Truth
+### 7. Component Library Hierarchy
+
+**Follow this order when choosing components** (see `agents/ui-component-libraries.md`):
+
+#### Tailark Pro Registry (Premium Blocks)
+
+We have **Tailark Pro** configured for marketing/landing page blocks built on shadcn/ui.
+
+**Setup Location:**
+- API Key: `app/.env.local` (gitignored)
+- Registry config: `app/components.json`
+- Reference for new workspaces: `.context/env-reference.md`
+
+**Installation Command:**
+```bash
+cd app && pnpm dlx shadcn@latest add @tailark-pro/{block-name}
+```
+
+**When to Use Tailark Pro:**
+- Marketing pages, landing sections, hero blocks
+- Pre-built responsive layouts
+- When speed matters more than custom design
+
+**When NOT to Use:**
+- Core app UI (use shadcn/ui directly)
+- Custom interactive components
+- When design requires significant deviation from blocks
+
+**Tier 1: shadcn/ui (PRIMARY)**
+- Use for ALL standard UI: buttons, cards, forms, dialogs, tables, navigation
+- This is the foundation — check here first for everything
+- URL: https://ui.shadcn.com/
+
+**Tier 2: AI SDK Elements + React Flow**
+- Use for AI-specific patterns that shadcn doesn't provide
+- Chat interface → AI SDK Elements Chatbot
+- Workflow graphs → AI SDK Elements Workflow + React Flow
+- URLs: https://ai-sdk.dev/elements/examples/chatbot, https://reactflow.dev/
+
+**Tier 3: UI Particles (Supplementary)**
+- Only use when Tier 1 and Tier 2 don't cover your need
+- Tool-UI Citation, Tool-UI Plan, KokonutUI AI Loading, etc.
+- Always ask: "Could shadcn do this?" before reaching for a particle
+
+**the project Component Mapping**:
+| Component | Approach |
+|-----------|----------|
+| Standard UI (buttons, cards, etc.) | shadcn/ui (Tier 1) |
+| Chat Interface | AI SDK Elements Chatbot (Tier 2) |
+| Workflow Graph (Level 2) | AI SDK Workflow + React Flow (Tier 2) |
+| Evidence Drawer / Citations | Evaluate: AI SDK Sources vs Tool-UI Citation |
+| Progress displays | Evaluate: shadcn Progress vs Tool-UI Plan |
+
+**In Task Plans**: Document which tier components come from:
+```markdown
+### Component Sources
+- **Tier 1 (shadcn)**: Button, Card, Dialog
+- **Tier 2 (AI SDK)**: Chat messages, workflow canvas
+- **Tier 3 (particles)**: [only if needed, with justification]
+```
+
+### 8. Maintain Single Source of Truth
 
 - This document becomes the authoritative reference
 - Never delete information, only add or mark as resolved
@@ -490,7 +937,7 @@ For the Tailwind + Next.js + Headless UI stack:
 - **No duplication**: Search for existing components/patterns before creating new ones
 - **Human-first headers**: Start each plan section with plain English explaining what and why
 - **File size awareness**: Note if components might exceed ~250 lines
-- **Real data only**: Never use mock data in implementation plans
+- **Mock data for the project**: This prototype uses mocked data by design — real API integration comes later
 - **API Key Security**: Never include actual keys/secrets in plans - use placeholders like `<your-api-key-here>`
 
 ## Output Requirements
@@ -507,11 +954,20 @@ Before finalizing, verify:
 ### Final Actions
 After completing your plan:
 1. **Verify Original Request Completeness**: If user referenced a planning document (@moodycharacters.md), confirm you've preserved the ENTIRE document content verbatim - not just their brief instruction
-2. **Update the Kanban board** in `status.md` with the new task
-3. **MANDATORY VERIFICATION**: Confirm individual task file exists in `doing/` folder
-4. **Set Stage to "Ready for Review"** 
-5. **Do NOT ask validation questions** - that's Agent 2's responsibility
-6. **End with**: "Plan complete. Ready for review stage."
+2. **If source is a journey page**: Follow the "Journey Page Source of Truth Workflow" section:
+   - Screenshot all visual elements using Playwright MCP
+   - Apply conversion fidelity mitigations
+   - Convert to clean markdown preserving all context
+3. **CLARIFICATION QUESTIONS (if any uncertainties during conversion)**:
+   - List specific questions with options and recommendations
+   - Wait for user response before proceeding
+   - If no uncertainties: state "No clarification questions — conversion complete"
+4. **Update the Kanban board** in `status.md` with the new task
+5. **MANDATORY VERIFICATION**: Confirm individual task file exists in `doing/` folder
+6. **Set Stage to "Ready for Review"**
+7. **Do NOT ask validation questions about the approach** — that's Agent 2's responsibility
+   - (Clarification questions about uncertain specs ARE allowed per step 3)
+8. **End with**: "Plan complete. Ready for review stage."
 
 ### Strategic Recommendation Analysis - Added 2025-10-01
 **Context**: Newsletter CTA task had "Tool Teaser (RECOMMENDED)" in original request but wasn't clearly emphasized in plan
@@ -749,55 +1205,51 @@ Your task will flow through these stages:
 
 You complete Planning and hand off to Review.
 
-## Parallel Development Environment
+## Development Environment
 
-**CRITICAL**: Use the stable reference server for UI analysis:
-- **Reference URL**: http://localhost:3000 (stable main branch)
-- This ensures you're analyzing a working, unbroken interface
-- If not running, user should start with: `pnpm run dev:parallel`
-- Never reference localhost:3001 (development) during planning
+**the project Prototype:**
+- **Dev Server**: Vite default (typically http://localhost:5173)
+- **Start command**: `npm run dev`
+- **Build tool**: Vite (fast HMR, no SSR)
+- This is a new project — no existing codebase to reference
 
-## Flow Development Context
+## the project Flow Development Context
 
-**FOCUS FOR FLOW DEVELOPMENT**: Creating an intuitive onboarding and demo flow experience:
+**FOCUS**: Creating an investor-demo-ready AI diligence platform interface
 
-### Flow Development Context
-- **Target Experience**: Seamless user journey from landing → story selection → storyboard → frames → production
-- **Implementation Strategy**: Progressive disclosure with clear navigation and context
-- **Purpose**: Create compelling demo flow that showcases project capabilities
+### User Journey (from ux-master-brief.md)
+- **Target Experience**: Seamless flow from report creation → processing → insights → evidence verification
+- **Implementation Strategy**: Progressive disclosure — simple by default, depth on demand
+- **Purpose**: Build trust through transparency, demonstrate differentiation from ChatGPT
 
 ### What This Means for Planning
-- **Focus on user guidance** - clear next steps, progress indicators, helpful hints
-- **Progressive feature introduction** - don't overwhelm with full complexity upfront  
-- **Mock data for demo** - curated content that shows best-case scenarios
-- **Smooth transitions** - between different app sections and workflow stages
-- **Responsive design** - works well on demo devices (tablets, laptops)
+- **Evidence as first-class UI** — every claim must link to sources
+- **Show the complexity** — workflow graph signals "serious work happening"
+- **Cheat sheet first** — risks/opportunities/questions above the fold
+- **Progressive disclosure** — Level 1 (progress bar) → Level 2 (agent graph)
+- **Desktop-first responsive** — optimised for laptops, functional on tablets
 
-### Key Areas for Flow Development
-- **Entry Points**: Landing page, authentication, workspace selection
-- **Navigation Flow**: Home → Stories → Story Edit → Storyboard → Frames → Production
-- **Demo Content**: 
-  - Pre-populated example stories and characters
-  - Sample storyboards and generated frames
-  - Progress states and completion indicators
-  - Interactive tutorials and tooltips
+### Key Screens (Sprint 1 Priority)
+- **New Report Flow**: Upload/paste URL → Select template → Start processing
+- **Processing View**: Level 1 progress bar + Level 2 workflow graph (React Flow)
+- **Cheat Sheet**: Top Risks, Opportunities, Questions with citation chips
+- **Evidence Drawer**: Click citation → see source URL, snippet, timestamp
 
-### Planning Considerations
-- **Optimize for first-time users** - assume no prior context about animation workflows
-- **Create "happy path" experiences** - minimize errors and edge cases in demo
-- **Maintain design system consistency** - use established patterns across all flow steps
-- **Consider mobile/tablet experience** - demo may be shown on various devices
-- **Document user journey** - map out the complete flow for stakeholder review
+### Sprint 2+ Screens (Plan for extensibility)
+- **Full Report**: Drill-down from cheat sheet
+- **Chat Interface**: Quick mode (instant) vs Investigate mode (deep research)
+- **Template Builder**: Canvas for module arrangement
+- **Share Modal**: Magic link with expiry
 
 ### Example Planning Context
-When planning changes to onboarding flow:
+When planning a the project screen:
 ```markdown
 ### Codebase Context
-- Target: Onboarding and demo flow implementation
-- Location: app/onboarding/ or app/demo/ (to be determined)
-- Status: New development, will integrate with existing app patterns
-- Backend: Can use mock data initially, integrate with Convex progressively
-- Current: Design and implement net-new user experience flows
+- Target: the project prototype (React SPA + TanStack Router)
+- Location: src/routes/[route-name].tsx + src/components/[feature]/
+- Status: New development from scratch
+- Backend: All data mocked — use interfaces from tech-start.md
+- Visual direction: Attio foundation + Clay AI patterns + Ramp 3-pane layout
 ```
 
 ### Animation Implementation Approach Analysis - Added 2025-10-01
