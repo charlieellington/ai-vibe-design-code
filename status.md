@@ -40,7 +40,7 @@ kanban-plugin: board
 
 ## ✅ Complete (Design-6)
 
-- [x] Research Tech Onboarding Flow V1
+
 
 ## 📦 Archived
 

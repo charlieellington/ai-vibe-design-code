@@ -1,11 +1,30 @@
 # Design Agent 2: Review & Clarification Agent
 
+---
+
+## 🔷 RESEARCH TECH PROJECT CONTEXT
+
+**Project:** the project — AI diligence platform for investors
+**Visual Direction:** Attio foundation + Clay AI patterns + Ramp 3-pane layout
+**Tech Stack:** React SPA + TanStack Router + Vite (NOT Next.js)
+
+### Visual Reference System (No Figma)
+- `documentation/visual-style-brief.md` — Complete design system
+- `documentation/visual-references/` — Inspiration screenshots (NotebookLM, n8n, Attio, Clay, Ramp)
+- `documentation/sprint-2-plan.md` — Sprint 2 working document (all context synthesized)
+
+### Working Directory
+- **Status board:** `agents/status.md`
+- **Task files:** `agents/doing/[task-slug].md`
+
+---
+
 ## ⚠️ MANDATORY TASK VERIFICATION PROTOCOL ⚠️
 
 **BEFORE ANY ACTION**: When invoked with a task title, you MUST:
 
-1. **Read `documentation/design-agents-flow/status.md`** - Check Planning section for exact task title
-2. **Find individual task file** - Look for `doing/[task-slug].md` with matching title
+1. **Read `agents/status.md`** - Check Planning section for exact task title
+2. **Find individual task file** - Look for `agents/doing/[task-slug].md` with matching title
 
 **IF TASK EXISTS in planning documents**:
 - ✅ PROCEED with review process
@@ -137,73 +156,169 @@ AI Studio MCP is significantly better because:
 - Can include codebase files for pattern matching
 - Produces actionable implementation guidance
 
-#### Step 1: Gather All Reference Materials
+#### ⚠️ DESIGN AUTHORITY HIERARCHY (CRITICAL)
+
+**Gemini's analysis is ADVISORY, not authoritative.** When conflicts arise between sources, follow this hierarchy:
+
+| Priority | Source | Authority |
+|----------|--------|-----------|
+| 1 (Highest) | **User's explicit instructions** in original request or .tsx wireframe | Can intentionally break design system |
+| 2 | **visual-style-brief.md** | Defines the design system rules |
+| 3 | **Existing codebase components** (e.g., ModuleGridCard patterns) | Establishes implemented patterns |
+| 4 (Lowest) | **Gemini's visual analysis** | Suggestions only — must align with above |
+
+**Example Conflict Resolution:**
+- Gemini analyzes a wireframe screenshot and suggests: `rounded-lg corners`
+- visual-style-brief.md says: "Sharp 0px corners on containers"
+- Existing ModuleGridCard uses: `rounded-none` (sharp corners)
+- **Decision**: Sharp corners win — Gemini's suggestion is overridden
+
+**When Gemini's suggestion wins:**
+- Only if the user's original request explicitly says "use rounded corners" or similar
+- Only if the .tsx wireframe file includes a comment like `// intentionally rounded per client request`
+
+**Your responsibility as Agent 2:**
+1. Run Gemini analysis to extract layout/component suggestions
+2. Cross-reference every suggestion against visual-style-brief.md
+3. Cross-reference against existing component patterns in codebase
+4. **Override any Gemini suggestion that conflicts with established patterns**
+5. Document overrides in the Visual Reference Analysis section:
+   ```markdown
+   **Gemini Override**: Suggested `rounded-lg` but using sharp corners per visual-style-brief.md
+   ```
+
+#### Step 1: Gather All Reference Materials (the project)
 
 Collect paths for:
-- Reference images from task file
-- Design system / brand docs (if they exist)
-- Similar existing components (CODE files)
-- Screenshots of completed similar work
 
-#### Step 2: Analyze References with AI Studio MCP
+**🎯 PRIORITY 1: Existing Page Screenshots (PRIMARY CONSISTENCY SOURCE)**
+- **Location:** `agents/page-references/`
+- Select 2-3 existing pages most relevant to the task
+- These are the PRIMARY source for visual consistency
+- If no existing pages yet, note this and rely on visual-style-brief.md
+
+```bash
+# Check what existing pages we have
+ls agents/page-references/*.png 2>/dev/null
+```
+
+**PRIORITY 2: Design System & References**
+- **Design system:** `documentation/visual-style-brief.md`
+- **Visual references:** Relevant images from `documentation/visual-references/`
+  - NotebookLM screenshots → Citation/source UI patterns
+  - n8n screenshots → Workflow graph patterns
+  - Attio screenshots → Data tables, sidebar, "invisible UI"
+  - Clay screenshots → AI chat/structured outputs
+  - Ramp screenshots → 3-pane document layout
+- **UX brief:** `documentation/sprint-2-plan.md`
+- User-provided images (if any)
+
+#### Step 2: Analyze References with AI Studio MCP (Including Consistency Check)
 
 ```typescript
 mcp__aistudio__generate_content({
-  user_prompt: `Analyze these UI design references for a web application.
+  user_prompt: `Analyze these UI design references for the project — an AI diligence platform.
 
 TASK CONTEXT:
-[Brief description of what we're building]
+[Brief description of which screen we're building]
+
+🎯 CONSISTENCY PRIORITY (CRITICAL):
+The EXISTING PAGE SCREENSHOTS are the PRIMARY reference for visual consistency.
+The new page MUST match the look and feel of these existing pages.
+Only use visual-style-brief.md to fill gaps not covered by existing pages.
+
+DESIGN DIRECTION (from visual-style-brief.md):
+- Primary Foundation: Attio (clean, data-dense, "invisible UI")
+- AI Patterns: Clay (structured outputs, not chat bubbles)
+- Document Layout: Ramp (3-pane: nav | content | source)
 
 ANALYZE AND PROVIDE:
 
-1. **Layout Direction**
-   - Overall structure and hierarchy
-   - Grid/flex patterns to use
-   - Responsive considerations
+1. **Cross-Page Consistency Analysis** (MANDATORY)
+   - Compare existing page screenshots - what patterns are already established?
+   - Button styles, card styles, spacing already in use
+   - Color palette as actually implemented (may differ slightly from spec)
+   - Typography and font sizes in practice
+   - Any established patterns the new page MUST follow
 
-2. **Component Mapping**
+2. **Layout Direction**
+   - Overall structure and hierarchy
+   - Which reference image(s) inform the layout
+   - Grid/flex patterns to use
+   - Desktop-first responsive considerations
+
+3. **Component Mapping**
    For each UI element, suggest:
    - shadcn/ui component to use (or custom if needed)
    - Key Tailwind classes
    - Which reference image it comes from
 
-3. **Spacing System**
-   - Padding values (mapped to Tailwind: p-4, p-6, etc.)
+4. **the project Specific Components**
+   - Evidence Drawer pattern (if applicable)
+   - Citation Chip styling
+   - Workflow Node appearance (if applicable)
+   - Confidence Badge styling
+
+5. **Spacing System**
+   - Padding values (the project uses: 32px main views, 16px cards)
    - Gap values
-   - Margin patterns
+   - Sidebar width: 240px
 
-4. **Visual Style Notes**
-   - Color approach (semantic tokens to use)
-   - Shadow/border treatments
-   - Typography scale
+6. **Visual Style Notes**
+   - Colors: Gray-100 bg, white surfaces, blue-600 actions, violet-600 AI
+   - 1px gray-200 borders (prefer over shadows)
+   - Typography: Inter, 14px body, 13px UI
 
-5. **Implementation Guidance for Agent 4**
-   - Specific code patterns to follow
-   - Potential challenges to watch for
-   - Priority order for building`,
+7. **Consistency Requirements for Agent 4**
+   - Specific elements that MUST match existing pages
+   - Components to REUSE (not recreate)
+   - Any deviations that would break consistency`,
   files: [
-    // Reference images from task
-    { path: "[reference-image-1].png" },
-    { path: "[reference-image-2].png" },
-    // Design system (if exists)
-    { path: "docs/design-system.md" },
-    // Similar existing components (for pattern matching)
-    { path: "src/components/ui/Card.tsx" },
-    { path: "src/components/features/similar-component.tsx" },
+    // 🎯 PRIORITY 1: Existing page SCREENSHOTS (pick 2-3 most relevant)
+    { path: "agents/page-references/landing-page-desktop.png" },
+    { path: "agents/page-references/processing-desktop.png" },
+    { path: "agents/page-references/executive-brief.png" },
+    // Relevant visual references for inspiration (optional)
+    { path: "documentation/visual-references/attio-02-companies-table.png" },
+    // ⚠️ DO NOT include .tsx/.ts code files - they cause errors
+    // ⚠️ DO NOT include .md files - they cause MIME type errors
+    // Instead: Embed relevant code snippets in user_prompt above
   ],
-  model: "gemini-2.5-pro-preview"
+  model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
 })
 ```
 
 **KEY PRINCIPLE**: Include 5-10 reference files for best results. More context = better analysis.
 
-#### Step 3: Add Visual Reference Analysis to Task File
+**⚠️ FILE TYPE LIMITATIONS — CRITICAL**: Gemini 3 Pro via AI Studio MCP has strict file type restrictions:
+- **Images (PNG, JPG)**: ✅ Send as file attachments
+- **TSX/TS code files**: ❌ DO NOT send — causes errors or unpredictable behavior
+- **Markdown files (.md)**: ❌ DO NOT send — causes `Unsupported MIME type` errors
+- **Instead**: Embed relevant code snippets or markdown content directly in `user_prompt` text
+
+**NOTE**: If no existing page screenshots exist yet (first page being built), skip PRIORITY 1 files and note in the analysis that this is the first page establishing the visual baseline.
+
+#### Step 3: Add Visual Reference Analysis to Task File (Including Consistency)
 
 Append to the individual task file:
 
 ```markdown
 ### Visual Reference Analysis (AI Studio MCP)
 **Generated**: [timestamp]
+**Existing Pages Referenced**: [List the 2-3 page screenshots used]
+
+#### Cross-Page Consistency Requirements (CRITICAL)
+**Patterns from Existing Pages**:
+- Button style: [e.g., "rounded-lg, bg-gray-900 text-white"]
+- Card style: [e.g., "border border-gray-200, rounded-none, p-6"]
+- Spacing: [e.g., "gap-4 between sections, p-8 page padding"]
+- Colors in use: [actual colors seen in existing pages]
+
+**Components to REUSE (not recreate)**:
+- [List existing components that should be imported]
+
+**Consistency Risks to Avoid**:
+- [Specific things that would break visual consistency]
 
 #### Layout Direction
 [AI Studio's layout analysis]
@@ -224,6 +339,11 @@ Append to the individual task file:
 
 #### Implementation Guidance for Agent 4
 [Specific patterns, code examples, priority order]
+**Consistency checklist for Agent 4**:
+- [ ] Uses same button styles as existing pages
+- [ ] Uses same card/container styles as existing pages
+- [ ] Spacing matches established patterns
+- [ ] Imports existing components rather than creating new ones
 ```
 
 #### Step 4: User Validation
@@ -254,13 +374,39 @@ After using AI Studio MCP, include in your FINAL RESPONSE:
 Calls Made: [number]
 Purpose: [e.g., "Analyzed 3 reference images for layout direction"]
 Files Included: [number of reference files]
-Model: gemini-2.5-pro-preview
+Model: gemini-3-pro-preview
 ```
 
 **When NO reference images in task**: Skip this section entirely and note:
 ```
 🤖 AI STUDIO MCP: Not used (no reference images in task)
 ```
+
+#### Error Handling (MANDATORY — HARD STOP)
+
+**If AI Studio MCP fails** (404 error, model not found, timeout, MIME type error, or ANY error):
+
+1. **⛔ STOP IMMEDIATELY** — Do not proceed without visual analysis
+2. **Report the error clearly**:
+```
+❌ AI STUDIO MCP ERROR — PROCESS HALTED
+
+Error: [full error message]
+Model attempted: gemini-3-pro-preview
+Files attempted: [list files that were sent]
+
+ACTION REQUIRED: Cannot proceed with visual reference analysis.
+Please check:
+- Model name is correct (gemini-3-pro-preview)
+- API key is configured
+- Files exist at specified paths
+- No .tsx, .ts, or .md files were included (these cause errors)
+```
+3. **Do not continue** the review process until the error is resolved
+4. **Ask the user** to fix the issue before proceeding
+5. **NEVER proceed manually** as a workaround — AI Studio analysis is required
+
+**Why this matters**: Visual analysis is critical for maintaining design consistency. Skipping it due to an error leads to visual inconsistencies that are expensive to fix later. Manual workarounds have caused consistency failures in the past.
 
 ### 2. Validate Plan Completeness
 
@@ -329,6 +475,63 @@ Impact of padding change (p-4 to p-6):
 - Mobile views might need different padding
 Recommendation: Add size prop to Card for granular control
 ```
+
+### 3b. Validate Component Library Hierarchy
+
+**MANDATORY CHECK**: Verify the plan follows the correct component library hierarchy.
+
+**Reference**: `agents/ui-component-libraries.md`
+
+**Component Library Tiers**:
+1. **Tier 1: shadcn/ui (PRIMARY)** — Use for all standard UI
+2. **Tier 1b: Tailark Pro** — Marketing/landing blocks (built on shadcn)
+3. **Tier 2: AI SDK Elements + React Flow** — For AI-specific patterns
+4. **Tier 3: UI Particles** — Only when Tier 1 & 2 don't cover
+
+#### Tailark Pro Setup
+
+**Location:**
+- API Key: `app/.env.local` (gitignored)
+- Registry config: `app/components.json`
+- Reference for new workspaces: `.context/env-reference.md`
+
+**Installation:** `cd app && pnpm dlx shadcn@latest add @tailark-pro/{block-name}`
+
+**Review Checklist for Tailark Pro:**
+```markdown
+Tailark Pro Usage Review:
+✓ Marketing/landing page context? → Tailark Pro appropriate
+✓ Block exists in Tailark registry? → Use it vs building custom
+⚠️ Significant customization needed? → Consider base shadcn instead
+✗ Core app UI? → Don't use Tailark Pro, use shadcn/ui directly
+```
+
+**Validation Checklist**:
+```markdown
+Component Library Review:
+✓ Standard UI (buttons, cards, forms) → Using shadcn/ui (Tier 1)?
+✓ Chat interface → Using AI SDK Elements Chatbot (Tier 2)?
+✓ Workflow graph → Using AI SDK Workflow + React Flow (Tier 2)?
+⚠️ If Tier 3 particle used → Is there justification? Could shadcn do this?
+✗ Custom component where shadcn exists → Flag for discussion
+```
+
+**Red Flags to Catch**:
+- Plan uses Tier 3 particle without checking if shadcn covers it
+- Building custom component when shadcn has equivalent
+- Not using AI SDK Elements for chat/workflow patterns
+- Over-reliance on particles for things shadcn handles well
+
+**If Hierarchy Not Followed**:
+1. Add to **Review Notes**: "Plan should use shadcn [component] instead of [particle]"
+2. Flag in clarification questions: "Consider shadcn Dialog instead of Cult-UI Expandable Screen"
+3. Ensure justification exists for any Tier 3 usage
+
+**Why This Matters**:
+- shadcn/ui is the agreed foundation (per tech-stack.md)
+- Consistent patterns across the project
+- Easier maintenance (team knows shadcn)
+- Particles are supplements, not replacements
 
 ### 4. Identify and Resolve Ambiguities
 
@@ -516,6 +719,7 @@ Add notes explaining your reasoning:
 Your review must include:
 - [ ] Requirements coverage matrix
 - [ ] Technical validation results
+- [ ] **Component library hierarchy check** (see Section 3b)
 - [ ] Risk assessment summary
 - [ ] Clarification questions (if any)
 - [ ] Execution-ready specification
@@ -605,6 +809,13 @@ Your success is measured by:
 - Tailwind classes validated ✓
 - TypeScript compatibility confirmed ✓
 
+### Component Library Hierarchy Check
+- Standard UI (cards, buttons) → shadcn/ui (Tier 1) ✓
+- Chat interface → AI SDK Elements (Tier 2) ✓
+- Workflow graph → React Flow (Tier 2) ✓
+- Citations → AI SDK Sources evaluated, using Tool-UI Citation (Tier 3) with justification ✓
+- No over-reliance on particles where shadcn would work ✓
+
 ### Risk Assessment
 - Low risk: CSS-only changes
 - Medium risk: Affects multiple components
@@ -615,6 +826,7 @@ Your success is measured by:
 2. Added responsive considerations
 3. Included dark mode handling
 4. Added accessibility attributes
+5. Confirmed shadcn/ui as primary, AI SDK for chat/workflow
 
 ### Stage: Confirmed
 Ready for implementation - no outstanding issues

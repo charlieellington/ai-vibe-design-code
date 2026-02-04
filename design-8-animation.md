@@ -221,7 +221,7 @@ EVALUATE:
     { path: "screenshots/frame-1s.png" },
     { path: "screenshots/frame-2s.png" },
   ],
-  model: "gemini-2.5-pro-preview"
+  model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
 })
 ```
 
@@ -363,7 +363,7 @@ Rate overall motion quality: EXCELLENT / GOOD / NEEDS_WORK`,
     { path: "screenshots/refined-1s.png" },
     { path: "screenshots/refined-2s.png" },
   ],
-  model: "gemini-2.5-pro-preview"
+  model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
 })
 ```
 
@@ -512,7 +512,7 @@ After using AI Studio MCP, include in your response:
 
 Calls Made: [number]
 Purpose: [e.g., "Analyzed 3 animation frames for motion refinement"]
-Model: gemini-2.5-pro-preview
+Model: gemini-3-pro-preview
 ```
 
 ---

@@ -1,6 +1,6 @@
 # Design Agents Flow
 
-A structured 7-agent workflow for transforming AI-assisted UI development from chaotic and error-prone into predictable and reliable. This system preserves context across development sessions and produces pixel-perfect code implementations directly from design specifications.
+A structured multi-agent workflow for transforming AI-assisted UI development from chaotic and error-prone into predictable and reliable. This system preserves context across development sessions and produces pixel-perfect code implementations directly from design specifications.
 
 ## The Problem This Solves
 
@@ -11,11 +11,12 @@ AI-assisted development suffers from "AI amnesia" - research shows each handoff 
 - No way to monitor AI code changes in real-time
 - Duplicate components get created because agents don't know what exists
 
-## The 7-Agent Workflow
+## The Agent Workflow
 
 | Agent | Name | Purpose |
 |-------|------|---------|
-| **0** | Quick Change | Evaluates if changes are truly simple (padding, colors, text). Implements immediately or escalates. Handles ~90% of routine tasks. |
+| **0-quick** | Quick Change | Evaluates if changes are truly simple (padding, colors, text). Implements immediately or escalates. |
+| **0-refine** | Refine | Multi-perspective UX refinement using parallel AI analysis for visual decisions. |
 | **1** | Planning | Gathers requirements, integrates with Figma MCP for exact specs, creates detailed implementation plans. |
 | **2** | Review | Quality checkpoint - validates plans for completeness, catches ambiguities before coding begins. |
 | **3** | Discovery | Identifies exact files and components to modify, maps dependencies, prevents duplicate creation. |
@@ -23,12 +24,15 @@ AI-assisted development suffers from "AI amnesia" - research shows each handoff 
 | **5** | Visual Verification | Captures screenshots across breakpoints, compares against specs, detects visual regressions. |
 | **6** | Completion | Documents what was built, updates knowledge base, captures reusable patterns. |
 | **7** | Fix | Emergency bug fix agent for post-completion issues. |
+| **8** | Animation | Specialized agent for motion design and animations using established patterns. |
+| **9** | Mobile | Mobile-specific responsive design and touch interaction specialist. |
 
 ## Directory Structure
 
 ```
 design-agents-flow/
 ├── design-0-quick.md          # Quick change assessment agent
+├── design-0-refine.md         # Multi-perspective UX refinement agent
 ├── design-1-planning.md       # Planning & context capture agent
 ├── design-2-review.md         # Review & validation agent
 ├── design-3-discovery.md      # Discovery & analysis agent
@@ -36,8 +40,13 @@ design-agents-flow/
 ├── design-5-visual-verification.md  # Visual testing agent
 ├── design-6-complete.md       # Completion & documentation agent
 ├── design-7-fix.md            # Bug fix agent
+├── design-8-animation.md      # Animation & motion design agent
+├── design-9-mobile.md         # Mobile & responsive design agent
+├── learnings.md               # Accumulated patterns and lessons learned
+├── motion-patterns.md         # Animation spring values and patterns
+├── ui-component-libraries.md  # Component library hierarchy guide
+├── multi-design-full-process.md  # Full workflow documentation
 ├── status.md                  # Kanban board (Obsidian plugin compatible)
-├── status-details.md          # Deprecated - see task files
 ├── doing/                     # Active tasks in progress
 ├── done/                      # Completed task documentation
 ├── misc/

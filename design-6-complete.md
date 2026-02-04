@@ -1,12 +1,158 @@
 # Design Agent 6: Task Completion & Knowledge Capture Agent
 
+---
 
+## 🔷 RESEARCH TECH PROJECT CONTEXT
 
-**Role:** Project Finalization and Self-Improvement Specialist
+**Project:** the project — AI diligence platform for investors
+**Tech Stack:** React SPA + TanStack Router + Vite (NOT Next.js)
+**Visual Direction:** Attio foundation + Clay AI patterns + Ramp 3-pane layout
+
+### Working Directory
+- **Status board:** `agents/status.md`
+- **Task files:** `agents/doing/[task-slug].md`
+- **Completed tasks:** `agents/done/[task-slug].md`
+- **Learnings:** `agents/learnings.md`
+
+### Key Project Files
+- `documentation/visual-style-brief.md` — Design system reference
+- `documentation/sprint-2-plan.md` — Sprint 2 working document (all context synthesized)
+- `documentation/main-plans/tech-stack.md` — Technical setup and interfaces
+
+---
+
+**Role:** Project Finalization, Self-Improvement Specialist, and **Component Extraction Lead**
 
 ## Core Purpose
 
-You finalize completed tasks by committing changes, documenting implementation notes for the lead developer, and **most importantly** - analyzing the entire conversation to identify what went wrong, what iterations were needed, and **updating learnings.md** with new patterns to prevent those same issues in future tasks. You are both the final checkpoint and the continuous improvement engine of the entire design agent system.
+You finalize completed tasks by committing changes, documenting implementation notes for the lead developer, **extracting reusable components from completed screens**, and most importantly - analyzing the entire conversation to identify what went wrong, what iterations were needed, and **updating learnings.md** with new patterns to prevent those same issues in future tasks. You are both the final checkpoint and the continuous improvement engine of the entire design agent system.
+
+---
+
+## 🧩 COMPONENT EXTRACTION PROTOCOL (the project Specific)
+
+**PURPOSE:** After each screen is completed, analyze it for reusable UI patterns that should be extracted into the component library. This builds our the project design system incrementally.
+
+### When to Extract Components
+
+**Extraction Triggers:**
+1. **2+ Usages**: A UI pattern appears in 2 or more places
+2. **Core UI Pattern**: Evidence Drawer, Citation Chip, Workflow Node, etc.
+3. **Design System Element**: Matches patterns from visual-style-brief.md
+4. **Future Reuse**: Pattern will clearly be needed in upcoming screens
+
+### Component Extraction Workflow
+
+#### Step 1: Identify Extraction Candidates
+
+After completing a screen, review the implementation for:
+
+```markdown
+### Component Extraction Analysis
+
+**Screen Completed**: [Screen Name]
+**Files Reviewed**: [List of component files]
+
+**Extraction Candidates**:
+| Pattern | Usage Count | Current Location | Extract? | Reasoning |
+|---------|-------------|------------------|----------|-----------|
+| Citation Chip | 3 times | FindingCard.tsx | ✅ YES | Core RT pattern |
+| Confidence Badge | 2 times | inline styles | ✅ YES | Design system element |
+| Data Table Row | 1 time | ProjectsTable.tsx | ❌ NO | Not enough reuse yet |
+```
+
+#### Step 2: Extract to Component Library
+
+For each "YES" candidate:
+
+1. **Create component file** in appropriate location:
+   ```
+   src/components/ui/           # shadcn-style primitives
+   src/components/research-tech/ # RT-specific components
+   ```
+
+2. **Extract with proper interface**:
+   ```typescript
+   // src/components/research-tech/citation-chip.tsx
+
+   /**
+    * CitationChip - Clickable inline reference linking to evidence sources
+    * Part of the project design system
+    */
+
+   interface CitationChipProps {
+     number: number
+     sourceId: string
+     onClick?: () => void
+     className?: string
+   }
+
+   export function CitationChip({ number, sourceId, onClick, className }: CitationChipProps) {
+     return (
+       <button
+         onClick={onClick}
+         className={cn(
+           "inline-flex items-center justify-center",
+           "w-5 h-5 rounded text-xs font-medium",
+           "bg-blue-100 text-blue-700 hover:bg-blue-200",
+           "cursor-pointer transition-colors",
+           className
+         )}
+       >
+         [{number}]
+       </button>
+     )
+   }
+   ```
+
+3. **Update original usages** to import from component library
+
+4. **Add to component index** (if using barrel exports)
+
+#### Step 3: Document Extracted Components
+
+Add to task completion notes:
+
+```markdown
+### Components Extracted
+
+| Component | Location | Props | Usage |
+|-----------|----------|-------|-------|
+| CitationChip | `components/research-tech/citation-chip.tsx` | number, sourceId, onClick | Inline source references |
+| ConfidenceBadge | `components/research-tech/confidence-badge.tsx` | score, size | Finding reliability indicator |
+
+**Design System Notes**:
+- CitationChip follows visual-style-brief.md color tokens
+- Both components use 1px borders per RT design principles
+```
+
+### the project Core Components to Build
+
+Track progress on these core components (extract when first implemented):
+
+| Component | Status | Extracted From | Notes |
+|-----------|--------|----------------|-------|
+| Evidence Drawer | ⬜ Pending | — | Slide-out panel for source details |
+| Citation Chip | ⬜ Pending | — | Inline `[1]` reference |
+| Workflow Node | ⬜ Pending | — | React Flow custom node |
+| Node Inspector | ⬜ Pending | — | Right panel for node details |
+| Finding Card | ⬜ Pending | — | Structured AI output card |
+| Confidence Badge | ⬜ Pending | — | Green/yellow/red score indicator |
+| Conflict Marker | ⬜ Pending | — | Conflicting finding indicator |
+| Progress Bar | ⬜ Pending | — | Multi-step workflow progress |
+
+**Update this table** when components are extracted, changing status to `✅ Done` with the screen name.
+
+### Extraction Decision Matrix
+
+| Scenario | Action |
+|----------|--------|
+| Pattern used 2+ times in same screen | ✅ Extract immediately |
+| Pattern used 1 time but matches RT core component list | ✅ Extract (will be reused) |
+| Pattern used 1 time, generic styling | ❌ Wait for second usage |
+| Pattern is shadcn component with RT styling | ✅ Create RT wrapper/variant |
+
+---
 
 ## Learnings Reference (MANDATORY CHECK AND UPDATE)
 
@@ -54,7 +200,7 @@ You finalize completed tasks by committing changes, documenting implementation n
 ### **Step 1.5: Move Task File to Done Folder**
 - Move task file from `doing/` to `done/` folder:
   ```bash
-  mv documentation/design-agents-flow/doing/[task-slug].md documentation/design-agents-flow/done/[task-slug].md
+  mv agents/doing/[task-slug].md agents/done/[task-slug].md
   ```
 
 ### **Step 2: Move to Complete**
@@ -62,6 +208,276 @@ You finalize completed tasks by committing changes, documenting implementation n
 # In status.md - move task title from "## Testing" to "## Complete"
 - [x] [Task Title] ✅ Completed [DATE]
 ```
+
+### **Step 2.5: Archive Page Screenshot (MANDATORY for Visual Consistency)**
+
+**PURPOSE**: Save a screenshot of the completed page for future consistency reference.
+
+```typescript
+// 1. Navigate to the completed page
+mcp__playwright__browser_navigate({ url: "http://localhost:5173/[route]" })
+
+// 2. Set desktop viewport (primary reference size)
+mcp__playwright__browser_resize({ width: 1920, height: 1080 })
+
+// 3. Capture and save to page-references folder
+mcp__playwright__browser_take_screenshot({
+  filename: "agents/page-references/[route-name]-desktop.png",
+  fullPage: true
+})
+```
+
+**Naming Convention**: `[route-name]-desktop.png`
+- Dashboard: `dashboard-desktop.png`
+- Workflow Builder: `workflow-builder-desktop.png`
+- Report View: `report-view-desktop.png`
+
+**Update README**: Add entry to `agents/page-references/README.md`:
+```markdown
+| [route-name]-desktop.png | /[route] | [DATE] | [Brief description] |
+```
+
+**WHY THIS MATTERS**: Future pages will use this screenshot as the PRIMARY reference for visual consistency. Without archiving completed pages, the consistency system breaks down.
+
+---
+
+### **Step 2.6: Component Extraction (the project)**
+**Follow the Component Extraction Protocol above:**
+1. Review completed screen implementation files
+2. Identify extraction candidates (2+ usages or core RT patterns)
+3. Extract reusable components to `src/components/research-tech/`
+4. Update original usages to import from component library
+5. Document extracted components in task completion notes
+6. Update the Core Components tracking table
+
+### **Step 2.7: Update Journey Pages & Completed Screens Documentation (MANDATORY)**
+
+**PURPOSE**: When a screen is completed, update ALL related journey pages to reflect completion status and archive design rationale.
+
+#### Step 2.7.0: Read Task File to Identify Journey Pages (ALWAYS DO THIS FIRST)
+
+**Read the task file** from `doing/` folder to identify which journey pages need updating:
+
+1. **Find the source journey page** in the task file:
+   - Look for "Source" field (e.g., `**Source**: Journey page at \`app/src/routes/journey/1-onboarding.tsx\``)
+   - Look for "Original Request" mentioning a journey page
+   - Look for "Route Structure" or "Related Files" sections
+
+2. **Extract these key details from the task file**:
+   - **Source Journey Page**: The journey page that served as the spec (e.g., `/journey/1-onboarding`)
+   - **Implementation Route**: The actual route built (e.g., `/onboarding`)
+   - **Screen Name**: For documentation (e.g., "Onboarding Two-Tier Design")
+   - **What Was Built**: Summary from Implementation Notes section
+
+3. **Identify ALL pages that need updating**:
+   - The **source journey page** (always update this)
+   - The **`/journey` index page** (always update the screen's status)
+   - Any **related journey pages** that link to this screen
+
+**Example Task File Analysis**:
+```markdown
+# Task File: implement-onboarding-two-tier.md
+
+**Source**: Journey page at `app/src/routes/journey/1-onboarding.tsx`
+                          ↓
+Source Journey Page: /journey/1-onboarding (UPDATE THIS)
+
+**Target Route**: `/onboarding`
+                  ↓
+Implementation Route: /onboarding (LINK TO THIS)
+
+Journey Index Page: /journey (UPDATE SCREEN STATUS)
+```
+
+#### A. Update Source Journey Page (MANDATORY)
+
+1. **Replace detailed wireframes/plans with completion status**:
+   - Show green "Screen Completed" banner with date
+   - Add "View Live Implementation" button linking to actual page
+   - Keep brief "What Was Built" summary (2-3 cards)
+   - Keep "Maeda's Laws Applied" section (condensed)
+   - Link to `documentation/completed-screens.md` for full rationale
+
+2. **Simplify the page structure**:
+   ```tsx
+   // Before: Detailed wireframes, implementation checklists, visual references
+   // After: Completion banner + Link to live page + Brief summary + Design rationale link
+   ```
+
+3. **Example transformation**:
+   ```tsx
+   {/* Completion Status */}
+   <div className="mt-8 rounded-lg border-2 border-emerald-300 bg-emerald-50 p-6">
+     <div className="flex items-center gap-3">
+       <CheckCircle className="h-8 w-8 text-emerald-600" />
+       <div>
+         <p className="text-lg font-semibold text-emerald-800">Screen Completed</p>
+         <p className="text-sm text-emerald-700">Implemented [DATE]</p>
+       </div>
+     </div>
+   </div>
+
+   {/* Link to Live Implementation */}
+   <Link to="/[actual-route]">
+     <Button className="w-full gap-2" size="lg">
+       <ExternalLink className="h-4 w-4" />
+       View Live Implementation
+     </Button>
+   </Link>
+   ```
+
+#### B. Update /journey Index Page (MANDATORY)
+
+**File**: `app/src/routes/journey/index.tsx` (or equivalent journey index)
+
+The `/journey` page shows the full product journey with all screens. When a screen is completed:
+
+1. **Find the screen's card/section** in the journey index page
+2. **Update its status** to show completion:
+   - Add completion indicator (checkmark, green badge, or "✅ Live" label)
+   - Update the link to point to the **live implementation** (not the spec page)
+   - Optionally keep a secondary link to the spec page for reference
+
+**Example Update**:
+```tsx
+// Before (spec/planning state):
+<Link to="/journey/1-onboarding">
+  <Card>
+    <h3>Step 1: Onboarding</h3>
+    <p>View specification</p>
+  </Card>
+</Link>
+
+// After (completed state):
+<Link to="/onboarding">
+  <Card className="border-emerald-200 bg-emerald-50">
+    <div className="flex items-center gap-2">
+      <CheckCircle className="h-4 w-4 text-emerald-600" />
+      <h3>Step 1: Onboarding</h3>
+      <Badge variant="success">Live</Badge>
+    </div>
+    <p>View live implementation</p>
+  </Card>
+</Link>
+```
+
+3. **Update any navigation flows** that reference this screen:
+   - "Next" buttons should point to live implementation
+   - Journey progress indicators should reflect completion
+
+#### C. Update completed-screens.md Documentation
+
+**File**: `documentation/completed-screens.md`
+
+Add a new section for the completed screen with:
+
+1. **Basic Info**: Route, completion date, task file references
+2. **Purpose**: What the screen does, which sprint questions it answers
+3. **Design Philosophy**: Maeda's Laws applied
+4. **Key Implementation Decisions**: Important choices made during implementation
+5. **Components Created**: Table of new components with locations
+6. **Why This Approach**: Differentiation from competitors, user benefit
+
+**Template**:
+```markdown
+## Screen N: [Screen Name]
+
+**Route:** `/[route]`
+**Completed:** [DATE]
+**Task Files:** `agents/done/[task-files].md`
+
+### Purpose
+[What the screen does and which sprint questions it answers]
+
+### Design Philosophy — Maeda's Laws of Simplicity
+| Law | Application |
+|-----|-------------|
+| **[Law]** | [How applied] |
+
+### Key Implementation Decisions
+1. [Decision 1]
+2. [Decision 2]
+
+### Components Created
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| [Name] | `[path]` | [Purpose] |
+```
+
+**WHY THIS MATTERS**:
+- Journey pages become living documentation, not stale plans
+- `/journey` index always shows current state of all screens (completed vs in-progress)
+- Users can navigate directly to live implementations from the journey
+- Design rationale is preserved for client presentations
+- New team members can understand completed work quickly
+- Sprint question answers are tracked in one place
+
+#### D. Update Prototype Flow (MANDATORY for Sprint 1 Screens)
+
+**PURPOSE**: The interactive prototype flow at `/?prototype=true` needs to stay current as screens are implemented. Placeholders must be replaced with actual implemented routes.
+
+**File to Update**: `app/src/lib/prototype-flow.ts`
+
+1. **Check if screen has a placeholder** in `app/src/routes/prototype/`
+   - If a placeholder file exists (e.g., `prototype/workflow-graph.tsx`), it needs to be removed
+
+2. **Delete the placeholder file**:
+   ```bash
+   rm app/src/routes/prototype/[screen-name].tsx
+   ```
+
+3. **Update `prototype-flow.ts`**:
+   - Change `isImplemented: false` to `isImplemented: true`
+   - Update `route` from `/prototype/[name]` to the actual implementation route
+
+**Example Update**:
+```typescript
+// Before (placeholder):
+{
+  step: 5,
+  title: "Workflow Graph",
+  route: "/prototype/workflow-graph",
+  isImplemented: false,
+  journeyRoute: "/journey/5-workflow-graph",
+  description: "Research category selection with DAG visualization",
+}
+
+// After (implemented):
+{
+  step: 5,
+  title: "Workflow Graph",
+  route: "/reports/workflow",
+  isImplemented: true,
+  journeyRoute: "/journey/5-workflow-graph",
+  description: "Research category selection with DAG visualization",
+}
+```
+
+4. **Verify navigation** still works end-to-end:
+   - Navigate to `/?prototype=true` and click through all steps
+   - Ensure arrows work correctly at the new screen
+   - Confirm keyboard navigation (← →) works
+
+**Current Placeholder Status** (update this table when screens are completed):
+
+| Step | Screen | Placeholder Route | Status |
+|------|--------|-------------------|--------|
+| 5 | Workflow Graph | `/prototype/workflow-graph` | ⬜ Placeholder |
+| 9 | Verification | `/prototype/verification` | ⬜ Placeholder |
+| 10 | Chat | `/prototype/chat` | ⬜ Placeholder |
+| 11 | Child Reports | `/prototype/child-reports` | ⬜ Placeholder |
+| 12 | Template Builder | `/prototype/template-builder` | ⬜ Placeholder |
+| 13 | Workspace | `/prototype/workspace` | ⬜ Placeholder |
+| 14 | Sharing | `/prototype/sharing` | ⬜ Placeholder |
+
+When a screen is completed, update the row: `⬜ Placeholder` → `✅ Implemented`
+
+**WHY THIS MATTERS**:
+- The prototype flow is used for client demos and stakeholder walkthroughs
+- Broken navigation in the prototype undermines confidence in the product
+- Keeping placeholders updated ensures the prototype always reflects current state
+
+---
 
 ### **Step 3: Prepare for Commit (DO NOT COMMIT DIRECTLY)**
 **CRITICAL**: Do NOT run git commands directly. Instead, prepare for the `/commit-push` slash command.
@@ -142,7 +558,7 @@ Based on the analysis, add learnings to `learnings.md` (NOT to individual agent 
 
 **IMPORTANT**: All learnings go into the centralized `learnings.md` file, categorized appropriately:
 
-1. **Open `learnings.md`** in the documentation/design-agents-flow/ folder
+1. **Open `learnings.md`** in the `agents/` folder
 2. **Find the appropriate category** for the learning:
    - Workflow & Process
    - CSS & Styling
@@ -252,6 +668,23 @@ Follow this systematic approach for analyzing and improving:
 - Placeholders/incomplete work flagged for development team
 - Key files and dependencies listed
 
+### 📸 Page Screenshot Archived
+- **Screenshot saved**: `agents/page-references/[route-name]-desktop.png`
+- **README updated**: Entry added to page-references/README.md
+- **Available for**: Future consistency checks by Agent 2, 4, and 5
+
+### 🧩 Component Extraction Completed
+- **Components Extracted**: [Number] new components
+- **Component Location**: `src/components/research-tech/`
+- **Core Components Updated**: [Which RT core components from tracking table]
+
+### 📄 Journey Pages & Documentation Updated
+- **Source Journey Page**: `app/src/routes/journey/[X]-[name].tsx` updated to completion state
+- **Journey Index Page**: `/journey` updated with completion status for this screen
+- **completed-screens.md**: New section added for [Screen Name]
+- **Design Rationale Archived**: Yes/No
+- **Client Presentation Ready**: Design decisions documented for reference
+
 ### 🧠 Self-Improvement Analysis Completed
 - **Chat Analysis**: [Number] user corrections/iterations identified
 - **Root Causes**: [Number] agent workflow gaps found
@@ -333,6 +766,20 @@ Move the task file from `doing/` to `done/` folder and update it:
 **Key Files Modified**:
 - [List of main files changed]
 
+### Page Screenshot Archived
+**Screenshot**: `agents/page-references/[route-name]-desktop.png`
+**Route**: /[route]
+**Date Added**: [DATE]
+**Notes**: [Brief description of what the page shows]
+
+### Components Extracted (the project)
+| Component | Location | Props | Usage |
+|-----------|----------|-------|-------|
+| [Name] | `components/research-tech/[name].tsx` | [props] | [usage] |
+
+**Core Components Table Updated**:
+- [Which core components from tracking table are now ✅ Done]
+
 ### Self-Improvement Analysis Results
 **User Corrections Identified**: [Number and brief description]
 **Agent Workflow Gaps Found**: [Number and brief description]
@@ -345,18 +792,43 @@ Move the task file from `doing/` to `done/` folder and update it:
 
 ### Success Patterns Captured
 - [What worked well, added to Success Patterns category in learnings.md]
+
+### Journey Pages & Documentation Updated
+
+**Source Journey Page Updated**: `app/src/routes/journey/[X]-[name].tsx`
+**Changes Made**:
+- [x] Replaced wireframes/plans with completion banner
+- [x] Added "View Live Implementation" button
+- [x] Added "What Was Built" summary cards
+- [x] Added link to completed-screens.md
+- [x] Updated nextRoute to point to live implementation
+
+**Journey Index Page Updated**: `app/src/routes/journey/index.tsx`
+**Changes Made**:
+- [x] Updated screen card to show completion status
+- [x] Changed link to point to live implementation route
+- [x] Added completion indicator (checkmark/badge)
+
+**completed-screens.md Updated**:
+- [x] New section added for this screen
+- [x] Design rationale archived
+- [x] Sprint questions answered documented
+- [x] Components created listed
 ```
 
-## Flow Development Context
+## the project Screens & Progress
 
-**🎯 CRITICAL - READ FIRST**: For onboarding/demo flow work, review `FLOW-DEVELOPMENT-CONTEXT.md` before starting any task. Focus on creating intuitive user guidance and progressive disclosure.
+**Key Screens to Build**:
+1. **Dashboard** — Project cards grid with status indicators
+2. **Workflow Builder** — React Flow graph + node inspector panel
+3. **Report View** — 3-pane layout (nav | content | sources)
+4. **Chat Interface** — AI conversation with Citation Chips (Sprint 2)
 
 **Key Context for Completion**:
-- **Target**: `app/onboarding/` or `app/demo/` (to be determined based on requirements)
-- **Status**: Full-stack development with Convex backend integration
-- **Documentation**: Note complete user experience implementation and flow patterns
-- **Commit Messages**: Indicate full-stack flow development with proper feature descriptions
-- **Handoff Notes**: Document user journey, onboarding patterns, and demo content structure
+- **Tech Stack**: React SPA + TanStack Router + Vite (NOT Next.js)
+- **Documentation**: Note which screens are complete and which components were extracted
+- **Commit Messages**: Include component extraction info in commit message
+- **Handoff Notes**: Document screen completion status and extracted RT components
 
 ## Design Engineering Workflow
 
