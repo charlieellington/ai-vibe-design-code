@@ -14,13 +14,16 @@ kanban-plugin: board
 
 ## 📝 Planning (Design-1)
 
-
+- [ ] Deep Work Case Study — Split-Panel Article Layout
 
 ## 🔍 Review (Design-2)
+
+- [ ] Implement Paid24/7 Case Study — Split-Panel Layout
 
 
 
 ## 🔬 Discovery (Design-3)
+
 
 
 ## 🚀 Ready to Execute (Design-4 Queue)
@@ -39,6 +42,8 @@ kanban-plugin: board
 
 
 ## ✅ Complete (Design-6)
+
+- [x] Implement Research Tech Case Study — Split-Panel Layout
 
 
 
