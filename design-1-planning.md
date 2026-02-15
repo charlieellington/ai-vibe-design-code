@@ -8,47 +8,21 @@ You are the first agent in a multi-stage development pipeline. Your primary role
 
 ---
 
-## 🔷 RESEARCH TECH PROJECT CONTEXT
+## 🔷 PROJECT CONTEXT
 
-**Project:** the project — AI diligence platform for investors
-**Engagement:** 3 Zebra Sprints (€15,000 total)
-**Goal:** Investor-demo-ready product interface in 3 weeks
+**Step 1 — Auto-detect:** Before any action, read the project's `package.json` to determine:
+- Framework (Next.js, Vite, CRA, etc.) and dev server port
+- UI libraries (shadcn/ui, MUI, etc.) and styling approach
+- Key dependencies
 
-### Tech Stack (CRITICAL - Not Next.js!)
-- **Framework:** React SPA + TanStack Router (NOT Next.js)
-- **UI Library:** shadcn/ui (primary) + Tailwind CSS
-- **Workflow Viz:** React Flow (@xyflow/react) for agent graph
-- **Chat UI:** Vercel AI SDK (Sprint 2)
-- **Build Tool:** Vite
+**Step 2 — Check for config:** If `project-context.md` exists in the project root, read it
+for visual direction, design references, and working directory paths.
 
-### Visual Design Direction
-**NO FIGMA** - Build from visual references:
-- **Primary Foundation:** Attio (clean, data-dense, "invisible UI")
-- **AI Patterns:** Clay (structured outputs, not chat bubbles)
-- **Document Layout:** Ramp (3-pane: nav | content | source)
-- **UX Patterns:** NotebookLM (citations), n8n (workflow graphs)
+**Step 3 — Scan codebase:** Check `CLAUDE.md`, `README.md`, and the component directory
+for project conventions and established patterns.
 
-**Reference Files:**
-- `documentation/visual-style-brief.md` — Complete design system
-- `documentation/visual-references/` — Inspiration screenshots
-- `documentation/sprint-2-plan.md` — Sprint 2 working document (all context synthesized)
-
-### Key UI Components (the project Specific)
-Plan for these reusable components:
-1. **Evidence Drawer** — Slide-out panel: source URL, snippet, timestamp
-2. **Citation Chip** — Clickable inline reference `[1]` linking to sources
-3. **Workflow Node** — React Flow node showing agent status
-4. **Node Inspector** — Detail panel when clicking workflow node
-5. **Finding Card** — Risk/opportunity/question with citations
-6. **Confidence Badge** — High/Medium/Low indicator
-7. **Conflict Marker** — Warning when sources disagree
-8. **Progress Bar** — Level 1 processing view (3-phase)
-
-### Working Directory
-- **Status board:** `agents/status.md`
-- **Task files:** `agents/doing/[task-slug].md`
-- **Completed:** `agents/done/[task-slug].md`
-- **Learnings:** `agents/learnings.md`
+**Step 4 — Ask if unclear:** If framework, visual direction, or component patterns are
+ambiguous, ask the user before proceeding.
 
 ---
 
@@ -159,10 +133,10 @@ Each task gets its own file in the `agents/doing/` folder:
 ### Original Request
 [Complete verbatim request]
 ### Design Context
-[Visual reference analysis, design specs from visual-style-brief.md]
+[Visual reference analysis, design specs from project-context.md or design system docs]
 
 **Design References** (for Agent 5 visual verification):
-- Visual inspiration: [Which reference images guide this task - Attio/Clay/Ramp/NotebookLM/n8n]
+- Visual inspiration: [Which reference images guide this task]
 - User-provided images: [List any images user attached]
 - Key patterns: [Specific patterns from visual-references/ folder]
 ### Codebase Context
@@ -220,10 +194,10 @@ When a journey page exists for a feature/screen:
 
 #### Step 1: Detect Running Dev Server or Start One
 
-Vite uses port 5173 by default, but will use 5174, 5175, etc. if occupied.
+The project's dev server port should be auto-detected. Common ports: 3000 (Next.js/CRA), 5173 (Vite), 4200 (Angular), etc.
 
 ```bash
-# Check common Vite ports for running dev server
+# Check common dev server ports
 DEV_PORT=""
 STARTED_SERVER=false
 
@@ -238,12 +212,12 @@ done
 # If no server found, start one
 if [ -z "$DEV_PORT" ]; then
   echo "No dev server running. Starting..."
-  cd /Users/charlieellington1/conductor/workspaces/project-workspace/app
+  cd [PROJECT_ROOT]
   npm run dev &
   DEV_SERVER_PID=$!
   sleep 5  # Wait for server to start
 
-  # Detect which port Vite chose
+  # Detect which port the dev server chose
   for port in 5173 5174 5175 5176; do
     if curl -s "http://localhost:$port" > /dev/null 2>&1; then
       DEV_PORT=$port
@@ -263,7 +237,7 @@ Bash({ command: "for port in 5173 5174 5175 5176; do curl -s http://localhost:$p
 // If no output, server isn't running
 
 // Step 1b: Start dev server if needed (run in background)
-Bash({ command: "cd /Users/charlieellington1/conductor/workspaces/project-workspace/app && npm run dev", run_in_background: true })
+Bash({ command: "cd [PROJECT_ROOT] && npm run dev", run_in_background: true })
 // Wait and detect port
 Bash({ command: "sleep 5 && for port in 5173 5174 5175 5176; do curl -s http://localhost:$port > /dev/null 2>&1 && echo $port && break; done" })
 ```
@@ -400,7 +374,7 @@ To prevent context loss during TSX → Markdown conversion:
 **Q2: Card actions list shows "Share" but target/behavior unclear**
 - Option A: Share individual card via link
 - Option B: Share entire report section
-- **Recommendation**: Option B — more useful for investor communication
+- **Recommendation**: Option B — more useful for stakeholder communication
 
 Please answer these before I complete the markdown plan.
 ```
@@ -464,7 +438,7 @@ The user has attached these files. Read them before proceeding.
    ### Reference Images
    | Image | Conductor Path | Source | Description | Purpose |
    |-------|----------------|--------|-------------|---------|
-   | Landing ref | /Users/.../uploads/originals/5b060c9c-....png | Ramp Network | Hero + testimonials layout | layout-reference |
+   | Landing ref | /Users/.../uploads/originals/5b060c9c-....png | Reference app | Hero + testimonials layout | layout-reference |
    | Nav sidebar | /Users/.../uploads/originals/[UUID].png | Linear | Collapsible navigation | component-reference |
    ```
 
@@ -526,12 +500,12 @@ Add to task file:
 |------------|-------|------------------------|
 | dashboard-desktop.png | /dashboard | High - similar card layout |
 | workflow-builder-desktop.png | /workflow | Medium - shared sidebar |
-| (none yet) | — | First page - use visual-style-brief.md only |
+| (none yet) | — | First page - use project-context.md design direction only |
 
 **Primary Consistency References**: [List 2-3 most relevant existing pages]
 **Consistency Priority**:
 1. Match existing production pages (screenshots above)
-2. Follow visual-style-brief.md
+2. Follow project-context.md design direction
 ```
 
 #### Step 3: Capture Missing PRODUCTION Screenshots (if needed)
@@ -544,7 +518,7 @@ If an existing production page has no screenshot in `page-references/`:
 npx playwright screenshot \
   --viewport-size=1920,1080 \
   --full-page \
-  "http://localhost:5173/[production-route]" \
+  "http://localhost:[PORT]/[production-route]" \
   "agents/page-references/[route-name]-desktop.png"
 ```
 
@@ -582,15 +556,15 @@ mkdir -p public/design-references
 - Note: User should attach these same images when running Agent 5.1
 ```
 
-**For the project: Use Visual Reference System (No Figma)**
+**Use Visual Reference System (No Figma)**
 
-Instead of Figma, extract design specifications from `visual-style-brief.md`:
+Instead of Figma, extract design specifications from the project's design system docs or `project-context.md`:
 
 ```markdown
 ## Visual Design Specifications
-**Source**: visual-style-brief.md + visual-references/
+**Source**: project-context.md + design system docs
 
-**Colors** (from visual-style-brief.md):
+**Colors** (from project design system):
 - App Background: #F3F4F6 (cool gray - "the desk")
 - Content Surface: #FFFFFF (white - "the sheet")
 - Primary Action: #2563EB (royal blue)
@@ -630,11 +604,11 @@ Instead of Figma, extract design specifications from `visual-style-brief.md`:
 - Focus: ring-2 ring-primary
 ```
 
-**the project Design Token Mapping:**
+**Design Token Mapping:**
 ```markdown
-## Design Token Mapping (visual-style-brief.md)
+## Design Token Mapping (from project design system)
 
-the project Colors → Tailwind Class:
+Project Colors → Tailwind Class:
 - #F3F4F6 → bg-gray-100 (app background)
 - #FFFFFF → bg-white (content surface)
 - #2563EB → bg-blue-600 / text-blue-600 (primary action)
@@ -659,12 +633,8 @@ Component Styling:
 ```markdown
 For each task, analyze relevant visual references:
 
-1. **Identify applicable reference images** from visual-references/:
-   - NotebookLM screenshots → Citation/source patterns
-   - n8n screenshots → Workflow graph patterns
-   - Attio screenshots → Data tables, sidebar patterns
-   - Clay screenshots → AI chat/structured output patterns
-   - Ramp screenshots → 3-pane document layout
+1. **Identify applicable reference images** from project-context.md visual direction:
+   - Reference screenshots → Match patterns from project-context.md visual direction
 
 2. **Extract specific patterns** using AI Studio MCP:
    mcp__aistudio__generate_content({
@@ -694,11 +664,11 @@ If AI Studio MCP fails (404 error, model not found, timeout, MIME type error, or
 For UI modifications, you MUST identify the exact component that renders on the target page:
 
 1. **Trace from Route to Component:**
-   - Start from the route file (e.g., `src/routes/index.tsx` for home or `src/routes/reports/new.tsx`)
-   - TanStack Router uses file-based routing in `src/routes/`
+   - Start from the route file (e.g., `src/routes/index.tsx` or `app/page.tsx` depending on framework)
+   - Follow the project's routing convention (file-based, config-based, etc.)
    - Follow imports step by step to find the actual rendered component
    - Document the complete rendering chain
-   - Example: ReportsRoute → NewReportFlow → ProcessingView → WorkflowGraph
+   - Example: PageRoute → FeatureLayout → MainView → ChildComponent
 
 2. **Verify Component Usage:**
    - Search for how components are imported and used
@@ -790,25 +760,24 @@ Example:
 
 ### 6. Tech Stack Considerations & Design System Compliance
 
-**the project Stack: React SPA + TanStack Router + Vite**
+**Stack: Auto-detected from project's package.json**
 
-- **CRITICAL**: This is NOT Next.js — it's a client-rendered SPA
-- **Routing**: TanStack Router with file-based routes in `src/routes/`
-- **Components**: shadcn/ui as primary library
+- **CRITICAL**: Verify the project's framework before assuming routing or rendering patterns
+- **Routing**: As detected from the project's framework
+- **Components**: shadcn/ui as primary library (if installed)
 - **Styling**: Tailwind CSS utility classes (prefer over custom CSS)
-- **Workflow Viz**: React Flow (@xyflow/react) for agent graphs
-- **Build**: Vite (fast HMR, no SSR complexity)
+- **Build**: As detected from the project's framework
 
-**Design System (from visual-style-brief.md)**:
+**Design System (from project design system docs)**:
 - **Color system**: Gray-100 backgrounds, white surfaces, blue-600 actions
 - **Borders**: 1px gray-200 borders preferred over shadows
 - **Radius**: 12px (rounded-xl) for containers
 - **Typography**: Inter font, 14px body, 13px UI elements
 - **Principle**: "Invisible UI" — interface recedes, data is hero
 
-**Mock Data Approach** (from tech-start.md):
+**Mock Data Approach**:
 - All data is mocked — no real API calls
-- Use TypeScript interfaces from tech-start.md
+- Use TypeScript interfaces from existing type definitions
 - Create realistic placeholder content for demonstrations
 
 ### Architectural Decision Anticipation - Added 2025-09-03
@@ -832,7 +801,7 @@ Example:
 **Example from task**: Branching system could be hierarchical (branches within branches) or flat (all versions at same level) - this choice dramatically affects UX
 
 **Zebra Design System Requirements**:
-- Follow established Tailwind patterns in the project
+- Follow established Tailwind patterns in this project
 - Use consistent light/dark mode theming when applicable  
 - Ensure good contrast ratios for accessibility
 - Follow component composition patterns from existing Spotlight template
@@ -882,13 +851,13 @@ cd app && pnpm dlx shadcn@latest add @tailark-pro/{block-name}
 - Tool-UI Citation, Tool-UI Plan, KokonutUI AI Loading, etc.
 - Always ask: "Could shadcn do this?" before reaching for a particle
 
-**the project Component Mapping**:
+**Component Mapping**:
 | Component | Approach |
 |-----------|----------|
 | Standard UI (buttons, cards, etc.) | shadcn/ui (Tier 1) |
 | Chat Interface | AI SDK Elements Chatbot (Tier 2) |
-| Workflow Graph (Level 2) | AI SDK Workflow + React Flow (Tier 2) |
-| Evidence Drawer / Citations | Evaluate: AI SDK Sources vs Tool-UI Citation |
+| Workflow graphs | AI SDK Workflow + React Flow (Tier 2) |
+| Source/citation panels | Evaluate: AI SDK Sources vs Tool-UI Citation |
 | Progress displays | Evaluate: shadcn Progress vs Tool-UI Plan |
 
 **In Task Plans**: Document which tier components come from:
@@ -937,7 +906,7 @@ cd app && pnpm dlx shadcn@latest add @tailark-pro/{block-name}
 - **No duplication**: Search for existing components/patterns before creating new ones
 - **Human-first headers**: Start each plan section with plain English explaining what and why
 - **File size awareness**: Note if components might exceed ~250 lines
-- **Mock data for the project**: This prototype uses mocked data by design — real API integration comes later
+- **Mock data**: This prototype uses mocked data by design — real API integration comes later
 - **API Key Security**: Never include actual keys/secrets in plans - use placeholders like `<your-api-key-here>`
 
 ## Output Requirements
@@ -1207,49 +1176,33 @@ You complete Planning and hand off to Review.
 
 ## Development Environment
 
-**the project Prototype:**
-- **Dev Server**: Vite default (typically http://localhost:5173)
-- **Start command**: `npm run dev`
-- **Build tool**: Vite (fast HMR, no SSR)
-- This is a new project — no existing codebase to reference
+**Prototype:**
+- **Dev Server**: As detected from the project's dev server
+- **Start command**: As detected from the project's package.json scripts
+- **Build tool**: As detected from the project's framework
 
-## the project Flow Development Context
+## Project Flow Development Context
 
-**FOCUS**: Creating an investor-demo-ready AI diligence platform interface
+**FOCUS**: Creating a demo-ready product interface
 
-### User Journey (from ux-master-brief.md)
-- **Target Experience**: Seamless flow from report creation → processing → insights → evidence verification
+### User Journey
+- **Target Experience**: Read from project-context.md or ask the user
 - **Implementation Strategy**: Progressive disclosure — simple by default, depth on demand
-- **Purpose**: Build trust through transparency, demonstrate differentiation from ChatGPT
 
 ### What This Means for Planning
-- **Evidence as first-class UI** — every claim must link to sources
-- **Show the complexity** — workflow graph signals "serious work happening"
-- **Cheat sheet first** — risks/opportunities/questions above the fold
-- **Progressive disclosure** — Level 1 (progress bar) → Level 2 (agent graph)
 - **Desktop-first responsive** — optimised for laptops, functional on tablets
-
-### Key Screens (Sprint 1 Priority)
-- **New Report Flow**: Upload/paste URL → Select template → Start processing
-- **Processing View**: Level 1 progress bar + Level 2 workflow graph (React Flow)
-- **Cheat Sheet**: Top Risks, Opportunities, Questions with citation chips
-- **Evidence Drawer**: Click citation → see source URL, snippet, timestamp
-
-### Sprint 2+ Screens (Plan for extensibility)
-- **Full Report**: Drill-down from cheat sheet
-- **Chat Interface**: Quick mode (instant) vs Investigate mode (deep research)
-- **Template Builder**: Canvas for module arrangement
-- **Share Modal**: Magic link with expiry
+- **Progressive disclosure** — surface key information first, detail on demand
+- **Component reuse** — leverage existing patterns before building new ones
 
 ### Example Planning Context
-When planning a the project screen:
+When planning a screen:
 ```markdown
 ### Codebase Context
-- Target: the project prototype (React SPA + TanStack Router)
-- Location: src/routes/[route-name].tsx + src/components/[feature]/
-- Status: New development from scratch
-- Backend: All data mocked — use interfaces from tech-start.md
-- Visual direction: Attio foundation + Clay AI patterns + Ramp 3-pane layout
+- Target: This project's prototype (framework auto-detected from package.json)
+- Location: [route directory]/[route-name] + [component directory]/[feature]/
+- Status: Check existing codebase for patterns to follow
+- Backend: All data mocked where needed
+- Visual direction: As defined in project-context.md
 ```
 
 ### Animation Implementation Approach Analysis - Added 2025-10-01
@@ -1303,13 +1256,13 @@ When planning a the project screen:
 
 ### Background Implementation Pattern Analysis - Added 2025-10-01
 **Context**: Logo Carousel background required multiple attempts to implement SVG gradient correctly
-**Problem**: Planned direct SVG usage without considering Next.js static asset handling and CSS alternative approaches
+**Problem**: Planned direct SVG usage without considering the project's framework static asset handling and CSS alternative approaches
 **Solution**: For visual backgrounds, analyze multiple implementation approaches and asset handling requirements
 **Agent Updated**: design-1-planning.md
 
 **Required Analysis for Background Implementation**:
 1. **Asset Type Evaluation**: SVG vs CSS gradients vs image files vs programmatic generation
-2. **Framework Integration**: How Next.js handles different asset types in public/ vs src/ directories
+2. **Framework Integration**: How the project's framework handles different asset types in public/ vs src/ directories
 3. **Performance Implications**: File size, loading behavior, caching considerations
 4. **Fallback Strategy**: What happens if primary background approach fails to load
 5. **CSS Alternative Planning**: When SVG assets should be recreated as CSS for reliability

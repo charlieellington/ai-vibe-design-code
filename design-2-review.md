@@ -2,20 +2,21 @@
 
 ---
 
-## 🔷 RESEARCH TECH PROJECT CONTEXT
+## 🔷 PROJECT CONTEXT
 
-**Project:** the project — AI diligence platform for investors
-**Visual Direction:** Attio foundation + Clay AI patterns + Ramp 3-pane layout
-**Tech Stack:** React SPA + TanStack Router + Vite (NOT Next.js)
+**Step 1 — Auto-detect:** Before any action, read the project's `package.json` to determine:
+- Framework (Next.js, Vite, CRA, etc.) and dev server port
+- UI libraries (shadcn/ui, MUI, etc.) and styling approach
+- Key dependencies
 
-### Visual Reference System (No Figma)
-- `documentation/visual-style-brief.md` — Complete design system
-- `documentation/visual-references/` — Inspiration screenshots (NotebookLM, n8n, Attio, Clay, Ramp)
-- `documentation/sprint-2-plan.md` — Sprint 2 working document (all context synthesized)
+**Step 2 — Check for config:** If `project-context.md` exists in the project root, read it
+for visual direction, design references, and working directory paths.
 
-### Working Directory
-- **Status board:** `agents/status.md`
-- **Task files:** `agents/doing/[task-slug].md`
+**Step 3 — Scan codebase:** Check `CLAUDE.md`, `README.md`, and the component directory
+for project conventions and established patterns.
+
+**Step 4 — Ask if unclear:** If framework, visual direction, or component patterns are
+ambiguous, ask the user before proceeding.
 
 ---
 
@@ -163,14 +164,14 @@ AI Studio MCP is significantly better because:
 | Priority | Source | Authority |
 |----------|--------|-----------|
 | 1 (Highest) | **User's explicit instructions** in original request or .tsx wireframe | Can intentionally break design system |
-| 2 | **visual-style-brief.md** | Defines the design system rules |
-| 3 | **Existing codebase components** (e.g., ModuleGridCard patterns) | Establishes implemented patterns |
+| 2 | **project-context.md or project design system docs** | Defines the design system rules |
+| 3 | **Existing codebase components** (established component patterns) | Establishes implemented patterns |
 | 4 (Lowest) | **Gemini's visual analysis** | Suggestions only — must align with above |
 
 **Example Conflict Resolution:**
 - Gemini analyzes a wireframe screenshot and suggests: `rounded-lg corners`
-- visual-style-brief.md says: "Sharp 0px corners on containers"
-- Existing ModuleGridCard uses: `rounded-none` (sharp corners)
+- Project design system docs say: "Sharp 0px corners on containers"
+- Existing components use: `rounded-none` (sharp corners)
 - **Decision**: Sharp corners win — Gemini's suggestion is overridden
 
 **When Gemini's suggestion wins:**
@@ -179,15 +180,15 @@ AI Studio MCP is significantly better because:
 
 **Your responsibility as Agent 2:**
 1. Run Gemini analysis to extract layout/component suggestions
-2. Cross-reference every suggestion against visual-style-brief.md
+2. Cross-reference every suggestion against the project's design system docs
 3. Cross-reference against existing component patterns in codebase
 4. **Override any Gemini suggestion that conflicts with established patterns**
 5. Document overrides in the Visual Reference Analysis section:
    ```markdown
-   **Gemini Override**: Suggested `rounded-lg` but using sharp corners per visual-style-brief.md
+   **Gemini Override**: Suggested `rounded-lg` but using sharp corners per project design system docs
    ```
 
-#### Step 1: Gather All Reference Materials (the project)
+#### Step 1: Gather All Reference Materials
 
 Collect paths for:
 
@@ -195,7 +196,7 @@ Collect paths for:
 - **Location:** `agents/page-references/`
 - Select 2-3 existing pages most relevant to the task
 - These are the PRIMARY source for visual consistency
-- If no existing pages yet, note this and rely on visual-style-brief.md
+- If no existing pages yet, note this and rely on project-context.md or project design system docs
 
 ```bash
 # Check what existing pages we have
@@ -203,21 +204,16 @@ ls agents/page-references/*.png 2>/dev/null
 ```
 
 **PRIORITY 2: Design System & References**
-- **Design system:** `documentation/visual-style-brief.md`
-- **Visual references:** Relevant images from `documentation/visual-references/`
-  - NotebookLM screenshots → Citation/source UI patterns
-  - n8n screenshots → Workflow graph patterns
-  - Attio screenshots → Data tables, sidebar, "invisible UI"
-  - Clay screenshots → AI chat/structured outputs
-  - Ramp screenshots → 3-pane document layout
-- **UX brief:** `documentation/sprint-2-plan.md`
+- **Design system:** project-context.md or project design system docs
+- **Visual references:** Relevant images from the project's reference directory
+  - Select screenshots relevant to the task's UI patterns
 - User-provided images (if any)
 
 #### Step 2: Analyze References with AI Studio MCP (Including Consistency Check)
 
 ```typescript
 mcp__aistudio__generate_content({
-  user_prompt: `Analyze these UI design references for the project — an AI diligence platform.
+  user_prompt: `Analyze these UI design references for the project.
 
 TASK CONTEXT:
 [Brief description of which screen we're building]
@@ -225,12 +221,11 @@ TASK CONTEXT:
 🎯 CONSISTENCY PRIORITY (CRITICAL):
 The EXISTING PAGE SCREENSHOTS are the PRIMARY reference for visual consistency.
 The new page MUST match the look and feel of these existing pages.
-Only use visual-style-brief.md to fill gaps not covered by existing pages.
+Only use the project's design system docs to fill gaps not covered by existing pages.
 
-DESIGN DIRECTION (from visual-style-brief.md):
-- Primary Foundation: Attio (clean, data-dense, "invisible UI")
-- AI Patterns: Clay (structured outputs, not chat bubbles)
-- Document Layout: Ramp (3-pane: nav | content | source)
+DESIGN DIRECTION (from project-context.md or project design system docs):
+- Follow the project's established design direction
+- Match existing page patterns and component styles
 
 ANALYZE AND PROVIDE:
 
@@ -253,21 +248,19 @@ ANALYZE AND PROVIDE:
    - Key Tailwind classes
    - Which reference image it comes from
 
-4. **the project Specific Components**
-   - Evidence Drawer pattern (if applicable)
-   - Citation Chip styling
-   - Workflow Node appearance (if applicable)
-   - Confidence Badge styling
+4. **Project-Specific Components**
+   - Identify project-specific patterns from existing codebase
+   - Reuse established component patterns where applicable
 
 5. **Spacing System**
-   - Padding values (the project uses: 32px main views, 16px cards)
+   - Padding values (match existing page patterns)
    - Gap values
-   - Sidebar width: 240px
+   - Sidebar width (match existing layout)
 
 6. **Visual Style Notes**
-   - Colors: Gray-100 bg, white surfaces, blue-600 actions, violet-600 AI
-   - 1px gray-200 borders (prefer over shadows)
-   - Typography: Inter, 14px body, 13px UI
+   - Extract colour palette from existing pages and Tailwind config
+   - Note border vs shadow patterns from existing components
+   - Extract typography (font family, sizes) from existing pages
 
 7. **Consistency Requirements for Agent 4**
    - Specific elements that MUST match existing pages
@@ -279,7 +272,7 @@ ANALYZE AND PROVIDE:
     { path: "agents/page-references/processing-desktop.png" },
     { path: "agents/page-references/executive-brief.png" },
     // Relevant visual references for inspiration (optional)
-    { path: "documentation/visual-references/attio-02-companies-table.png" },
+    { path: "documentation/visual-references/example-reference.png" },
     // ⚠️ DO NOT include .tsx/.ts code files - they cause errors
     // ⚠️ DO NOT include .md files - they cause MIME type errors
     // Instead: Embed relevant code snippets in user_prompt above

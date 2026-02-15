@@ -2,29 +2,21 @@
 
 ---
 
-## 🔷 RESEARCH TECH PROJECT CONTEXT
+## 🔷 PROJECT CONTEXT
 
-**Project:** the project — AI diligence platform for investors
-**Tech Stack:** React SPA + TanStack Router + Vite (NOT Next.js)
-**Visual Direction:** Attio foundation + Clay AI patterns + Ramp 3-pane layout
+**Step 1 — Auto-detect:** Before any action, read the project's `package.json` to determine:
+- Framework (Next.js, Vite, CRA, etc.) and dev server port
+- UI libraries (shadcn/ui, MUI, etc.) and styling approach
+- Key dependencies
 
-### Working Directory
-- **Status board:** `agents/status.md`
-- **Task files:** `agents/doing/[task-slug].md`
+**Step 2 — Check for config:** If `project-context.md` exists in the project root, read it
+for visual direction, design references, and working directory paths.
 
-### Development URL
-- **Vite Dev Server:** http://localhost:5173 (NOT 3000/3001)
+**Step 3 — Scan codebase:** Check `CLAUDE.md`, `README.md`, and the component directory
+for project conventions and established patterns.
 
-### Visual Design System (from visual-style-brief.md)
-- **Background:** Gray-100 (#F4F4F5)
-- **Surfaces:** White with 1px gray-200 border (NOT shadows)
-- **Actions:** Blue-600 (#2563EB)
-- **AI Accent:** Violet-600 (#7C3AED)
-- **Typography:** Inter, 14px body, 13px UI
-
-### Visual Reference System (No Figma)
-- `documentation/visual-style-brief.md` — Complete design system
-- `documentation/visual-references/` — Inspiration screenshots
+**Step 4 — Ask if unclear:** If framework, visual direction, or component patterns are
+ambiguous, ask the user before proceeding.
 
 ---
 
@@ -58,8 +50,8 @@ You capture screenshots, analyze them directly, fix ALL issues (visual or functi
 **When tagged with @design-5-visual-verification.md [Task Title]**, you automatically:
 1. **IMMEDIATELY open** the individual task file in `doing/` folder with the exact task title (kebab-case)
 2. **Load COMPLETE context** from the implementation (Agent 4 notes, original requirements)
-3. **Compare against visual-style-brief.md** for design system compliance
-4. **Verify dev server** is running (localhost:5173 — Vite)
+3. **Compare against project-context.md or project design system docs** for design system compliance
+4. **Verify dev server** is running (auto-detect port from package.json)
 5. **Capture screenshots** at multiple viewports using Playwright MCP (headless)
 6. **Analyze screenshots directly** - you CAN see the images
 7. **Fix any issues found** - CSS, React, component changes, console errors
@@ -83,39 +75,42 @@ You capture screenshots, analyze them directly, fix ALL issues (visual or functi
 ### Step 2: Verify Environment
 
 ```bash
-# Check dev server (Vite uses port 5173)
-curl -s http://localhost:5173 > /dev/null && echo "Vite server ready on 5173" || \
+# Check dev server (auto-detect port from package.json dev script)
+curl -s http://localhost:[port] > /dev/null && echo "Dev server ready on [port]" || \
 echo "ERROR: Start dev server first with 'npm run dev'"
 ```
 
+> **Note:** Determine the correct port by reading `package.json` scripts. Common defaults:
+> Vite = 5173, Next.js = 3000, CRA = 3000, Remix = 5173.
+
 ### Step 3: Screenshot Capture & Analysis
 
-**Desktop View (1440x900)** — the project is desktop-first:
+**Desktop View (1440x900)** — standard desktop viewport:
 ```bash
 # Single CLI command (faster than 3 MCP calls: navigate + resize + screenshot)
 npx playwright screenshot \
   --viewport-size=1440,900 \
   --full-page \
-  "http://localhost:5173/[route]" \
+  "http://localhost:[port]/[route]" \
   ".playwright-mcp/[task-slug]-desktop.png"
 ```
 
-**Wide Desktop View (1920x1080)** — Primary use case for investors:
+**Wide Desktop View (1920x1080)** — common wide monitor:
 ```bash
 npx playwright screenshot \
   --viewport-size=1920,1080 \
   --full-page \
-  "http://localhost:5173/[route]" \
+  "http://localhost:[port]/[route]" \
   ".playwright-mcp/[task-slug]-wide.png"
 ```
 
 **Both viewports in parallel** (use two Bash tool calls with `run_in_background: true`):
 ```bash
 # Call 1 (background): Desktop
-npx playwright screenshot --viewport-size=1440,900 --full-page "http://localhost:5173/[route]" ".playwright-mcp/[task-slug]-desktop.png"
+npx playwright screenshot --viewport-size=1440,900 --full-page "http://localhost:[port]/[route]" ".playwright-mcp/[task-slug]-desktop.png"
 
 # Call 2 (background): Wide desktop
-npx playwright screenshot --viewport-size=1920,1080 --full-page "http://localhost:5173/[route]" ".playwright-mcp/[task-slug]-wide.png"
+npx playwright screenshot --viewport-size=1920,1080 --full-page "http://localhost:[port]/[route]" ".playwright-mcp/[task-slug]-wide.png"
 ```
 
 After screenshots complete, **read the images with the Read tool** to analyze them directly.
@@ -123,7 +118,7 @@ After screenshots complete, **read the images with the Read tool** to analyze th
 **Additional Views (as needed)**:
 - Tablet: 1024x768 (for presentations)
 - Narrow Desktop: 1366x768
-- Note: Mobile is NOT a priority for the project (investor desktop tool)
+- Mobile: 375x812 (if the project supports mobile)
 
 **Keep Playwright MCP for interactive testing** (Step 6: clicking buttons, filling forms, reading snapshots). Only use CLI for screenshots.
 
@@ -133,11 +128,10 @@ After screenshots complete, **read the images with the Read tool** to analyze th
 
 **PURPOSE**: Compare the new implementation against existing pages to catch consistency issues.
 
-**REAL FAILURE EXAMPLE (Jan 2026):**
-- Input Upload Page had `rounded-lg` on cards
-- Onboarding page has NO rounded corners on cards
-- Agent 5 approved with justification "intentional per design spec for input hierarchy"
-- THIS WAS WRONG — design spec says SHARP CORNERS on all containers
+**COMMON FAILURE PATTERN:**
+- A new page uses different styling (e.g. `rounded-lg` on cards) than existing pages
+- Agent 5 approves with justification "intentional per design spec for visual hierarchy"
+- THIS IS WRONG — if it doesn't match existing pages, it's inconsistent
 - **The "intentional" excuse is NEVER valid. If it doesn't match existing pages, it's WRONG.**
 
 #### Step 4a: Gather Existing Page Screenshots AND Code
@@ -147,16 +141,11 @@ After screenshots complete, **read the images with the Read tool** to analyze th
 ls agents/page-references/*.png 2>/dev/null
 ```
 
-**Current files in page-references/ (January 2026):**
-- `agents/page-references/landing-page-desktop.png` — Landing/homepage
-- `agents/page-references/executive-brief.png` — Executive brief view
-- `agents/page-references/processing-desktop.png` — Processing status page
-- `agents/page-references/review-queue.png` — Review queue page
+List the available reference screenshots and select 2-3 most relevant existing pages for comparison.
 
 **ALSO read the actual code to verify CSS patterns:**
-- `app/src/routes/onboarding.tsx` — Line 78: card CSS (`border border-gray-200 bg-white p-8` — NO rounded)
-- `app/src/routes/journey/2-value-preview.tsx` — Landing page styling
-- `app/src/components/report/module-grid-card.tsx` — Card grid patterns
+- Scan existing route/page components for established card, container, and layout CSS classes
+- Identify the project's shared UI components (buttons, cards, inputs) and their styling conventions
 
 Select 2-3 most relevant existing pages for comparison.
 
@@ -201,16 +190,15 @@ PROVIDE:
 - ISSUES LIST: Specific things that don't match
 - FIX RECOMMENDATIONS: Exact CSS/Tailwind changes needed`,
   files: [
-    // 🎯 Existing page SCREENSHOTS (pick 2-3 most relevant)
-    { path: "agents/page-references/landing-page-desktop.png" },
-    { path: "agents/page-references/processing-desktop.png" },
-    { path: "agents/page-references/executive-brief.png" },
+    // 🎯 Existing page SCREENSHOTS (pick 2-3 most relevant from page-references/)
+    { path: "agents/page-references/[relevant-existing-1].png" },
+    { path: "agents/page-references/[relevant-existing-2].png" },
     // 🎯 Existing page CODE (MANDATORY - verify CSS classes match)
-    { path: "app/src/routes/onboarding.tsx" },
-    { path: "app/src/components/report/module-grid-card.tsx" },
+    { path: "[path-to-established-page].tsx" },
+    { path: "[path-to-shared-ui-component].tsx" },
     // New implementation screenshot (to verify)
     { path: "[task-slug]-desktop.png" },
-    // New implementation CODE (to check for wrong CSS like rounded-lg)
+    // New implementation CODE (to check for inconsistent CSS)
     { path: "[path-to-new-component].tsx" },
   ],
   model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
@@ -236,18 +224,19 @@ If AI Studio MCP identifies inconsistencies:
 
 #### ⛔ AUTOMATIC FAILURES (Do NOT Approve)
 
-These CSS patterns are ALWAYS wrong for the project:
-- `rounded-lg`, `rounded-xl`, `rounded-2xl` on card containers — MUST BE removed
-- `shadow-md`, `shadow-lg` on cards — Use `border border-gray-200` instead
-- Purple/violet CTA buttons — Use `bg-gray-900` (grayscale chrome)
-- Different header than onboarding — All pages use same AppHeader
+Any CSS pattern that **contradicts the project's established conventions** is wrong.
+Scan existing components to extract the project's actual patterns, then flag violations such as:
+- Card corner radius different from established components
+- Shadow usage that contradicts the project's border/shadow convention
+- Button colors that don't match the project's design system
+- Header/navigation that differs from the shared layout component
 
-**If you see ANY of these, the implementation is WRONG. Fix it, don't approve it.**
+**If styling doesn't match existing pages, the implementation is WRONG. Fix it, don't approve it.**
 
 **FORBIDDEN JUSTIFICATIONS:**
-- ❌ "Intentional for visual hierarchy" — NO
-- ❌ "Per design spec" (when you mean task file wireframe) — NO
-- ❌ "Minor note: uses rounded for distinction" — NO
+- "Intentional for visual hierarchy" — NO
+- "Per design spec" (when you mean task file wireframe) — NO
+- "Minor note: uses different styling for distinction" — NO
 
 ---
 
@@ -262,24 +251,26 @@ Analyze each screenshot against these criteria:
 - [ ] **Spacing**: Padding and margins look correct
 - [ ] **Overflow**: No unexpected scrollbars or cut-off content
 
-#### Visual Styling (the project Specific)
-- [ ] **Background**: Gray-100 (#F4F4F5) for main app background
-- [ ] **Surfaces**: White cards/panels with 1px gray-200 border (NOT heavy shadows)
-- [ ] **Actions**: Blue-600 for buttons and links
-- [ ] **AI Accent**: Violet-600 for AI-generated content indicators
-- [ ] **Typography**: Inter font, 14px body, 13px UI text
-- [ ] **Borders over Shadows**: Using 1px borders instead of drop shadows
+#### Visual Styling (Extract from Project's Design System)
+
+Scan existing components and the project's Tailwind config to determine established patterns:
+- [ ] **Background**: Matches the project's established background color
+- [ ] **Surfaces**: Card/panel styling matches existing components (borders vs shadows)
+- [ ] **Actions**: Button colors match the project's design system
+- [ ] **Accent Colors**: Accent usage is consistent with existing pages
+- [ ] **Typography**: Uses the project's font family and size scale
+- [ ] **Border/Shadow Convention**: Consistent with the established pattern
 
 #### Desktop Layout (Primary Focus)
 - [ ] **Wide desktop (1920px)**: Uses space effectively, no wasted real estate
 - [ ] **Standard desktop (1440px)**: All elements accessible, no cramping
-- [ ] **3-pane layouts**: Sidebar (240px) | Content | Source panel sized correctly
-- [ ] **React Flow canvas**: Workflow graph renders properly with custom nodes
+- [ ] **Layout structure**: Sidebar, content, and panel proportions match existing pages
+- [ ] **Special components**: Any canvas, chart, or interactive elements render properly
 
-#### Design System Compliance (visual-style-brief.md)
-- [ ] **Matches visual direction**: Attio-clean, Clay-structured, Ramp-layout
-- [ ] **"Invisible UI" principle**: Clean, data-dense, not decorative
-- [ ] **Component patterns**: Evidence Drawer, Citation Chip, etc. styled correctly
+#### Design System Compliance (project-context.md or project design system docs)
+- [ ] **Matches visual direction**: Consistent with the project's stated design principles
+- [ ] **Clean UI principle**: Professional, data-dense, not decorative
+- [ ] **Component patterns**: Shared components styled consistently across pages
 
 ### Step 6: Functional Testing
 
@@ -306,7 +297,7 @@ mcp__playwright__browser_type({
 mcp__playwright__browser_console_messages({ onlyErrors: true })
 
 // Test navigation
-mcp__playwright__browser_navigate({ url: "http://localhost:5173/next-page" })
+mcp__playwright__browser_navigate({ url: "http://localhost:[port]/next-page" })
 ```
 
 ### Step 7: Aggressive Fix Loop (Max 3 Iterations)
@@ -390,12 +381,7 @@ const QUALITY_GATE_CONFIG = {
 
 #### Reference Selection (Choose 2-3 based on page type)
 
-| Page Type | Primary References |
-|-----------|-------------------|
-| Report pages | `executive-brief.png`, `module-detail-desktop.png` |
-| Setup/input pages | `reports-new-desktop.png`, `structure-preview-desktop.png` |
-| Dashboard/list pages | `review-queue.png`, `landing-page-desktop.png` |
-| Processing pages | `processing-desktop.png`, `processing-gate-overlay-desktop.png` |
+Select the most visually similar existing pages from `agents/page-references/` as comparison references. Choose pages that share layout patterns with the new implementation (e.g., list pages for list pages, detail pages for detail pages, form pages for form pages).
 
 #### Step 7.5a: Capture and Score
 
@@ -404,7 +390,7 @@ const QUALITY_GATE_CONFIG = {
 npx playwright screenshot \
   --viewport-size=1440,900 \
   --full-page \
-  "http://localhost:5173/[route]" \
+  "http://localhost:[port]/[route]" \
   ".playwright-mcp/[task-slug]-quality-gate-v1.png"
 ```
 
@@ -419,7 +405,7 @@ mcp__aistudio__generate_content({
     { path: "agents/page-references/[relevant-ref-1].png" },
     { path: "agents/page-references/[relevant-ref-2].png" },
     // SECONDARY: Design spec (30% weight)
-    { path: "documentation/main-plans/visual-style-brief.md" }
+    { path: "[path-to-project-context-or-design-system-docs]" }
   ],
   model: "gemini-3-pro-preview"
 })
@@ -451,18 +437,17 @@ The design spec is for edge cases not covered in existing pages.
    - Would a user recognize this as the same app?
 
 2. **CORNERS & BORDERS** (Weight: 25%) — CRITICAL
-   - Containers have SHARP corners (0px radius)?
-   - NO rounded-lg, rounded-xl, rounded-2xl on cards?
-   - 1px gray-200 borders on cards?
-   - NO drop shadows on cards (borders only)?
+   - Corner radius matches existing page components?
+   - Border/shadow treatment consistent with established pattern?
+   - Card containers styled the same way as existing pages?
 
 3. **COLORS** (Weight: 15%)
-   - Primary buttons are black (#111827), NOT blue/violet?
-   - Backgrounds are white with border-defined sections?
-   - Color used ONLY for data (status badges, risk flags), NOT chrome?
+   - Button colors match the project's design system?
+   - Background and surface colors consistent with existing pages?
+   - Color usage follows the project's established conventions?
 
 4. **TYPOGRAPHY** (Weight: 10%)
-   - Inter font family used?
+   - Font family matches existing pages?
    - Sizes look consistent with existing pages?
 
 5. **LAYOUT & SPACING** (Weight: 10%)
@@ -471,9 +456,9 @@ The design spec is for edge cases not covered in existing pages.
 
 ## AUTOMATIC FAILURES (-2 to category score)
 
-- `rounded-lg` on card containers → -2 to corners_borders
-- `shadow-md`, `shadow-lg` on cards → -2 to corners_borders
-- Blue or violet CTA buttons → -2 to colors
+- Card corner radius doesn't match existing pages → -2 to corners_borders
+- Card shadow/border treatment differs from existing pages → -2 to corners_borders
+- Button colors don't match the project's design system → -2 to colors
 - Visually jarring difference from existing pages → -2 to existing_page_match
 
 ## RESPONSE FORMAT (JSON)
@@ -526,8 +511,8 @@ Expected log format:
 │  VERDICT:              FAIL (threshold: 9.0)                 │
 ├─────────────────────────────────────────────────────────────┤
 │  TOP ISSUES TO FIX:                                          │
-│  1. [CRITICAL] Card uses rounded-lg → remove                 │
-│  2. [MAJOR] Cards feel different from executive-brief        │
+│  1. [CRITICAL] Card styling inconsistent with existing pages │
+│  2. [MAJOR] Cards feel different from reference pages        │
 │  3. [MINOR] Spacing slightly off                             │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -645,7 +630,7 @@ Add to task file:
 ### Visual Verification Results (Agent 5)
 **Completed**: [DATE] [TIME]
 **Agent**: Agent 5 (Visual Verification & Fix)
-**URL Tested**: http://localhost:5173/[route]
+**URL Tested**: http://localhost:[port]/[route]
 
 #### Screenshots Analyzed
 - ✅ Desktop (1920x1080) - Captured and analyzed
@@ -658,7 +643,7 @@ Add to task file:
 
 #### Gemini Visual Quality Gate (Step 7.5)
 **Iterations**: [X]/5
-**Reference Pages Used**: [e.g., executive-brief.png, module-detail-desktop.png]
+**Reference Pages Used**: [e.g., existing-page-1.png, existing-page-2.png]
 **Final Quality Gate Score**: [X.X]/10
 
 | Category | Initial | Final |
@@ -772,71 +757,70 @@ Move "[Task Title]" from "Testing" → "Executing"
 - Take as long as needed to fix issues
 - A working product is worth the extra time
 
-## Example Verification Session (the project)
+## Example Verification Session
 
 ```markdown
 ### Visual Verification Results (Agent 5)
-**Completed**: January 6, 2026 - 2:30 PM
-**URL Tested**: http://localhost:5173/workflow
+**Completed**: [DATE] [TIME]
+**URL Tested**: http://localhost:[port]/[route]
 **Iterations**: 2
 
 #### Screenshots Analyzed
-- ✅ Wide Desktop (1920x1080) - Workflow Builder
-- ✅ Standard Desktop (1440x900) - Workflow Builder
+- ✅ Wide Desktop (1920x1080) - [Page Name]
+- ✅ Standard Desktop (1440x900) - [Page Name]
 
 #### Cross-Page Consistency Check (AI Studio MCP)
-**Existing Pages Compared**: dashboard-desktop.png, report-view-desktop.png
+**Existing Pages Compared**: existing-page-1.png, existing-page-2.png
 **Consistency Score**: 8/10
 **Issues Found**:
-- Button border-radius was rounded-lg (8px) but existing pages use rounded-md (6px)
+- Button border-radius didn't match existing pages
 - Card padding was p-4 but existing pages use p-6
 **Fixes Applied**:
-- Changed Button className to use rounded-md
-- Updated Card padding from p-4 to p-6
+- Aligned Button className to match existing components
+- Updated Card padding to match existing pages
 
 #### Visual Analysis
 
 **Layout & Positioning**: ⚠️ FIXED
-- Issue found: Node inspector panel too narrow (Iteration 1)
-- Fix: Changed width from 280px to 320px in NodeInspector.tsx
+- Issue found: Side panel too narrow (Iteration 1)
+- Fix: Adjusted width to match established layout proportions
 - Verified: Re-capture shows proper spacing for content
 
-**Visual Styling (the project)**: ⚠️ FIXED
-- Issue found: Cards using shadow-md instead of 1px border (Iteration 1)
-- Fix: Changed to `border border-gray-200` and removed shadow
-- Verified: Matches visual-style-brief.md "invisible UI" principle
+**Visual Styling**: ⚠️ FIXED
+- Issue found: Cards using shadow instead of border (Iteration 1)
+- Fix: Changed to match the project's established card styling
+- Verified: Matches the project's design system conventions
 
 **Desktop Layout**: ✅ PASS
-- 3-pane layout renders correctly
-- Sidebar 240px, content flexible, source panel 400px
-- React Flow canvas fills available space
+- Layout structure renders correctly
+- Panel proportions match existing pages
+- Interactive elements render properly
 
 **Design System Compliance**: ✅ PASS
-- Gray-100 background
-- White surfaces with 1px borders
-- Blue-600 action buttons
-- Inter typography
+- Background color matches existing pages
+- Surface styling consistent
+- Button colors follow design system
+- Typography matches established patterns
 
 #### Functional Testing
-- ✅ Workflow nodes draggable on canvas
-- ✅ Node selection updates inspector panel
-- ✅ Citation chips open evidence drawer
+- ✅ Interactive elements work correctly
+- ✅ Navigation works
 - ✅ No console errors
 
 #### Fixes Applied
-1. **Card border styling** (file: `components/ui/Card.tsx`)
-   - Problem: Using shadow-md (doesn't match the project style)
-   - Fix: Changed to `border border-gray-200`, removed shadow
+1. **Card styling** (file: `components/ui/Card.tsx`)
+   - Problem: Styling didn't match existing pages
+   - Fix: Aligned with established card component patterns
    - Iteration: 1
 
-2. **Node inspector width** (file: `components/NodeInspector.tsx`)
-   - Problem: Content cramped at 280px
-   - Fix: Changed to w-80 (320px)
+2. **Panel width** (file: `components/SidePanel.tsx`)
+   - Problem: Content cramped
+   - Fix: Adjusted to match established layout proportions
    - Iteration: 2
 
 3. **Cross-page consistency fixes** (multiple files)
    - Problem: Button and Card styles didn't match existing pages
-   - Fix: Aligned border-radius and padding with dashboard/report pages
+   - Fix: Aligned border-radius and padding with established components
    - Iteration: 2
 
 #### Final Score: 9/10

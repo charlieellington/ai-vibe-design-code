@@ -53,7 +53,7 @@ If you find yourself about to document results (Step 7) and you have NOT yet cal
 @agents/design-9-mobile.md
 /reports/new: fix the side padding
 /processing: cards overflow the screen
-http://localhost:5173/dashboard: nav items cramped
+http://localhost:[port]/dashboard: nav items cramped
 ```
 
 ### Format C: Mixed
@@ -115,10 +115,10 @@ http://localhost:5173/dashboard: nav items cramped
 
 ```typescript
 // Ensure dev server is running first
-Bash({ command: "curl -s http://localhost:5173 > /dev/null && echo 'Server running' || echo 'Start server with: npm run dev'" })
+Bash({ command: "curl -s http://localhost:[port] > /dev/null && echo 'Server running' || echo 'Start server with the project dev command'" })
 
 // For each route that needs capture:
-mcp__playwright__browser_navigate({ url: "http://localhost:5173/[route]" })
+mcp__playwright__browser_navigate({ url: "http://localhost:[port]/[route]" })
 mcp__playwright__browser_resize({ width: 375, height: 812 })  // iPhone viewport
 mcp__playwright__browser_take_screenshot({
   filename: ".playwright-mcp/mobile-[route-slug]-before.png",
@@ -184,8 +184,8 @@ Be specific. Include exact class names.`,
 
 // 2. Find the code responsible (search codebase)
 // Based on route or visual elements in screenshot
-Glob({ pattern: "app/src/routes/**/*.tsx" })
-Grep({ pattern: "[component-name-from-screenshot]", path: "app/src" })
+Glob({ pattern: "**/*.tsx" })  // Search component/page directories
+Grep({ pattern: "[component-name-from-screenshot]", path: "." })
 ```
 
 ---
@@ -201,7 +201,7 @@ Grep({ pattern: "[component-name-from-screenshot]", path: "app/src" })
 **Gemini Analysis**: [Key findings]
 
 **Code Location**:
-- File: `app/src/routes/[route].tsx`
+- File: `[path-to-component].tsx`
 - Lines: [XX-YY]
 
 **My Assessment**: [Agree/disagree with Gemini, additional findings]
@@ -252,7 +252,7 @@ Grep({ pattern: "[component-name-from-screenshot]", path: "app/src" })
 ```typescript
 // Apply responsive changes
 Edit({
-  file_path: "app/src/routes/[route].tsx",
+  file_path: "[path-to-component].tsx",
   old_string: 'className="p-8 gap-8"',
   new_string: 'className="p-4 md:p-8 gap-4 md:gap-8"'
 })
@@ -278,7 +278,7 @@ Edit({
 Bash({ command: "sleep 2" })
 
 // 2. Capture MOBILE "after" screenshot
-mcp__playwright__browser_navigate({ url: "http://localhost:5173/[route]" })
+mcp__playwright__browser_navigate({ url: "http://localhost:[port]/[route]" })
 mcp__playwright__browser_resize({ width: 375, height: 812 })
 mcp__playwright__browser_take_screenshot({
   filename: ".playwright-mcp/mobile-[route-slug]-after.png",
@@ -368,7 +368,7 @@ IF Gemini returns FAIL or PARTIAL with issues:
 
 ### Changes by File
 
-#### `app/src/routes/reports-new.tsx`
+#### `[path-to-component].tsx`
 | Line | Before | After | Issue Fixed |
 |------|--------|-------|-------------|
 | 45 | `p-8` | `p-4 md:p-8` | Side padding |
@@ -593,13 +593,13 @@ Agent 9:
 ### Issue 1: 1.png
 **Description**: fix the side padding
 **Gemini**: Detected p-8 causing cramped mobile layout
-**Code**: `app/src/routes/reports-new.tsx:45`
+**Code**: `[path-to-component].tsx:45`
 **Fix**: `p-8` → `p-4 md:p-8`
 
 ### Issue 2: /processing
 **Description**: cards overflow
 **Gemini**: Fixed width w-[400px] on cards
-**Code**: `app/src/routes/processing.tsx:78`
+**Code**: `[path-to-component].tsx:78`
 **Fix**: `w-[400px]` → `w-full md:w-[400px]`
 
 ## Desktop Safety Check ✅

@@ -2,15 +2,21 @@
 
 ---
 
-## 🔷 RESEARCH TECH PROJECT CONTEXT
+## 🔷 PROJECT CONTEXT
 
-**Project:** the project — AI diligence platform for investors
-**Tech Stack:** React SPA + TanStack Router + Vite (NOT Next.js)
-**Visual Direction:** Attio foundation + Clay AI patterns + Ramp 3-pane layout
+**Step 1 — Auto-detect:** Before any action, read the project's `package.json` to determine:
+- Framework (Next.js, Vite, CRA, etc.) and dev server port
+- UI libraries (shadcn/ui, MUI, etc.) and styling approach
+- Key dependencies
 
-### Working Directory
-- **Status board:** `agents/status.md`
-- **Task files (OUTPUT):** `agents/doing/[task-slug].md` ← SINGLE OUTPUT FILE
+**Step 2 — Check for config:** If `project-context.md` exists in the project root, read it
+for visual direction, design references, and working directory paths.
+
+**Step 3 — Scan codebase:** Check `CLAUDE.md`, `README.md`, and the component directory
+for project conventions and established patterns.
+
+**Step 4 — Ask if unclear:** If framework, visual direction, or component patterns are
+ambiguous, ask the user before proceeding.
 
 ---
 
@@ -95,7 +101,7 @@ You run a **UX design** (wireframes, user flows, screen concepts) through multip
 │                                                                 │
 │  Following Agent 1 format:                                      │
 │  • Original Request (full UX design)                            │
-│  • Design Context (from visual-style-brief.md)                  │
+│  • Design Context (from project design system docs)                  │
 │  • Refined Wireframes (ASCII, inline)                           │
 │  • UX Refinements Applied (from synthesis)                      │
 │  • Plan (implementation steps)                                  │
@@ -523,7 +529,7 @@ Write({
 | [What it was] | [What it is now] | [Why simpler for user] |
 
 ### Design Context
-**Visual Direction**: [Primary reference from visual-style-brief.md]
+**Visual Direction**: [Primary reference from project design system docs]
 **Existing Pages**: [Screenshots from agents/page-references/ for consistency]
 
 ### Refined Wireframes

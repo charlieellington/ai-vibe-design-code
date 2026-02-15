@@ -63,8 +63,8 @@ This is the foundation. Use shadcn/ui first for everything. Only look to other l
 - Streaming support for real-time responses
 - Reasoning transparency
 
-**the project Use Cases**:
-- Chat interface (Quick mode / Investigate mode)
+**Use Cases**:
+- Chat interfaces
 - Any conversational AI interaction
 - Citation display in chat responses
 
@@ -90,9 +90,9 @@ This is the foundation. Use shadcn/ui first for everything. Only look to other l
 - Multiple edge visualization types
 - Automatic canvas fitting with pan/zoom
 
-**the project Use Cases**:
-- Level 2 Processing View (workflow graph)
-- Agent visualization
+**Use Cases**:
+- Workflow/pipeline visualisation
+- Agent visualisation
 - Any node-based diagram
 
 ---
@@ -125,7 +125,7 @@ This is the foundation. Use shadcn/ui first for everything. Only look to other l
 - Three variants: default card, inline chips, stacked favicons
 - Keyboard accessible
 
-**Consider for**: Evidence Drawer citations, Citation Chips — *but check if AI SDK Sources component covers your need first*
+**Consider for**: Citation/source panels, inline citation chips — *but check if AI SDK Sources component covers your need first*
 
 ---
 
@@ -211,22 +211,23 @@ When reviewing a task plan:
 
 ---
 
-## the project Component Mapping
+## Common Component Mapping
 
-| the project Component | Recommended Approach |
-|------------------------|---------------------|
+| Component Type | Recommended Approach |
+|----------------|---------------------|
 | Buttons, Cards, Forms | shadcn/ui (Tier 1) |
 | Tables, Data Display | shadcn/ui (Tier 1) |
 | Navigation, Sidebar | shadcn/ui (Tier 1) |
 | Dialogs, Sheets | shadcn/ui (Tier 1) |
 | Chat Interface | AI SDK Elements Chatbot (Tier 2) |
-| Workflow Graph (Level 2) | AI SDK Elements Workflow + React Flow (Tier 2) |
-| Evidence Drawer | AI SDK Sources OR Tool-UI Citation (evaluate both) |
-| Citation Chip `[1]` | AI SDK Sources OR Tool-UI Citation (evaluate both) |
-| Progress Bar (Level 1) | shadcn Progress OR Tool-UI Plan (evaluate) |
+| Workflow/Node Graph | AI SDK Elements Workflow + React Flow (Tier 2) |
+| Citation/Source Panel | AI SDK Sources OR Tool-UI Citation (evaluate both) |
+| Inline Citation Chip | AI SDK Sources OR Tool-UI Citation (evaluate both) |
+| Progress Display | shadcn Progress OR Tool-UI Plan (evaluate) |
 | AI Processing indicator | shadcn Skeleton/Spinner OR KokonutUI (if fancy needed) |
+
+Check `project-context.md` or scan the codebase for project-specific component patterns.
 
 ---
 
-*Last updated: 2026-01-06*
-*Source: tech-stack.md*
+*Last updated: 2026-02-15*

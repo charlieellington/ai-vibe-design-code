@@ -3,7 +3,7 @@
 **Purpose:** Established animation patterns for consistent motion design across projects.
 
 **Last Updated:** 27 December 2025
-**Source:** Extracted from Ramp Spotlights project learnings
+**Source:** Extracted from project learnings
 
 ---
 
@@ -347,4 +347,4 @@ Only add new spring values when:
 
 ---
 
-*Motion patterns extracted from Ramp Spotlights project, December 2025*
+*Motion patterns extracted from project work, December 2025*

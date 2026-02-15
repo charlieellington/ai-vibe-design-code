@@ -2,28 +2,21 @@
 
 ---
 
-## 🔷 RESEARCH TECH PROJECT CONTEXT
+## 🔷 PROJECT CONTEXT
 
-**Project:** the project — AI diligence platform for investors
-**Tech Stack:** React SPA + TanStack Router + Vite (NOT Next.js)
-**Visual Direction:** Attio foundation + Clay AI patterns + Ramp 3-pane layout
+**Step 1 — Auto-detect:** Before any action, read the project's `package.json` to determine:
+- Framework (Next.js, Vite, CRA, etc.) and dev server port
+- UI libraries (shadcn/ui, MUI, etc.) and styling approach
+- Key dependencies
 
-### Tech Stack Details (CRITICAL)
-- **Framework:** React SPA + TanStack Router (NOT Next.js)
-- **UI Library:** shadcn/ui (primary) + Tailwind CSS
-- **Workflow Viz:** React Flow (@xyflow/react) for agent graph
-- **Chat UI:** Vercel AI SDK (Sprint 2)
-- **Build Tool:** Vite
-- **Data:** All mock data — no real API calls
+**Step 2 — Check for config:** If `project-context.md` exists in the project root, read it
+for visual direction, design references, and working directory paths.
 
-### Working Directory
-- **Status board:** `agents/status.md`
-- **Task files:** `agents/doing/[task-slug].md`
+**Step 3 — Scan codebase:** Check `CLAUDE.md`, `README.md`, and the component directory
+for project conventions and established patterns.
 
-### Visual Reference System
-- **Design system:** `documentation/visual-style-brief.md`
-- **Visual references:** `documentation/visual-references/`
-- **UX decisions:** `documentation/sprint-2-plan.md`
+**Step 4 — Ask if unclear:** If framework, visual direction, or component patterns are
+ambiguous, ask the user before proceeding.
 
 ---
 
@@ -108,8 +101,8 @@ Pre-Implementation Checklist:
 **THIS IS A HARD GATE. NO EXCEPTIONS. NO SHORTCUTS. NO "ALREADY DONE IN AGENT 2/3".**
 
 ### Why This Exists (REAL FAILURES)
-1. **InsightCard failure**: Implemented with `rounded-lg` while codebase uses sharp corners
-2. **Input Upload Page failure (Jan 2026)**: Inner cards used `rounded-lg` while `onboarding.tsx` uses NO rounded corners — approved despite being wrong
+1. **Card component failure**: Implemented with `rounded-lg` while codebase uses sharp corners
+2. **Page layout failure**: Inner cards used `rounded-lg` while existing pages use NO rounded corners — approved despite being wrong
 3. **Root cause**: Agents skipped this check claiming "already done" or "intentional" — IT WAS NOT
 
 ### The Hard Rule
@@ -123,23 +116,21 @@ Do NOT trust the task file wireframes for exact CSS. Read EVERY existing card/gr
 
 **🎯 PRIMARY COMPARISON FILES (READ THESE EVERY TIME):**
 ```bash
-# MANDATORY: Read these files and note their CSS patterns
-cat app/src/routes/onboarding.tsx           # Line 78: border border-gray-200 bg-white p-8 (NO rounded)
-cat app/src/routes/journey/2-value-preview.tsx  # Check card patterns
-cat app/src/components/report/module-grid-card.tsx  # Sharp corners pattern
+# MANDATORY: Find and read existing page/card components and note their CSS patterns
+# Scan for the project's main layout files, card components, and page routes
+ls src/components/ src/routes/ src/pages/ app/ 2>/dev/null
+# Read 2-3 representative components that match the type you're building
 ```
 
 **What to look for:**
-- Corner classes: Is there `rounded-*`? (There shouldn't be on containers)
-- Border classes: `border border-gray-200` is standard
-- Shadow classes: There should be NONE (we use borders, not shadows)
-- Padding: `p-6`, `p-8` are common
+- Corner classes: Is there `rounded-*`? What radius is standard?
+- Border classes: What border pattern is used?
+- Shadow classes: Are shadows used, or borders preferred?
+- Padding: What spacing values are common?
 
 ```bash
-# Read ALL existing report components
-cat app/src/components/report/module-grid-card.tsx
-cat app/src/components/report/cheat-sheet.tsx
-cat app/src/components/report/[any-other-card].tsx
+# Read ALL existing components similar to what you're building
+# Find card, grid, or layout components in the project
 ```
 
 Document the design language you find:
@@ -149,12 +140,11 @@ Document the design language you find:
 
 | Pattern | Value | Source File |
 |---------|-------|-------------|
-| Corners | Sharp (NO rounded) | ModuleGridCard |
-| Outer border | border border-gray-200 | ModuleGridCard |
-| Card spacing | divide-y (connected) NOT space-y | ModuleGridCard |
-| Action button | "Open >" text-gray-900 font-medium | ModuleGridCard |
-| Chevron | size-3.5 strokeWidth={2.5} | ModuleGridCard |
-| Hover | group-hover:translate-x-0.5 | ModuleGridCard |
+| Corners | [e.g., sharp / rounded-lg] | [component name] |
+| Outer border | [e.g., border border-gray-200] | [component name] |
+| Card spacing | [e.g., divide-y / space-y / gap-4] | [component name] |
+| Action button | [e.g., text style and weight] | [component name] |
+| Hover | [e.g., hover pattern] | [component name] |
 ```
 
 ### Step 2: Override shadcn Defaults
@@ -223,8 +213,8 @@ Be strict. Do NOT approve mismatches.`,
 ### Existing Component Analysis (ACTUAL CODE READ)
 | Component | File | Corner Classes | Border Classes | Padding |
 |-----------|------|----------------|----------------|---------|
-| [e.g., OnboardingCard] | onboarding.tsx:78 | NONE (sharp) | border border-gray-200 | p-8 |
-| [e.g., InnerSection] | onboarding.tsx:169 | NONE (sharp) | border border-gray-200 | p-6 |
+| [e.g., MainCard] | [file]:L## | [value] | [value] | [value] |
+| [e.g., SectionCard] | [file]:L## | [value] | [value] | [value] |
 
 ### My Planned CSS for New Component
 | Element | My Planned Classes | Matches Existing? |
@@ -237,9 +227,9 @@ Be strict. Do NOT approve mismatches.`,
 |------------------|---------|-------------|
 | Card | rounded-xl | REMOVED |
 
-### Design System Reference (visual-style-brief.md)
-- Corners: **Sharp 0px** on all containers (line 237-239)
-- Borders: **1px gray-200** (not shadows)
+### Design System Reference (project-context.md or project design system docs)
+- Corners: **[extract from project's existing components]**
+- Borders: **[extract from project's existing components]**
 
 ### Verification
 - [ ] My corner radius matches existing pages (NO rounded-lg on cards)
@@ -321,7 +311,7 @@ Before building ANYTHING, check if it exists:
 
 When generating visuals or code, include BOTH:
 1. Screenshot references (what it looks like)
-2. **Code files** (how it's built) — This is the secret sauce from Ramp
+2. **Code files** (how it's built) — Including actual code dramatically improves output quality
 
 ---
 
@@ -336,7 +326,7 @@ AI Studio MCP is significantly better for visual work because:
 - Produces production-ready React + Tailwind code
 
 ### Why This Matters
-The lesson from Ramp Spotlights: sending screenshots alone produces generic code. Sending screenshots + actual code files from your codebase produces code that matches your patterns.
+Key lesson: sending screenshots alone produces generic code. Sending screenshots + actual code files from your codebase produces code that matches your patterns.
 
 ### Step 1: Gather Visual Context (Including Existing Pages)
 
@@ -344,17 +334,11 @@ Collect from the task file AND codebase:
 
 **🎯 PRIORITY 1: Existing Page Screenshots (ACTUAL FILES)**
 ```bash
-# Check existing pages in reference folder
-ls agents/page-references/*.png 2>/dev/null
+# Check for existing page screenshots in the project
+ls agents/page-references/*.png screenshots/*.png .playwright-mcp/*.png 2>/dev/null
 ```
 
-**Current files in page-references/ (January 2026):**
-- `agents/page-references/landing-page-desktop.png` — Landing/homepage
-- `agents/page-references/executive-brief.png` — Executive brief view
-- `agents/page-references/processing-desktop.png` — Processing status page
-- `agents/page-references/review-queue.png` — Review queue page
-
-- These are the PRIMARY source for visual consistency
+- Find and use any existing page screenshots as the PRIMARY source for visual consistency
 - Select 2-3 most relevant to your current task
 - The new page MUST match these visually
 
@@ -378,19 +362,15 @@ Same button styles, same card styles, same spacing, same colors.
 Do NOT deviate from the established visual patterns.
 
 REQUIREMENTS:
-- React SPA with TypeScript (NOT Next.js)
+- Use the project's framework (auto-detected from package.json)
 - Tailwind CSS for all styling
-- the project design system: Gray-100 bg, white surfaces, blue-600 actions, violet-600 AI
-- Follow shadcn/ui patterns (use components like Button, Card, Input from @/components/ui)
-- Desktop-first design (investor tool)
+- Design tokens: extract from project's Tailwind config and existing components
+- Follow the project's component library patterns (e.g., shadcn/ui components from @/components/ui)
 - Include hover/focus states
-- 1px gray-200 borders (prefer over shadows)
 - Clean, production-ready code
 
 DESIGN DIRECTION:
-- Attio-inspired "invisible UI" (clean, data-dense)
-- Clay AI patterns for structured outputs
-- Ramp 3-pane layout for document views
+- [Extract from project-context.md or project design system docs]
 
 SPECIFIC REQUIREMENTS:
 [List specific features: form fields, navigation, data display, etc.]
@@ -402,15 +382,14 @@ Follow the same styling approach, import patterns, and conventions.
 REUSE existing components - do not create new ones if they already exist.`,
   files: [
     // 🎯 ONLY send image files (PNG, JPG)
-    { path: "agents/page-references/landing-page-desktop.png" },
-    { path: "agents/page-references/processing-desktop.png" },
-    { path: "agents/page-references/executive-brief.png" },
+    // Include 2-3 existing page screenshots for visual consistency
+    { path: "[path-to-existing-page-screenshot-1].png" },
+    { path: "[path-to-existing-page-screenshot-2].png" },
     // Visual references for inspiration (optional)
-    { path: "documentation/visual-references/attio-02-companies-table.png" },
+    { path: "[path-to-design-reference].png" },
     // ⚠️ DO NOT include .tsx/.ts code files - they cause errors
     // ⚠️ DO NOT include .md files - they cause MIME type errors
-    // Instead: Read code files (onboarding.tsx, module-grid-card.tsx) separately
-    // and embed relevant CSS patterns in the user_prompt above
+    // Instead: Read code files separately and embed relevant CSS patterns in the user_prompt above
   ],
   model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
 })
@@ -485,28 +464,33 @@ Purpose: [description]
 - [ ] Understand spacing system
 - [ ] Know component library patterns (shadcn, custom, etc.)
 
-### Common Mistakes to Avoid (the project)
+### Common Mistakes to Avoid
 
 | Mistake | Correct Approach |
 |---------|------------------|
-| Hardcoded colors (`#28e85f`) | the project palette: gray-100 bg, blue-600 action, violet-600 AI |
-| Custom components from scratch | Use existing shadcn/ui components |
-| Heavy shadows | Use 1px gray-200 borders instead |
-| Mobile-first breakpoints | Desktop-first (this is an investor tool) |
-| Chat bubbles for AI | Structured output cards (Clay pattern) |
-| New animation values | Use established spring patterns |
+| Hardcoded colors | Extract from project's Tailwind config and existing components |
+| Custom components from scratch | Use existing component library (e.g., shadcn/ui) |
+| Inventing new visual patterns | Scan existing components for established patterns |
+| Ignoring project conventions | Read existing pages first, match their approach |
+| New animation values | Use established spring/transition patterns from the codebase |
 
-### the project Design Tokens
+### Project Design Tokens
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| Background | gray-100 | Main app background |
-| Surface | white | Cards, panels |
-| Border | gray-200 | 1px borders (prefer over shadows) |
-| Action | blue-600 | Buttons, links |
-| AI Accent | violet-600 | AI-generated content indicators |
-| Text Primary | gray-900 | Main text |
-| Text Secondary | gray-500 | Labels, hints |
+Scan existing components for colour patterns. Extract tokens from:
+1. The project's `tailwind.config.*` for custom theme values
+2. Existing page components for commonly used colour classes
+3. `project-context.md` or project design system docs if available
+
+Document what you find before implementation:
+
+| Token | Value | Source |
+|-------|-------|--------|
+| Background | [from Tailwind config / existing pages] | [file] |
+| Surface | [from existing components] | [file] |
+| Border | [from existing components] | [file] |
+| Action | [from existing components] | [file] |
+| Text Primary | [from existing components] | [file] |
+| Text Secondary | [from existing components] | [file] |
 
 ---
 
@@ -547,8 +531,7 @@ Modifying: components/ui/Card.tsx
 - Keep it simple: Smallest, clearest fix first
 - No duplication: Reuse existing code
 - Stay clean: Refactor if file approaches ~250 lines
-- **Mock Data Approach**: the project uses all mock data — no real API calls
-- API Security: Never commit actual keys (even though we're using mock data)
+- API Security: Never commit actual keys or secrets
 
 **Preserve Functionality (CRITICAL ANTI-PLACEHOLDER RULE)**:
 ```typescript
@@ -605,7 +588,7 @@ Use Playwright CLI via Bash (single command, faster than 3 MCP calls):
 npx playwright screenshot \
   --viewport-size=1440,900 \
   --full-page \
-  "http://localhost:5173/[path]" \
+  "http://localhost:[port]/[path]" \  # Use the project's dev server (auto-detected from package.json)
   ".playwright-mcp/implementation-v1.png"
 ```
 
@@ -751,23 +734,19 @@ Fix before proceeding to completion. Consistency is not optional.
 
 ## Development Environment
 
-- **Development URL**: http://localhost:5173 (Vite default)
-- Start with `npm run dev` (Vite)
+- **Development URL**: the project's dev server (auto-detected from package.json)
+- Start with `npm run dev` (or the project's start command)
 - Test all changes before marking complete
 - DO NOT start dev servers unless necessary - user typically has them running
 
-## the project Key Components
+## Project Key Components
 
-When building screens, reference these patterns:
+When building screens, scan the codebase for reusable components and document them:
 
 | Component | Purpose | Key Features |
 |-----------|---------|--------------|
-| Evidence Drawer | Slide-out panel | Source URL, snippet, timestamp |
-| Citation Chip | Inline reference | `[1]` badge, hover tooltip |
-| Workflow Node | React Flow node | Status indicator, agent info |
-| Node Inspector | Right panel | Selected node details |
-| Finding Card | Structured output | Confidence badge, source list |
-| Confidence Badge | Reliability | Green/yellow/red based on score |
+| [Scan `src/components/` for existing reusable components] | | |
+| [Document patterns you find before building new ones] | | |
 
 ---
 

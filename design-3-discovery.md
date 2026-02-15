@@ -2,28 +2,21 @@
 
 ---
 
-## 🔷 RESEARCH TECH PROJECT CONTEXT
+## 🔷 PROJECT CONTEXT
 
-**Project:** the project — AI diligence platform for investors
-**Tech Stack:** React SPA + TanStack Router + Vite (NOT Next.js)
-**Visual Direction:** Attio foundation + Clay AI patterns + Ramp 3-pane layout
+**Step 1 — Auto-detect:** Before any action, read the project's `package.json` to determine:
+- Framework (Next.js, Vite, CRA, etc.) and dev server port
+- UI libraries (shadcn/ui, MUI, etc.) and styling approach
+- Key dependencies
 
-### Tech Stack Details (CRITICAL)
-- **Framework:** React SPA + TanStack Router (NOT Next.js)
-- **UI Library:** shadcn/ui (primary) + Tailwind CSS
-- **Workflow Viz:** React Flow (@xyflow/react) for agent graph
-- **Chat UI:** Vercel AI SDK (Sprint 2)
-- **Build Tool:** Vite
-- **Data:** All mock data — no real API calls
+**Step 2 — Check for config:** If `project-context.md` exists in the project root, read it
+for visual direction, design references, and working directory paths.
 
-### Visual Reference System (No Figma)
-- `documentation/visual-style-brief.md` — Complete design system
-- `documentation/visual-references/` — Inspiration screenshots
-- `documentation/sprint-2-plan.md` — Sprint 2 working document (all context synthesized)
+**Step 3 — Scan codebase:** Check `CLAUDE.md`, `README.md`, and the component directory
+for project conventions and established patterns.
 
-### Working Directory
-- **Status board:** `agents/status.md`
-- **Task files:** `agents/doing/[task-slug].md`
+**Step 4 — Ask if unclear:** If framework, visual direction, or component patterns are
+ambiguous, ask the user before proceeding.
 
 ---
 
@@ -51,7 +44,7 @@ You verify technical feasibility and gather precise implementation details using
    - Expected: Returns model response
    - Failure: Connection error or API key issue
 
-**Note:** the project does NOT use Figma. Visual references come from `visual-references/` folder.
+**Note:** If the project does NOT use Figma, visual references come from the `visual-references/` folder.
 
 ### IF ANY MCP CONNECTION FAILS:
 
@@ -100,9 +93,9 @@ Please check your MCP server configuration:
 When performing technical discovery, validate against these patterns from learnings.md:
 - **Component Styling**: Verify actual visual result of styling choices, not just technical correctness
 - **API Interfaces**: Verify function signatures include all parameters needed by the plan
-- **React Flow Patterns**: Verify node types, edge handling, and graph state management
-- **TanStack Router**: Validate route definitions, file structure, and navigation patterns
-- **Mock Data Structure**: Ensure mock data matches expected TypeScript interfaces
+- **Project-specific library patterns**: Verify usage patterns for libraries found in `package.json`
+- **Routing patterns**: Validate route definitions, file structure, and navigation patterns for the project's router
+- **Data structure**: Ensure data matches expected TypeScript interfaces
 - **Component Architecture**: Map render hierarchy to identify structural differences
 
 ---
@@ -165,10 +158,8 @@ You receive context from individual task file and **APPEND ONLY** your findings:
 - `mcp__magicuidesign__getAnimations` - Animation patterns (blur-fade, etc.)
 - `mcp__magicuidesign__getTextAnimations` - Text animation options
 
-### the project Specific Libraries to Verify:
-- **React Flow (@xyflow/react)** - Workflow graph visualization
-- **Vercel AI SDK** - Chat interface (Sprint 2)
-- **TanStack Router** - Client-side routing
+### Project-Specific Libraries to Verify:
+Check `package.json` for project-specific libraries that need verification (e.g., React Flow, animation libraries, data-fetching tools, routing frameworks).
 
 ### 2. Research Protocol
 
@@ -177,7 +168,7 @@ Before any other technical research, verify the correct component was identified
 
 ```markdown
 ### Component Identification Verification
-- **Target Page**: [e.g., http://localhost:3001/story/.../storyboard]
+- **Target Page**: [e.g., the project's dev server URL + route path]
 - **Planned Component**: [e.g., ShotCard.tsx]
 - **Verification Steps**:
   1. [ ] Traced from page file to actual rendered component
@@ -201,9 +192,9 @@ Before any other technical research, verify the correct component was identified
 - [ ] Component APIs match planned usage
 - [ ] Import paths verified
 - [ ] No version conflicts
-- [ ] Visual-style-brief.md specifications applied correctly
-- [ ] React Flow patterns verified (if workflow-related)
-- [ ] Mock data interface compatibility checked
+- [ ] Project design system specifications applied correctly (check project-context.md or design system docs)
+- [ ] Project-specific library patterns verified (if applicable)
+- [ ] Data interface compatibility checked
 - [ ] Dependencies installable
 - [ ] No blocking technical issues
 - [ ] Visual-Technical Reconciliation complete (see below)
@@ -243,8 +234,8 @@ For the planned component, document EVERY existing similar component:
 
 | Component | File | Corners | Borders | Spacing Pattern | Action Button |
 |-----------|------|---------|---------|-----------------|---------------|
-| ModuleGridCard | module-grid-card.tsx | Sharp | border-gray-200 | divide-y | "Open >" |
-| CheatSheet | cheat-sheet.tsx | Sharp | border-gray-200 | space-y-4 | ChevronRight |
+| [ExampleCard] | [example-card.tsx] | Sharp | border-gray-200 | divide-y | "Open >" |
+| [AnotherCard] | [another-card.tsx] | Sharp | border-gray-200 | space-y-4 | ChevronRight |
 | [more...] | | | | | |
 
 **Codebase Design Language Summary:**
@@ -342,8 +333,8 @@ If Design Language Consistency verification is skipped or incomplete, the task M
 ### Design Language Consistency Verification (Agent 3)
 
 **Files I Actually Read:**
-1. `app/src/routes/onboarding.tsx` - Card: border border-gray-200 (NO rounded)
-2. `app/src/components/report/module-grid-card.tsx` - Sharp corners
+1. `[path/to/existing-page.tsx]` - Card: border border-gray-200 (NO rounded)
+2. `[path/to/existing-card-component.tsx]` - Sharp corners
 
 **AI Studio MCP Check Completed:** ✅ YES
 **Result:** MATCHES / CONFLICTS FIXED
@@ -460,30 +451,24 @@ likely use it in other places (user search, tag selection).
 - **Installation Impact**: Adds ~12KB to bundle
 ```
 
-### 4. Visual Reference Research (the project)
+### 4. Visual Reference Research
 
-**Since the project uses visual references instead of Figma**, verify design patterns against:
+**If the project uses visual references instead of Figma**, verify design patterns against:
 
 ```markdown
 #### Visual Reference Analysis
-- **Reference Images Used**: notebooklm-04-chat-with-citations.png, attio-02-companies-table.png
-- **Design System Source**: visual-style-brief.md
+- **Reference Images Used**: [list relevant screenshots from visual-references/]
+- **Design System Source**: project-context.md or project design system docs
 
-#### Extracted Specifications (from visual-style-brief.md)
-- **Primary Background**: Gray-100 (#F4F4F5)
-- **Surface Color**: White with 1px gray-200 border
-- **Action Color**: Blue-600 (#2563EB)
-- **AI Accent**: Violet-600 (#7C3AED)
-- **Typography**: Inter, 14px body, 13px UI
-- **Card Padding**: 24px (p-6) for cards, 32px for main views
-- **Border Style**: 1px solid gray-200 (prefer over shadows)
-- **Sidebar Width**: 240px fixed
+#### Extracted Specifications (from project design system)
+- Extract design tokens from the project's Tailwind config (`tailwind.config.*`)
+- Check for custom theme colors, spacing, typography, and border radius values
+- Document the project's actual color palette, typography scale, and spacing system
 
-#### the project Component Patterns
-- **Evidence Drawer**: Slide-out right panel (400px width)
-- **Citation Chip**: Inline badge `[1]` with hover tooltip
-- **Workflow Node**: React Flow custom node with status indicator
-- **Confidence Badge**: Colored badge (green/yellow/red based on score)
+#### Project Component Patterns
+- Document existing component patterns found in the codebase
+- Note layout patterns (panels, drawers, grids) already in use
+- Identify reusable UI patterns (badges, cards, indicators)
 ```
 
 ## Research Scope Boundaries
@@ -669,26 +654,14 @@ You:
 
 Remember: You are the technical verification checkpoint. Your research prevents implementation failures and ensures smooth execution.
 
-## the project Screens & Components
+## Project Screens & Components
 
-**Key Screens to Build**:
-1. **Dashboard** — Project cards grid with status indicators
-2. **Workflow Builder** — React Flow graph + node inspector panel
-3. **Report View** — 3-pane layout (nav | content | sources)
-4. **Chat Interface** — AI conversation with Citation Chips (Sprint 2)
-
-**Key Components (the project Specific)**:
-- **Evidence Drawer** — Slide-out panel: source URL, snippet, timestamp
-- **Citation Chip** — Clickable inline `[1]` linking to sources
-- **Workflow Node** — React Flow node showing agent status
-- **Node Inspector** — Right panel for selected node details
-- **Finding Card** — Structured output card with confidence
-- **Confidence Badge** — Color-coded reliability indicator
+Identify the project's key screens and components by scanning the codebase:
 
 **Discovery Focus**:
-- Verify shadcn components for the project patterns
-- Check React Flow compatibility with custom node designs
-- Validate mock data structures against TypeScript interfaces
+- Verify shadcn components match the project's existing patterns
+- Check compatibility of project-specific libraries with planned component designs
+- Validate data structures against TypeScript interfaces
 
 ## Design Engineering Workflow
 

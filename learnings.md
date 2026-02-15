@@ -4,7 +4,7 @@ A categorized reference of patterns, debugging techniques, and lessons learned f
 
 **How to Use**: Search for keywords related to your current task. Check relevant categories before writing code.
 
-**Last Updated**: 2026-01-30 (Unified Reports Table — Discriminated Union for Multi-Type Tables, 4-Perspective UX Refinement Pipeline)
+**Last Updated**: 2026-01-30 (Unified table — Discriminated Union for Multi-Type Tables, 4-Perspective UX Refinement Pipeline)
 
 ---
 
@@ -106,7 +106,7 @@ const DEBUG = false; // Single flag to control all debug output
 
 ### AI Studio MCP for Visual/UI Tasks (Replaces gemini-chat)
 **Added**: 2025-12-27
-**Context**: Ramp Spotlights project discovered AI Studio MCP is far superior for visual work
+**Context**: A reference project discovered AI Studio MCP is far superior for visual work
 **Problem**: Single-image prompts with `mcp__gemini__gemini-chat` produce generic, inconsistent code
 **Solution**: Use `mcp__aistudio__generate_content` with multi-image context (5-10 reference files)
 **Prevention**:
@@ -137,7 +137,7 @@ mcp__aistudio__generate_content({
 
 ### Visual Verification: Screenshot After Every Significant Change
 **Added**: 2025-12-27
-**Context**: Ramp Spotlights - AI comparison caught drift that manual review missed
+**Context**: A reference project - AI comparison caught drift that manual review missed
 **Problem**: Code changes accumulate without visual verification, leading to design drift
 **Solution**: Capture screenshots via Playwright after every significant UI change
 **Prevention**:
@@ -148,7 +148,7 @@ mcp__aistudio__generate_content({
 **Example**:
 ```typescript
 // Capture after implementation
-mcp__playwright__browser_navigate({ url: "http://localhost:3001/page" })
+mcp__playwright__browser_navigate({ url: "http://localhost:[port]/page" })
 mcp__playwright__browser_resize({ width: 430, height: 932 })
 mcp__playwright__browser_take_screenshot({ filename: "implementation-v1.png" })
 
@@ -165,7 +165,7 @@ mcp__aistudio__generate_content({
 
 ### Consistency Check for Multi-Screen Features
 **Added**: 2025-12-27
-**Context**: Ramp Spotlights had multiple screens that needed identical styling
+**Context**: A reference project had multiple screens that needed identical styling
 **Problem**: Same elements styled differently across screens, breaking visual consistency
 **Solution**: Create UI element matrix checking consistency across all screens
 **Prevention**:
@@ -219,9 +219,9 @@ mcp__aistudio__generate_content({
 
 ### Plan-to-Execution Fidelity for New Components
 **Added**: 2026-01-08
-**Context**: Report Overview Dashboard plan specified creating NEW InsightCard components (4 types: Risk/red, Conflict/orange, Opportunity/green, Question/blue with border-l-4 treatments), but Agent 4 substituted existing FeaturedCheatSheet component instead. This caused a follow-up task (Executive Brief Restructure) to fix the gap.
+**Context**: A dashboard plan specified creating NEW [CardComponent] components (4 types: Risk/red, Conflict/orange, Opportunity/green, Question/blue with border-l-4 treatments), but Agent 4 substituted an existing similar component instead. This caused a follow-up task to fix the gap.
 **Problem**: When plans specify creating NEW components with specific visual treatments, Agent 4 may substitute existing similar-named components, losing the intended visual treatment and functionality.
-**Solution**: Agent 4 MUST verify that new components specified in plans are actually created, not substituted with existing components. When a plan says "Create Insight Card Component", that means CREATE NEW, not reuse CheatSheet.
+**Solution**: Agent 4 MUST verify that new components specified in plans are actually created, not substituted with existing components. When a plan says "Create [CardComponent]", that means CREATE NEW, not reuse an existing similar component.
 **Prevention**:
 1. Agent 4 must check plan for "Create" vs "Reuse" language and follow exactly
 2. When plan specifies visual treatments (border colors, type labels), verify implementation matches
@@ -232,35 +232,35 @@ mcp__aistudio__generate_content({
 **Example**:
 ```markdown
 Plan says:
-- "Create Insight Card Component - 4 variants: Risk (red border-l-4), Conflict (orange), Opportunity (green), Question (blue)"
+- "Create [CardComponent] - 4 variants: Risk (red border-l-4), Conflict (orange), Opportunity (green), Question (blue)"
 
 ❌ Wrong execution:
-- "Used existing FeaturedCheatSheet for Executive Brief content"
+- "Used existing similar component for section content"
 - No border-l-4 colored treatments
 - No type labels (HIGH PRIORITY RISK, CONFLICT, etc.)
 
 ✅ Correct execution:
-- Created new InsightCard component at components/report/insight-card.tsx
+- Created new [CardComponent] at [path/to/component].tsx
 - 4 border color variants: border-l-red-500, border-l-orange-500, border-l-green-500, border-l-blue-500
 - Type labels rendered: "HIGH PRIORITY RISK", "CONFLICT", "OPPORTUNITY", "QUESTION"
 ```
 
 ### User-Facing Copy Verification Against Product Documentation
 **Added**: 2026-01-15
-**Context**: CategoryDetailCard displayed "~3 days to complete" but user-flow-full.md specifies 6-8 hours processing time
+**Context**: A detail card displayed "~3 days to complete" but product documentation specifies 6-8 hours processing time
 **Problem**: Agent 4 implemented plan using field name `estimatedDays` literally without verifying the display copy against product documentation. The data model field name doesn't always match what users should see.
-**Solution**: Always verify user-facing copy against source documentation (user-flow-full.md, product specs) before implementing, especially for time/cost/quantity values.
+**Solution**: Always verify user-facing copy against source documentation (product specs, user flow docs) before implementing, especially for time/cost/quantity values.
 **Prevention**:
 1. Before implementing ANY user-visible text involving time, cost, or quantities, check product documentation
 2. Field names in data models are for developers; user-facing labels may use different terminology
-3. When in doubt, search for the terminology in documentation files: `grep -r "hours\|days" documentation/`
+3. When in doubt, search for the terminology in documentation files: `grep -r "hours\|days" docs/`
 
 **Example**:
 ```typescript
 // ❌ Wrong - used field name literally
 <span>~{category.estimatedDays} days to complete</span>
 
-// ✅ Correct - verified against user-flow-full.md (6-8 hours processing)
+// ✅ Correct - verified against product documentation (6-8 hours processing)
 <span>~{category.estimatedDays} hours to complete</span>
 ```
 
@@ -278,7 +278,7 @@ Plan says:
 
 ### Use rgba() for Background Transparency, Not Element Opacity
 **Added**: 2026-01-29
-**Context**: DAG Interactive Navigation & Visual Overhaul — issue-node.tsx had `opacity: 0.15` on the entire node div to create a subtle category-tinted background. This made the text inside completely unreadable on the dark canvas.
+**Context**: DAG interactive navigation & visual overhaul — a graph node component had `opacity: 0.15` on the entire node div to create a subtle category-tinted background. This made the text inside completely unreadable on the dark canvas.
 **Problem**: When you want a semi-transparent background but fully opaque text, using CSS `opacity` on the container dims everything — background AND text together. At `opacity: 0.15`, text is nearly invisible.
 **Solution**: Convert hex colors to `rgba()` for the `backgroundColor` property only. Keep element `opacity: 1` (or use it only for intentional whole-node dimming like hover preview).
 **Prevention**: When setting background transparency on any element that contains text, always use `rgba(r, g, b, alpha)` or `hsla()` for the background color — never CSS `opacity` on the container.
@@ -320,7 +320,7 @@ style={{ height: '36px !important' }} // ✅ Force override
 
 ### shadcn Component Class Override Failures
 **Added**: 2026-01-16
-**Context**: PaywallContributionModal had rounded corners despite `rounded-none` class; Button styling inconsistent with design system
+**Context**: A modal component had rounded corners despite `rounded-none` class; Button styling inconsistent with design system
 **Problem**: shadcn components (Dialog, Button, Textarea) have base classes with `rounded-*` that normal Tailwind class additions don't override
 **Solution**:
 1. Use Tailwind's important modifier: `!rounded-none` instead of `rounded-none`
@@ -403,7 +403,7 @@ style={{ height: '36px !important' }} // ✅ Force override
 
 ### Reference Existing Layout Patterns Before Creating New Pages
 **Added**: 2025-12-21
-**Context**: the project Onboarding created plain header instead of matching dashboard pattern
+**Context**: Onboarding page created plain header instead of matching dashboard pattern
 **Problem**: Agent created minimal header and full-width layout without referencing existing patterns
 **Solution**: ALWAYS search for and reference existing header/layout patterns in codebase
 **Prevention**:
@@ -445,11 +445,11 @@ style={{ height: '36px !important' }} // ✅ Force override
 
 ### Design Language Consistency Check
 **Added**: 2026-01-08
-**Context**: InsightCard created with rounded corners while codebase uses sharp corners
+**Context**: A new card component created with rounded corners while codebase uses sharp corners
 **Problem**: Agent followed task file wireframe ASCII mockup instead of checking existing component patterns. Also used shadcn Accordion defaults (rounded-lg) without overriding to match codebase.
 **Solution**: Before creating ANY new card/grid component, verify styling against existing cards
 **Prevention**:
-1. ALWAYS read existing card components (ModuleGridCard, etc.) before creating new ones
+1. ALWAYS read existing card components ([CardComponent], etc.) before creating new ones
 2. Document shared design patterns: corners, borders, spacing, action text, colors
 3. Override shadcn defaults to match codebase patterns (rounded-lg → sharp)
 4. Never trust ASCII mockups for exact CSS - they're for layout structure, not styling details
@@ -461,7 +461,7 @@ style={{ height: '36px !important' }} // ✅ Force override
 <AccordionItem className="rounded-lg border border-gray-200 border-l-4">
 <div className="space-y-3">  {/* Spaced cards */}
 
-// ✅ Correct - matches existing ModuleGridCard design language
+// ✅ Correct - matches existing [CardComponent] design language
 <AccordionItem className="group border-l-4">
 <div className="border border-gray-200 divide-y divide-gray-200">  {/* Connected grid */}
 ```
@@ -485,15 +485,15 @@ style={{ height: '36px !important' }} // ✅ Force override
   <button className="bg-violet-600">Start New Report</button>
 </div>
 
-// Final implementation (design refined for cleaner Attio-inspired look)
+// Final implementation (design refined for cleaner reference app-inspired look)
 <div className="flex items-start justify-between gap-8">
   <Button className="bg-gray-900 hover:bg-gray-800">Start New Report</Button>
 </div>
 
 // Note: File header documents the design shift
 /**
- * StartBanner - Premium CTA banner for starting new research.
- * Clean, minimal design with neutral colors (like Attio reference).
+ * [BannerComponent] - Premium CTA banner for starting an action.
+ * Clean, minimal design with neutral colors (like reference app).
  * No border box - content breathes on page background.
  */
 ```
@@ -519,11 +519,11 @@ style={{ height: '36px !important' }} // ✅ Force override
       <div className="flex flex-col lg:flex-row">
         {/* Stats Panel - dark variant */}
         <div className="w-full lg:w-1/3 bg-[#0f172a] p-8">
-          <HowWeBuiltThis report={expandedReport} variant="dark" />
+          <DetailStats item={expandedReport} variant="dark" />
         </div>
         {/* Execution Trace - integrated */}
         <div className="w-full lg:w-2/3 bg-[#0B1120]">
-          <TraceTree nodes={traceTree} />
+          <[TreeComponent] nodes={traceTree} />
         </div>
       </div>
     </div>
@@ -550,7 +550,7 @@ style={{ height: '36px !important' }} // ✅ Force override
 ### Page Container Consistency Pattern (Single Card Container)
 **Added**: 2026-01-15
 **Context**: Workflow Preset Selection page initially used `bg-gray-100` page background with floating cards. User pointed out it looked "very different from our other screens."
-**Problem**: Different pages using different container patterns creates visual inconsistency. Compare `/reports/new` (single card container on white background) vs initial preset selection (gray background with floating cards).
+**Problem**: Different pages using different container patterns creates visual inconsistency. Compare a form page (single card container on white background) vs initial preset selection (gray background with floating cards).
 **Solution**: For form-like pages with selectable options, use the single card container pattern:
 - Page background: `bg-white`
 - Single outer card: `border border-gray-200 bg-white p-8`
@@ -558,7 +558,7 @@ style={{ height: '36px !important' }} // ✅ Force override
 - CTA button inside the card (not floating below)
 **Prevention**:
 1. BEFORE implementing new pages, check similar existing pages for container patterns
-2. Look specifically at `/reports/new`, `/onboarding` for form-like page patterns
+2. Look specifically at existing form-like pages (e.g., create/new forms, onboarding) for patterns
 3. "Sheet on Desk" metaphor: Content surface (`bg-white`) floats on background (`bg-gray-100`) - but for form pages, entire form is ONE sheet
 4. Compare screenshots side-by-side before declaring implementation complete
 
@@ -573,7 +573,7 @@ style={{ height: '36px !important' }} // ✅ Force override
   <Button>Submit</Button>
 </div>
 
-// ✅ Correct - single card container on white (matches /reports/new)
+// ✅ Correct - single card container on white (matches existing form pages)
 <div className="bg-white min-h-screen">
   <div className="mx-auto max-w-2xl px-6 py-12">
     <div className="border border-gray-200 bg-white p-8">
@@ -590,11 +590,11 @@ style={{ height: '36px !important' }} // ✅ Force override
 ### Grayscale Chrome: Color Reserved for Data Only
 **Added**: 2026-01-15
 **Context**: Workflow Preset Selection initially used blue (`border-blue-600`, `ring-blue-600`, `bg-blue-50`) for selected state. User pointed out: "we shouldn't be using blue highlights when something is selected."
-**Problem**: Using colored accents (blue, violet, etc.) for selection states violates the design system principle: "Color is reserved exclusively for user data" (visual-style-brief.md).
+**Problem**: Using colored accents (blue, violet, etc.) for selection states violates the design system principle: "Color is reserved exclusively for user data" (project design system docs).
 **Solution**: All chrome (UI elements like borders, rings, backgrounds for selection) must use grayscale only. Color is reserved for data visualization, insights, and user content.
 **Prevention**:
 1. Selection states: `border-gray-900`, `ring-gray-900`, `bg-gray-50` — NOT blue
-2. Check visual-style-brief.md before choosing selection colors
+2. Check project design system docs before choosing selection colors
 3. Grayscale includes: gray-900 (black), gray-700, gray-500, gray-300, gray-200, gray-100, gray-50, white
 4. Color is ONLY for: Chart data, insight type indicators (risk=red, opportunity=green), user-generated content
 
@@ -609,7 +609,7 @@ className={selected ? 'border-gray-900 ring-1 ring-gray-900 bg-gray-50' : 'borde
 
 ### Invisible UI: Remove Redundant Indicators
 **Added**: 2026-01-15
-**Context**: PresetCard had both a radio circle indicator AND border/background change for selection state. User asked "Do we need the circle select?"
+**Context**: A selectable card had both a radio circle indicator AND border/background change for selection state. User asked "Do we need the circle select?"
 **Problem**: Redundant UI elements (showing selection state twice) add visual clutter without adding information.
 **Solution**: Follow "Invisible UI" philosophy — if the primary visual (border change, background change) already clearly communicates the state, remove secondary indicators.
 **Prevention**:
@@ -620,7 +620,7 @@ className={selected ? 'border-gray-900 ring-1 ring-gray-900 bg-gray-50' : 'borde
 
 ### Pipeline Schematic Pattern with divide-x
 **Added**: 2026-01-27
-**Context**: Collapse Research Process — needed to show 6 connected stages in a horizontal strip
+**Context**: Collapsing a multi-stage process — needed to show 6 connected stages in a horizontal strip
 **Problem**: Floating separate cards (with `space-x-4` or `gap-4`) look disconnected. User and Gemini analysis suggested "connected grid" pattern.
 **Solution**: Use `divide-x divide-gray-200` for connected horizontal stages. This creates a unified strip where stages flow into each other.
 
@@ -654,9 +654,9 @@ className={selected ? 'border-gray-900 ring-1 ring-gray-900 bg-gray-50' : 'borde
 
 ### Visual Style Brief: Container vs Badge Radius Distinction
 **Added**: 2026-01-15
-**Context**: Issue detail card had `rounded-lg` on the container and `rounded` on badges, but both should have different treatments per visual-style-brief.md
+**Context**: Issue detail card had `rounded-lg` on the container and `rounded` on badges, but both should have different treatments per project design system docs
 **Problem**: Agent applied similar border-radius to both structural containers and interactive badges, violating the "sharp containers, soft interactions" principle
-**Solution**: Per visual-style-brief.md:
+**Solution**: Per project design system docs:
 - **Structural containers** (cards, panels, modals): 0px radius (sharp corners)
 - **Tags/badges/pills**: `rounded-full` (full pill shape)
 - **Interactive elements** (buttons, inputs): `rounded-md` or `rounded-lg` as specified
@@ -664,7 +664,7 @@ className={selected ? 'border-gray-900 ring-1 ring-gray-900 bg-gray-50' : 'borde
 1. Before styling any new component, identify if it's a CONTAINER (sharp) or BADGE/TAG (pill)
 2. When adding hover tooltips or detail cards, default to sharp corners
 3. Priority/status badges should always be `rounded-full` with `text-[9px]` or smaller
-4. Review visual-style-brief.md "Sharp containers, soft interactions" section before implementing
+4. Review project design system docs "Sharp containers, soft interactions" section before implementing
 
 **Example**:
 ```tsx
@@ -681,7 +681,7 @@ className={selected ? 'border-gray-900 ring-1 ring-gray-900 bg-gray-50' : 'borde
 
 ### Tailwind CSS v4 JIT Dynamic Class Detection Failure
 **Added**: 2026-01-15
-**Context**: Executive Brief Card Simplification — colored left borders (border-l-red-500, etc.) appeared gray despite correct class names in config.
+**Context**: Card simplification task — colored left borders (border-l-red-500, etc.) appeared gray despite correct class names in config.
 **Problem**: Tailwind CSS v4 JIT compiler cannot statically detect class names constructed from variables at runtime. When using `config.borderColor` (which resolves to "border-l-red-500"), the class is never generated because JIT doesn't see it in the source code. Additionally, global CSS rules like `* { border-color: var(--color-border); }` override any dynamically applied classes.
 **Solution**: For color properties that need to be dynamic (based on data/config), use inline styles with hex values instead of Tailwind classes. Inline styles have higher CSS specificity and don't require JIT detection.
 **Prevention**:
@@ -694,13 +694,13 @@ className={selected ? 'border-gray-900 ring-1 ring-gray-900 bg-gray-50' : 'borde
 **Example**:
 ```tsx
 // ❌ Wrong - Tailwind JIT won't detect dynamic class names
-const INSIGHT_CONFIG = {
+const CARD_TYPE_CONFIG = {
   risk: { borderColor: "border-l-red-500" },  // Not detected by JIT
 }
 <div className={cn("border-l-4", config.borderColor)} />  // Gray border appears
 
 // ✅ Correct - inline styles always work
-const INSIGHT_CONFIG = {
+const CARD_TYPE_CONFIG = {
   risk: {
     borderColor: "border-l-red-500",     // For static usage if needed
     borderColorHex: "#ef4444"            // For dynamic inline styles
@@ -714,7 +714,7 @@ const INSIGHT_CONFIG = {
 
 ### h-full Does Not Propagate Through overflow-y-auto Parent Chains
 **Added**: 2026-01-29
-**Context**: Rename Research Process to Research Nodes — DAG needed to fill full viewport height
+**Context**: Renaming a feature section — DAG needed to fill full viewport height
 **Problem**: `h-full` on a child element does not propagate through parent chains that include `overflow-y-auto`. The parent's `overflow-y-auto` creates a scrollable context without a defined height, so `h-full` resolves to "100% of undefined" and collapses.
 **Solution**: Use viewport-calc heights (`min-h-[calc(100vh-Xpx)]`) or `flex-1` within a flex-col parent instead of relying on `h-full` propagation through overflow containers.
 **Prevention**:
@@ -821,7 +821,7 @@ setUploadedFiles(prev => [...prev, newFile]);
 ### Selection State: Add vs Replace Semantics
 **Added**: 2026-01-15
 **Context**: Workflow Side-by-Side Layout — clicking between presets did not update the DAG visualization
-**Problem**: `selectMultiple(ids)` function only ADDS to existing selection, never clears. When switching from "Full Due Diligence" (27 categories) to "Team & Founders Focus" (6 categories), all 27 categories remained highlighted because the 6 new ones were ADDED to the existing 27.
+**Problem**: `selectMultiple(ids)` function only ADDS to existing selection, never clears. When switching from "Full Scope" (27 categories) to "Focused Scope" (6 categories), all 27 categories remained highlighted because the 6 new ones were ADDED to the existing 27.
 **Solution**: Implement separate `setSelection(ids)` function that REPLACES entire selection with new IDs (creates new Set, not additive)
 **Prevention**:
 1. When implementing selection state hooks, always provide BOTH `selectMultiple` (additive) AND `setSelection` (replace) functions
@@ -984,7 +984,7 @@ const handleMouseDown = (e: React.MouseEvent) => {
 
 ### Agent 0 Multi-Perspective Workflow Prevents Iteration Loops
 **Added**: 2026-01-29
-**Context**: Report Categories Domain Alignment — post-implementation visual refinement decisions
+**Context**: Category alignment task — post-implementation visual refinement decisions
 **Problem**: After implementing domain categories, the page had too many competing visual signals (coloured borders, coloured pills, coloured icons, header badge). Each element was individually justified but collectively created a "Christmas tree" effect. Without structured decision-making, this would have been multiple rounds of back-and-forth.
 **Solution**: Used Agent 0 (design-0-refine.md) 4-perspective workflow — 2 Claude subagents + 2 Gemini MCP calls in parallel — to get unanimous/majority decisions on 3 changes simultaneously:
 1. Gray domain borders (unanimous YES)
@@ -997,7 +997,7 @@ All 3 changes shipped in one pass with zero rework.
 
 ### Visual Hierarchy Through Reduction, Not Addition
 **Added**: 2026-01-29
-**Context**: Executive Brief insight cards had domain border colours, signal-type pill colours, trust indicators, and a header badge all competing for attention
+**Context**: Report summary insight cards had domain border colours, signal-type pill colours, trust indicators, and a header badge all competing for attention
 **Problem**: User testing showed sources/verification trust indicators are what users value most, but they were visually subordinate to decorative domain colours and signal-type badges
 **Solution**: Systematic reduction — remove or neutralise everything that isn't the primary action:
 1. Domain borders → gray (then removed entirely)
@@ -1009,7 +1009,7 @@ All 3 changes shipped in one pass with zero rework.
 
 ### Mobile Accessibility for Desktop-First Features
 **Added**: 2026-01-16
-**Context**: Mobile Evidence Chat Access — desktop text selection unavailable on mobile
+**Context**: Mobile detail panel access — desktop text selection unavailable on mobile
 **Problem**: Desktop relies on text selection → tooltip, but mobile text selection is fiddly (long-press, drag handles) and users may never discover the feature
 **Solution**: Multi-layer approach with "Inspect" mode for mobile:
 
@@ -1033,7 +1033,7 @@ const openInspect = (title: string, sources: Source[]) => {
 
 // In drawer render:
 {mode === "inspect" && inspectData ? (
-  <EvidencePanel title={inspectData.title} sources={inspectData.sources} onClose={close} />
+  <DetailPanel title={inspectData.title} sources={inspectData.sources} onClose={close} />
 ) : (
   <ChatInterface />
 )}
@@ -1140,7 +1140,7 @@ const openInspect = (title: string, sources: Source[]) => {
 
 ### Visible Labels vs Tooltip-Only — Always Show Meaning
 **Added**: 2026-01-27
-**Context**: Collapse Research Process Overview — initial implementation showed icons with tooltips only, no visible labels
+**Context**: Collapsing a process overview — initial implementation showed icons with tooltips only, no visible labels
 **Problem**: User feedback: "I was expecting to see what each of the research stages were - adding a bit more meaning to this" — tooltips require hover, not discoverable on mobile
 **Solution**: Always show visible labels for stage/step indicators. Tooltips should provide ADDITIONAL context, not be the ONLY way to understand meaning.
 
@@ -1176,8 +1176,8 @@ const openInspect = (title: string, sources: Source[]) => {
 
 ### Clickable Stages for Progressive Disclosure
 **Added**: 2026-01-27
-**Context**: Collapse Research Process — user asked if clicking stages should expand the full graph
-**Problem**: Only one expand affordance ("See Research Process" button) — power users scanning the UI may not notice the button
+**Context**: Collapsing a process overview — user asked if clicking stages should expand the full graph
+**Problem**: Only one expand affordance ("See Full Process" button) — power users scanning the UI may not notice the button
 **Solution**: Make stage elements clickable as an alternate expand path. Multiple affordances for the same action improves discoverability.
 
 **Pattern**:
@@ -1188,7 +1188,7 @@ function ResearchPipeline({ onExpand }: { onExpand: () => void }) {
       {STAGES.map((stage) => (
         <button
           type="button"
-          onClick={onExpand}  // Same action as "See Research Process" button
+          onClick={onExpand}  // Same action as "See Full Process" button
           className="cursor-pointer hover:bg-gray-50"
         >
           <Stage {...stage} />
@@ -1302,7 +1302,7 @@ const [isCarouselHovered, setIsCarouselHovered] = useState(false)
 
 ### Clarify Interaction Type Early (Simulated vs Real)
 **Added**: 2025-12-27
-**Context**: Ramp Spotlights - confusion about whether actions were simulated or required real input
+**Context**: A reference project - confusion about whether actions were simulated or required real input
 **Problem**: Planning didn't specify if interactions were demos or actual flows
 **Solution**: During planning, explicitly clarify: Is this a demo/simulation or real user interaction?
 **Prevention**:
@@ -1312,7 +1312,7 @@ const [isCarouselHovered, setIsCarouselHovered] = useState(false)
 
 ### Timer Auto-Action Clarity
 **Added**: 2025-12-27
-**Context**: Ramp Spotlights had auto-advancing screens that confused implementation
+**Context**: A reference project had auto-advancing screens that confused implementation
 **Problem**: "Then it advances to next screen" left unclear - user-triggered or auto?
 **Solution**: Always specify exact trigger mechanism for screen transitions
 **Prevention**:
@@ -1403,7 +1403,7 @@ const handleNodeClick = (categoryId: number) => {
 
 ### Dual-Model UX Analysis for Mobile Spacing
 **Added**: 2026-01-29
-**Context**: Mobile card spacing improvements for InsightCard and FindingCard
+**Context**: Mobile card spacing improvements for [CardComponent] variants
 **Pattern**: Send screenshots to Gemini Pro 3 (via AI Studio MCP) for independent visual assessment, then synthesize with Claude's code-level analysis before planning changes.
 **Key Insight**: Gemini caught two issues Claude's code analysis missed:
 - `flex-wrap` needed on metadata rows so trust indicators wrap gracefully at narrow widths
@@ -1436,7 +1436,7 @@ const handleNodeClick = (categoryId: number) => {
 
 ### Fill Remaining Viewport with flex-1
 **Added**: 2026-01-27
-**Context**: Collapse Research Process — white space visible below the collapsed section
+**Context**: Collapsing a section — white space visible below the collapsed section
 **Problem**: Content ends before viewport bottom, leaving jarring white space with a different background color
 **Solution**: Use `flex flex-col` on parent container and `flex-1` on the last section to fill remaining space
 
@@ -1499,7 +1499,7 @@ const handleNodeClick = (categoryId: number) => {
 
 ### Inline vs Floating Component Positioning and Styling
 **Added**: 2026-01-16
-**Context**: Converting FloatingAudioPlayer from fixed overlay to inline position within module detail
+**Context**: Converting a floating player component from fixed overlay to inline position within a detail view
 **Problem**: Multiple iterations needed — wrong initial placement (before stats row instead of after), styling too heavy for inline context
 **Solution**:
 1. When converting floating → inline, clarify EXACT placement in content hierarchy (e.g., "after X, before Y")
@@ -1572,7 +1572,7 @@ const [viewport, setViewport] = useState<Viewport>({ x: 0, y: 0, zoom: 1 })
 
 ### Full-Bleed Canvas Layouts Need Floating Navigation Triggers
 **Added**: 2026-01-29
-**Context**: Rename Research Process to Research Nodes — hiding AppHeader for full-bleed DAG canvas removed the sidebar trigger
+**Context**: Converting a page to full-bleed canvas — hiding AppHeader for full-bleed DAG canvas removed the sidebar trigger
 **Problem**: When a page hides the AppHeader to achieve a full-bleed canvas layout (e.g., React Flow graph filling the viewport), the normal SidebarTrigger in the header disappears, leaving users with no way to open the sidebar for navigation.
 **Solution**: Add a floating `SidebarTrigger` (e.g., `fixed top-4 left-4 z-50`) so users can always access sidebar navigation even when the header is hidden. Use the `isFullBleed` pattern in the parent layout to conditionally hide the header and add the floating trigger.
 **Prevention**:
@@ -1582,8 +1582,8 @@ const [viewport, setViewport] = useState<Viewport>({ x: 0, y: 0, zoom: 1 })
 
 **Example**:
 ```tsx
-// Parent layout ($reportId.tsx)
-const isFullBleed = location.pathname.includes('/research-process')
+// Parent layout ([parent-layout].tsx)
+const isFullBleed = location.pathname.includes('/[canvas-route]')
 
 return (
   <>
@@ -1672,7 +1672,7 @@ max-h-0 → max-h-20 + overflow-hidden
 
 ### Spring Physics Reference (Framer Motion)
 **Added**: 2025-12-27
-**Context**: Ramp Spotlights established consistent spring values for premium motion feel
+**Context**: A reference project established consistent spring values for premium motion feel
 **Problem**: Arbitrary spring values lead to inconsistent motion feel across features
 **Solution**: Use established spring values from `motion-patterns.md` reference
 **Prevention**: Check motion-patterns.md before implementing any spring animations
@@ -1754,8 +1754,8 @@ max-h-0 → max-h-20 + overflow-hidden
 
 ### Time Estimation for Parallel Processing Systems
 **Added**: 2026-01-15
-**Context**: RunResearchCard displayed "~91 hours" for full research scope instead of ~2 hours
-**Problem**: `calculateEstimatedDays()` was SUMMING individual category times (27 × ~3.4 = 91), but research agents run in PARALLEL, not sequentially
+**Context**: A summary card displayed "~91 hours" for full scope instead of ~2 hours
+**Problem**: `calculateEstimatedTime()` was SUMMING individual task times (27 × ~3.4 = 91), but workers/agents run in PARALLEL, not sequentially
 **Solution**: Use a formula that accounts for concurrency:
 ```typescript
 // ❌ Wrong - sequential sum (91 hours for 27 categories)
@@ -1770,7 +1770,7 @@ return Math.min(Math.round(rawTime * 2) / 2, 3)  // Cap at 3 hours
 **Prevention**: When displaying time estimates for systems with parallel task execution:
 1. Check if tasks run concurrently (agents, workers, threads)
 2. If parallel: use max(task times) + overhead, NOT sum
-3. Validate against known benchmarks (e.g., preset data showing Full DD = 2 hours)
+3. Validate against known benchmarks (e.g., preset data showing full scope = 2 hours)
 
 ---
 
@@ -1778,30 +1778,30 @@ return Math.min(Math.round(rawTime * 2) / 2, 3)  // Cap at 3 hours
 
 ### Drawer Mode Guard Must Include All Valid Modes
 **Added**: 2026-01-29
-**Context**: Sources Trust Overhaul — "Ask in chat" button closed the drawer instead of transitioning
-**Problem**: `evidence-drawer.tsx` had a `hasContent` guard that checked for `inspectData` and `allSourcesMode` but didn't include `mode === "chat"` as a valid content state. When switching from inspect to chat mode, the guard returned false and the drawer closed.
+**Context**: Trust indicators overhaul — "Ask in chat" button closed the drawer instead of transitioning
+**Problem**: `[drawer-component].tsx` had a `hasContent` guard that checked for `inspectData` and `allSourcesMode` but didn't include `mode === "chat"` as a valid content state. When switching from inspect to chat mode, the guard returned false and the drawer closed.
 **Solution**: Added `|| mode === "chat"` to the hasContent condition. Any mode that should keep the drawer open must be explicitly included in the guard.
 **Prevention**: When adding new drawer modes or mode transitions, always check the content guard in the parent drawer component. Guard conditions that enumerate valid states will break when new states are added.
 
 ### Clickable Badge Pattern — onClick + cursor-pointer on Tooltip-Wrapped Elements
 **Added**: 2026-01-29
-**Context**: Sources Trust Overhaul — confidence badge needed to be clickable to open evidence drawer
-**Problem**: ConfidenceBadge was wrapped in a Tooltip with `cursor-help`. Adding onClick required changing the wrapper from `<span>` to `<button>` and swapping the cursor.
+**Context**: Trust indicators overhaul — confidence badge needed to be clickable to open evidence drawer
+**Problem**: [BadgeComponent] was wrapped in a Tooltip with `cursor-help`. Adding onClick required changing the wrapper from `<span>` to `<button>` and swapping the cursor.
 **Solution**: Accept optional `onClick` prop. When present, render as `<button type="button" onClick={onClick} className="cursor-pointer">` wrapping the content (inside TooltipTrigger if tooltip exists). When absent, keep `<span className="cursor-help">` for tooltip-only behavior.
 **Prevention**: Design badge/indicator components with optional `onClick` from the start. When a component has both tooltip and click behavior, the click target should be a `<button>` for accessibility, not a `<span>` or `<div>`.
 
 ### Backward-Compatible Optional Props for Incremental Feature Rollout
 **Added**: 2026-01-29
-**Context**: Sources Trust Overhaul — adding confidence data to existing insight/finding interfaces
-**Problem**: New features (confidence levels, rejected sources) needed to be added to existing data interfaces without breaking components that don't have the data yet (e.g., Credora report data).
-**Solution**: All new fields added as optional (`confidence?: ConfidenceData`, `rejectedSources?: RejectedSource[]`). Components check for presence before rendering: `{confidence ? <ConfidenceBadge /> : <ModelVerificationBadge />}`. This allows incremental rollout — only demo-report insights show confidence while credora insights gracefully fall back.
+**Context**: Trust indicators overhaul — adding confidence data to existing insight/finding interfaces
+**Problem**: New features (confidence levels, rejected sources) needed to be added to existing data interfaces without breaking components that don't have the data yet (e.g., other report types).
+**Solution**: All new fields added as optional (`confidence?: ConfidenceData`, `rejectedSources?: RejectedSource[]`). Components check for presence before rendering: `{confidence ? <[BadgeComponent] /> : <[FallbackBadge] />}`. This allows incremental rollout — only enhanced data shows confidence while other data types gracefully fall back.
 **Prevention**: When adding new data dimensions to existing interfaces, always make them optional. Design the rendering components with fallback behavior for when the data is absent.
 
 ### Discriminated Union for Multi-Type Unified Tables
 **Added**: 2026-01-30
-**Context**: Unified Reports Table — merging DashboardReport and CustomReport into one table
-**Problem**: Two data types with different fields (DashboardReport has `companyName`, `updatedAt`, `metrics`; CustomReport has `name`, `deliveredAt`, `analysts`) need to display in a single table. Direct union creates type narrowing issues and empty-cell problems.
-**Solution**: Create a discriminated union with a shared base interface and `reportType: 'standard' | 'custom'` discriminator. Normalize display-facing fields (`displayName`, `updatedAt`) during merge. Use `analysts?: undefined` on standard type so TypeScript allows field access without narrowing.
+**Context**: Unified table — merging two entity types (e.g., TypeA and TypeB) into one table
+**Problem**: Two data types with different fields (TypeA has `companyName`, `updatedAt`, `metrics`; TypeB has `name`, `deliveredAt`, `analysts`) need to display in a single table. Direct union creates type narrowing issues and empty-cell problems.
+**Solution**: Create a discriminated union with a shared base interface and `itemType: 'typeA' | 'typeB'` discriminator. Normalize display-facing fields (`displayName`, `updatedAt`) during merge. Use `analysts?: undefined` on TypeA so TypeScript allows field access without narrowing.
 **Prevention**: When merging two entity types into one view, always create a dedicated union type with a discriminator field. Normalize display fields at merge time, not render time. Mark cross-type fields as `fieldName?: undefined` on the type that doesn't have them.
 
 ### Background Implementation Fallback
@@ -1875,7 +1875,7 @@ return Math.min(Math.round(rawTime * 2) / 2, 3)  // Cap at 3 hours
 
 ### Chat UI Patterns (Typewriter, Typing Indicator)
 **Added**: 2025-12-27
-**Context**: Ramp Spotlights chat interface required specific animation patterns
+**Context**: A reference project chat interface required specific animation patterns
 **Problem**: Chat interfaces need coordinated animations for natural feel
 **Solution**: Use proven patterns for chat UI elements
 
@@ -1957,7 +1957,7 @@ const model = models.find(m => m.id === id) ?? null;
 
 ### Override Shared Component Defaults via className Prop
 **Added**: 2026-01-29
-**Context**: Rename Research Process to Research Nodes — IssuesFlowVisualization has internal `h-[700px]` used by 4 consumers (index.tsx, home.tsx, collapsible-research-process.tsx, research-process.tsx)
+**Context**: Renaming a feature section — [GraphComponent] has internal `h-[700px]` used by 4 consumers across multiple pages
 **Problem**: Temptation to change a shared component's internal height to `h-full` to fit one consumer's layout, which would break the other 3 consumers that rely on the fixed height default.
 **Solution**: Pass `className="h-full"` from the parent that needs the override. The shared component should use `cn("h-[700px]", className)` so the caller's class merges/overrides the default via Tailwind's `cn()` utility.
 **Prevention**:
@@ -1968,24 +1968,24 @@ const model = models.find(m => m.id === id) ?? null;
 **Example**:
 ```tsx
 // Shared component (DO NOT CHANGE the default)
-function IssuesFlowVisualization({ className }: { className?: string }) {
+function [GraphComponent]({ className }: { className?: string }) {
   return <div className={cn("h-[700px]", className)}>...</div>
 }
 
 // Consumer A (uses default 700px) — untouched
-<IssuesFlowVisualization />
+<[GraphComponent] />
 
 // Consumer B (needs full height) — override via className
-<IssuesFlowVisualization className="h-full" />
+<[GraphComponent] className="h-full" />
 ```
 
 ---
 
 ## Success Patterns
 
-### Unified Reports Table — Full Pipeline with Stakeholder-Driven UX Refinement (Visually Verified)
+### Unified table — Full Pipeline with Stakeholder-Driven UX Refinement (Visually Verified)
 **Added**: 2026-01-30
-**Context**: Unified Reports Table — merging two separate dashboard sections into one unified table with search and tabs, driven by Bartosz presentation feedback
+**Context**: Unified table — merging two separate dashboard sections into one unified table with search and tabs, driven by stakeholder presentation feedback
 **Success Factors**:
 - Agent 0 (design-0-refine) ran 4-perspective UX analysis that unanimously agreed on removing TYPE column and merging Analysts into Name cell — zero debate on core decisions
 - Agent 2 caught 8 implementation gaps (ut mode, date unification, null sort, name normalization, file size, archived scope, TooltipProvider, header consolidation) — all had clear resolutions
@@ -1997,7 +1997,7 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 
 ### Multi-Perspective UX Analysis Prevents CSS Spec Conflicts
 **Added**: 2026-01-30
-**Context**: Executive Brief "View All Findings" link — 4-perspective UX analysis (design-0-refine) produced a plan with `font-medium` and `py-2.5` CSS specs. Agent 3 Discovery caught that these conflicted with existing design language (`py-2`, no font-medium on navigation links).
+**Context**: Report summary "View All Findings" link — 4-perspective UX analysis (design-0-refine) produced a plan with `font-medium` and `py-2.5` CSS specs. Agent 3 Discovery caught that these conflicted with existing design language (`py-2`, no font-medium on navigation links).
 **Success Factors**:
 - Agent 0 (design-0-refine) produced high-confidence UX decisions where all 4 perspectives agreed
 - Agent 3 Discovery independently verified CSS against actual codebase files and overrode the plan specs
@@ -2006,31 +2006,31 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 
 ### Conditional-to-Always-Visible: Export Shared Constants for DRY
 **Added**: 2026-01-30
-**Context**: Converting ShowMoreLink from conditional to always-visible required index.tsx to also use the `DOMAIN_TO_MODULE` mapping (previously internal to show-more-link.tsx) for looking up module finding counts.
-**Problem**: Two files need the same domain-to-module ID mapping. Duplicating violates DRY.
-**Solution**: Export the existing `DOMAIN_TO_MODULE` constant from show-more-link.tsx. Single source of truth, zero duplication.
+**Context**: Converting a "show more" link from conditional to always-visible required a parent page to also use a category-to-section mapping (previously internal to the link component) for looking up item counts.
+**Problem**: Two files need the same category-to-section ID mapping. Duplicating violates DRY.
+**Solution**: Export the existing mapping constant from the component file. Single source of truth, zero duplication.
 **Prevention**: When a constant is used by a component AND its parent for related logic, export it from the component file rather than duplicating.
 
 ### Domain Alignment — User Testing Evidence Drove Zero-Debate Decisions
 **Added**: 2026-01-29
-**Context**: Report Categories Domain Alignment (M3) — restructuring from signal types to domain categories
+**Context**: Category alignment task — restructuring from signal types to domain categories
 **Success Factors**:
 - Strong user testing evidence (9 users, 3 ICP explicitly requesting domain categories) made the core decision unambiguous
-- Preserving signal types as tags satisfied the one ICP user (Darek) who validated them
-- Agent 2 review caught 7 implementation issues before Agent 4 started (show-more-link navigation, hardcoded moduleId check, FullReportSearch cleanup, Credora insights, hex values, Q1/Q2 answers)
+- Preserving signal types as tags satisfied the one ICP user who validated them
+- Agent 2 review caught 7 implementation issues before Agent 4 started (navigation links, hardcoded ID checks, search cleanup, data-type-specific insights, hex values, clarification answers)
 - Agent 3 discovery found 3 design language conflicts (blue collision, badge borders, question badge color) and resolved them before implementation
 - 12-file change across mock data, routes, and components compiled cleanly on first pass
 - Post-implementation refinements (visual de-clutter) completed via Agent 0 quick workflow without touching the core structural changes
 
-### Sources Trust Overhaul — 5 Sub-Features via Full Agent Pipeline (Score 9/10)
+### Trust indicators overhaul — 5 Sub-Features via Full Agent Pipeline (Score 9/10)
 **Added**: 2026-01-29
-**Context**: Sources Trust Overhaul — 5 interconnected sub-features (confidence badges, remove chat, confidence narrative, rejected sources, ask-in-chat) implemented via Agents 2-5
+**Context**: Trust indicators overhaul — 5 interconnected sub-features (confidence badges, remove chat, confidence narrative, rejected sources, ask-in-chat) implemented via Agents 2-5
 **Success Factors**:
 - Comprehensive plan with detailed mock data narratives (7 confidence stories) eliminated ambiguity during execution
-- Agent 2 review caught 8 technical issues before execution (direct ModelVerificationBadge in FindingCard, missing evidence-drawer.tsx passthrough, file size concerns, TrustIndicator props gap)
+- Agent 2 review caught 8 technical issues before execution (direct [BadgeComponent] in [CardComponent], missing [DrawerComponent] passthrough, file size concerns, indicator props gap)
 - Agent 3 discovery verified all 12+ file paths, confirmed all dependencies available (no installations needed), documented exact line numbers for removal targets
-- Backward-compatible optional props (`confidence?`, `rejectedSources?`) allowed Credora data to gracefully fall back without changes
-- Component extraction (confidence-analysis-section.tsx, rejected-source-card.tsx) kept evidence-panel.tsx under 250 lines
+- Backward-compatible optional props (`confidence?`, `rejectedSources?`) allowed other data types to gracefully fall back without changes
+- Component extraction (sub-components extracted to separate files) kept the main panel under 250 lines
 - Agent 5 caught 2 functional bugs (drawer guard, collapsed-by-default) and fixed both in single iterations
 - Post-pipeline quick fix (confidence badge clickable to open drawer) was a clean 2-file change
 
@@ -2044,7 +2044,7 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 - Proper workflow compliance
 
 ### Multi-Page Form Flow Success Pattern
-**Added**: 2025-12-21 (the project Onboarding)
+**Added**: 2025-12-21 (Onboarding)
 **Success Factors**:
 - Used shadcn MCP to verify/install required components (radio-group, separator)
 - Added public routes to middleware for unauthenticated access
@@ -2063,9 +2063,9 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 5. Correctly update status.md workflow
 
 ### Foundation/Design Token Implementation Success
-**Added**: 2026-01-06 (the project Step 0)
+**Added**: 2026-01-06 (Foundation/Step 0)
 **Success Factors**:
-- Comprehensive plan with exact CSS token values from visual-style-brief.md
+- Comprehensive plan with exact CSS token values from project design system docs
 - Technical Discovery (Agent 3) verified ALL dependencies before execution
 - Clear build order specified: CSS tokens → StatusBadge → DotGridBackground → PhaseCard → Animations
 - Followed existing component patterns (cva + cn from badge.tsx)
@@ -2076,10 +2076,10 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 **Key Insight**: For infrastructure/foundation tasks, skip Agent 5 visual verification when there's no rendered UI to test. Move directly to Complete after build passes.
 
 ### Zero-Iteration UI Component Implementation
-**Added**: 2026-01-06 (the project AppHeader)
+**Added**: 2026-01-06 (AppHeader)
 **Success Factors**:
 - User-provided reference images with annotated purposes (layout-reference, component-reference)
-- Plan included exact CSS values from visual-style-brief.md (h-14, px-6/lg:px-12, border-b)
+- Plan included exact CSS values from project design system docs (h-14, px-6/lg:px-12, border-b)
 - Agent 2 refinements were specific and actionable (text-xs vs text-sm for avatar proportion)
 - Technical Discovery validated approach decision (custom vs shadcn installation)
 - Implementation followed plan exactly without deviation
@@ -2095,7 +2095,7 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 5. Follow plan exactly - don't improvise
 
 ### Comprehensive Panel/Sidebar Implementation Success
-**Added**: 2026-01-06 (the project Sources Panel)
+**Added**: 2026-01-06 (Sources Panel)
 **Success Factors**:
 - Detailed visual specs from AI analysis (Gemini Pro 3) including exact Tailwind classes and pixel values
 - Clear visual metaphor documented ("Sheet on Desk" - panel on gray bg outside white content)
@@ -2116,14 +2116,14 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 6. Match mock data patterns to existing codebase conventions
 
 ### Consolidation/Refactor Task Success (UI Reorganization)
-**Added**: 2026-01-06 (the project Action Items Section)
+**Added**: 2026-01-06 (Action Items Section)
 **Success Factors**:
 - Task file included **exact code snippets** of what to move/replace (not just line numbers)
 - All clarification questions resolved in Agent 2 phase BEFORE execution:
   - "What should clicking do?" → Console log for MVP
   - "Show empty state or hide?" → Hide entirely
   - "Remove from filter bar?" → Yes, single source of truth
-- Technical Discovery identified **existing pattern to reuse** (ChevronRight hover animation from ModuleGridCard)
+- Technical Discovery identified **existing pattern to reuse** (ChevronRight hover animation from [CardComponent])
 - Clear ASCII mockup of target UI in task file
 - Strategic alignment documented (Q2/Q3 sprint goals, Maeda's ORGANIZE law)
 
@@ -2137,11 +2137,11 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 5. Document strategic alignment (helps verify scope is correct)
 
 ### Command Palette / Search Integration Success
-**Added**: 2026-01-06 (the project Command+K Search)
+**Added**: 2026-01-06 (Command+K Search)
 **Success Factors**:
 - Technical Discovery verified shadcn command component existed in codebase
 - Custom hook pattern (useCommandShortcut) kept keyboard logic separate from UI
-- TanStack Router type-safe navigation required params syntax: `{ to: "/reports/$reportId", params: { reportId: "demo-report" } }`
+- TanStack Router type-safe navigation required params syntax: `{ to: "/[route]/$itemId", params: { itemId: "demo-item" } }`
 - Barrel exports (index.ts) for clean imports
 - User feedback incorporated quickly: header layout adjusted from center search to right-aligned
 
@@ -2155,9 +2155,9 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 5. Plan header layout with flexibility - user preferences vary on search positioning
 
 ### Visual Consistency Multi-Page Implementation
-**Added**: 2026-01-06 (the project Visual Consistency)
+**Added**: 2026-01-06 (Visual Consistency)
 **Success Factors**:
-- Plan documented exact CSS patterns from visual-style-brief.md ("Border-Grid/Rails" metaphor)
+- Plan documented exact CSS patterns from project design system docs ("Border-Grid/Rails" metaphor)
 - Agent 7 quick-fix workflow enabled rapid iteration on user feedback (4 fixes in one session)
 - Explicit file-by-file verification checklist in task file caught all changes needed
 - User screenshots identified issues that code review missed (blank canvas, styling mismatches)
@@ -2172,10 +2172,10 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 5. Request screenshots from user to catch visual issues code review misses
 
 ### Multi-Page Placeholder/Demo Flow Success
-**Added**: 2026-01-07 (the project User Journey Placeholder Pages)
+**Added**: 2026-01-07 (User Journey Placeholder Pages)
 **Success Factors**:
 - Reusable wrapper component (JourneyPage) reduced code duplication across 14+ pages
-- Content sourced directly from existing documentation files (user-flow-full.md, sprint-questions.md)
+- Content sourced directly from existing documentation files (user flow docs, planning docs)
 - Workshop context pages (0a/0b/0c) set meeting agenda before diving into user journey
 - Badge system (Sprint 1 green, Future gray, Workshop purple, Built blue) clearly communicated scope
 - Back/Next navigation integrated into AppHeader actions slot
@@ -2191,9 +2191,9 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 5. Provide index/overview page for non-linear navigation during workshops
 
 ### Design Simplification with A/B Comparison Success
-**Added**: 2026-01-07 (the project Report Overview V2 Maeda Simplification)
+**Added**: 2026-01-07 (Report Overview V2 Maeda Simplification)
 **Success Factors**:
-- New route (`/reports/demo-report-2`) preserved original for A/B comparison
+- New route (`/[route]/[item]-2`) preserved original for A/B comparison
 - Gemini 3 Pro consultation provided specific CSS patterns for each Maeda law application
 - Dependencies (tooltip, popover) identified and installed in Discovery phase
 - V2 components named with `-v2.tsx` suffix for clear differentiation
@@ -2210,20 +2210,20 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 
 ### Multi-Pattern Component Implementation Success
 **Added**: 2026-01-08
-**Context**: Module Detail screen implementing 5 Airtable patterns with 8 new components
+**Context**: Detail screen implementing 5 reference app patterns with 8 new components
 **Success Factors**:
 1. **Visual pattern specifications with ASCII wireframes** — Task file included detailed wireframes for each pattern (Pattern 1: AI Insights, Pattern 4: Feasibility Ratings, Pattern 5: Card-based AI)
-2. **Consistency checklist in task file** — Agent 2 added explicit checklist: sharp corners, border-based depth, INSIGHT_CONFIG colors, p-6 card padding, existing component imports
-3. **Component implementation priority order** — Task specified build order: DotRating → AssessmentGrid → ContributingFactors → FindingCard → QuestionCard → differentiators
-4. **Code pattern documentation** — EvidenceDrawer integration pattern included with state management code snippets
+2. **Consistency checklist in task file** — Agent 2 added explicit checklist: sharp corners, border-based depth, CARD_TYPE_CONFIG colors, p-6 card padding, existing component imports
+3. **Component implementation priority order** — Task specified build order: [RatingComponent] → [GridComponent] → [FactorsComponent] → [CardComponent] → [QuestionComponent] → differentiators
+4. **Code pattern documentation** — [DrawerComponent] integration pattern included with state management code snippets
 5. **Tailwind class mapping table** — Visual Reference Analysis mapped UI elements to exact Tailwind classes
 
-**Key Insight**: For tasks implementing multiple visual patterns from external inspiration (Airtable), include:
+**Key Insight**: For tasks implementing multiple visual patterns from external inspiration (reference app), include:
 - ASCII wireframes showing structure (NOT exact CSS — wireframes are layout, not styling)
 - Exact Tailwind class mappings for each UI element
 - Component build order with dependencies
 - Consistency checklist against existing design language
-- Integration patterns with existing components (EvidenceDrawer, InsightCard Accordion)
+- Integration patterns with existing components ([DrawerComponent], [CardComponent] Accordion)
 
 **Pattern for Multi-Pattern Tasks**:
 1. Document each pattern with ASCII wireframe for STRUCTURE
@@ -2257,7 +2257,7 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 
 ### Two-Level UI Layout Consistency
 **Added**: 2026-01-08
-**Context**: Processing View Refinements - TraceTree terminal box was full width while Level 1 cards used max-w-5xl
+**Context**: Processing View Refinements - [TreeComponent] terminal box was full width while Level 1 cards used max-w-5xl
 **Problem**: User had to clarify whether terminal box should be full width or match the constrained layout of content above
 **Solution**: Apply consistent `max-w-5xl mx-auto` wrapper to multi-level UI sections for cohesive column alignment
 **Prevention**: When designing multi-level UIs, explicitly specify whether each level should use the same width constraint or have different widths. Default to matching the primary content width for visual cohesion.
@@ -2296,15 +2296,15 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 **Example**:
 ```typescript
 // ❌ Wrong - token-level costs don't match research workflow scale
-{ label: 'research_orchestration', tokens: 920000, cost: 0.58 }
+{ label: 'workflow_orchestration', tokens: 920000, cost: 0.58 }
 
 // ✅ Correct - costs scaled for realistic research workflow (~$100 total)
-{ label: 'research_orchestration', tokens: 81060400, cost: 102.08 }
+{ label: 'workflow_orchestration', tokens: 81060400, cost: 102.08 }
 ```
 
 ### Two-Tier Form Implementation Success
 **Added**: 2026-01-08
-**Context**: Onboarding Two-Tier Design implementation (Tier 1: Quick Start + Tier 2: Customize Your Research)
+**Context**: Onboarding Two-Tier Design implementation (Tier 1: Quick Start + Tier 2: Customize Your Settings)
 **Success Factors**:
 1. **Agent 2 Review** identified missing Select component (shadcn) before execution, preventing install-during-build issues
 2. **Agent 3 Discovery** verified design language consistency — flagged using plain `div` instead of shadcn Card component to maintain sharp corners
@@ -2330,9 +2330,9 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 - Metrics embedded on cards (tokens, cost, time saved) — shows differentiation without explaining
 - "How" button expands unified dark "Control Center" panel with stats + full trace
 - Selected card transitions to dark theme, visually connecting to expanded panel
-- TraceTree component reused from Processing View for technical execution details
-- Connected grid borders (`border-l border-t` on grid, `border-b border-r` on cards) per ModuleGridCard pattern
-- File headers document design rationale (e.g., "Clean, minimal design with neutral colors like Attio reference")
+- [TreeComponent] component reused from Processing View for technical execution details
+- Connected grid borders (`border-l border-t` on grid, `border-b border-r` on cards) per [CardComponent] pattern
+- File headers document design rationale (e.g., "Clean, minimal design with neutral colors like reference app")
 
 **Key Insight**: For landing pages showing "value before signup", the pattern of (clean CTA → feature cards with metrics → expandable technical depth) works well. The key is making the technical depth OPTIONAL via progressive disclosure, not mandatory viewing.
 
@@ -2346,7 +2346,7 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 
 ### Text Selection Tooltip / Browser API Integration Success
 **Added**: 2026-01-09
-**Context**: Evidence Drawer Text Selection Tooltip — implementing ChatGPT-style text selection pattern
+**Context**: Detail drawer text selection tooltip — implementing ChatGPT-style text selection pattern
 **Success Factors**:
 1. **Agent 2 caught styling inconsistency early** — Original plan suggested `rounded-lg + shadow-sm`, but review with AI Studio MCP found codebase uses `rounded-md + shadow-md` for interactive floating elements (Popover pattern)
 2. **Agent 3 verified design language against actual code** — Read real component files (popover.tsx, button.tsx, tooltip.tsx) to confirm styling patterns
@@ -2366,15 +2366,15 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 
 ### Maeda Radical Card Simplification Success
 **Added**: 2026-01-15
-**Context**: Module Detail Card Simplification — applying Maeda's Laws across FindingCard, QuestionCard, LimitationsSection
+**Context**: Detail card simplification — applying Maeda's Laws across [CardComponent], [QuestionComponent], LimitationsSection
 **Success Factors**:
-1. **Single reference pattern identified** — InsightCard provided exact Maeda Radical layout to replicate (dot + title + timeframe + chevron)
-2. **INSIGHT_CONFIG reuse** — Used existing config for dotColor, borderColor, labelColor consistency across all card types
+1. **Single reference pattern identified** — [CardComponent] provided exact Maeda Radical layout to replicate (dot + title + timeframe + chevron)
+2. **CARD_TYPE_CONFIG reuse** — Used existing config for dotColor, borderColor, labelColor consistency across all card types
 3. **TIME_HORIZON_LABELS lookup** — Converted numeric ratings (1-5) to human-readable strings without duplicating data
-4. **Container pattern fix** — QuestionCard changed from full border to border-l-4 pattern to match FindingCard
+4. **Container pattern fix** — [QuestionComponent] changed from full border to border-l-4 pattern to match [CardComponent]
 5. **LimitationsSection streamlined** — Section-level count replaced per-item badges (Maeda REDUCE)
 
-**Key Insight**: When simplifying multiple related components, identify ONE reference component (InsightCard) and systematically replicate its exact pattern to all others. Use existing config objects (INSIGHT_CONFIG) for color consistency.
+**Key Insight**: When simplifying multiple related components, identify ONE reference component ([CardComponent]) and systematically replicate its exact pattern to all others. Use existing config objects (CARD_TYPE_CONFIG) for color consistency.
 
 **Pattern for Card Simplification Tasks**:
 1. Identify the best existing implementation as reference pattern
@@ -2388,10 +2388,10 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 **Context**: Structure Preview Research Summary — passing form data between pages
 **Success Factors**:
 1. **First validateSearch usage in codebase** — Established pattern for future search param validation
-2. **Type-safe search params** — Interface for url/companyName/fileNames with undefined handling
-3. **Smart fallbacks** — `displayCompanyName` from search params OR 'Stripe' fallback for demo
+2. **Type-safe search params** — Interface for url/name/fileNames with undefined handling
+3. **Smart fallbacks** — `displayName` from search params OR hardcoded fallback for demo
 4. **Edge case handling** — Component gracefully handles all combinations (0 docs, no URL, both, neither)
-5. **Navigation preservation** — "Add more documents" navigates back to /reports/new with params preserved
+5. **Navigation preservation** — "Add more documents" navigates back to the previous form page with params preserved
 
 **Key Insight**: TanStack Router's `validateSearch` + `Route.useSearch()` pattern is cleaner than URL query strings for passing structured data between pages. Great for multi-step flows where previous form data needs to be displayed.
 
@@ -2497,7 +2497,7 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 
 ### Viewport-Height Layouts in Nested Router Outlets
 **Added**: 2026-01-15
-**Context**: Chat with Diligence — full-page chat input wouldn't anchor to viewport bottom despite using `h-full` and `min-h-full`
+**Context**: Full-page chat layout — chat input wouldn't anchor to viewport bottom despite using `h-full` and `min-h-full`
 **Problem**: TanStack Router's parent layout wraps `<Outlet />` in a scrollable container (`overflow-y-auto`) without explicit height propagation. Child routes using `h-full` or `min-h-full` don't fill the viewport because the parent `<main>` has no defined height — children try to be "100% of undefined".
 **Solution**: Use `min-h-[calc(100vh-Xpx)]` where X is the header height to explicitly set viewport-relative height. Also use negative margins (`-mx-8`) to counteract parent padding if needed for edge-to-edge layouts.
 **Prevention**:
@@ -2530,9 +2530,9 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 **Added**: 2026-01-15
 **Context**: Processing View Mobile Responsive — implementing mobile layout for processing page following structure-preview mobile pattern
 **Success Factors**:
-1. **Reference completed task** — Reading `agents/done/structure-preview-mobile-responsive.md` provided proven template with exact patterns
+1. **Reference completed task** — Reading a completed task file from the done folder provided proven template with exact patterns
 2. **Plan included exact line numbers** — Agent 2 verified line numbers against actual source code (341, 343, 502)
-3. **Explicit differentiation documented** — Plan clearly stated WHY ProcessingGraphOverlay differs from GraphOverlay (no auto-close, progress metrics)
+3. **Explicit differentiation documented** — Plan clearly stated WHY the new overlay component differs from the existing one (no auto-close, progress metrics)
 4. **Learnings applied proactively** — Mobile flex-column, paired button styling patterns from learnings.md used without prompting
 5. **Single iteration through all agents** — No rework needed, 9/10 visual score on first verification
 6. **New component justified** — Option A vs Option B analysis with clear recommendation and reasoning
@@ -2540,7 +2540,7 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 **Key Insight**: When implementing a feature similar to one already completed, read the completed task file as a template. The combination of (proven pattern + explicit differences + applied learnings) leads to zero-iteration implementation.
 
 **Pattern for Similar Feature Tasks**:
-1. Search `agents/done/` for completed tasks with similar requirements
+1. Search the completed tasks folder for tasks with similar requirements
 2. Read the full completed task file including Implementation Notes
 3. Create new plan following the same structure, explicitly documenting differences
 4. Reference learnings.md for patterns that apply
@@ -2603,12 +2603,12 @@ function IssuesFlowVisualization({ className }: { className?: string }) {
 
 ### isFullBleed Layout Pattern for Canvas Views
 **Added**: 2026-01-29
-**Context**: Rename Research Process to Research Nodes — needed full-viewport DAG canvas without AppHeader
+**Context**: Converting a page to full-bleed canvas — needed full-viewport DAG canvas without AppHeader
 **Success Factors**:
-1. **Agent 2 critical correction** — Caught the plan to modify shared IssuesFlowVisualization component (used by 4 consumers) and redirected to className override pattern
-2. **Layout-level extensibility** — `isFullBleed` flag in parent layout ($reportId.tsx) conditionally hides AppHeader and adds floating SidebarTrigger, reusable for any future canvas view
+1. **Agent 2 critical correction** — Caught the plan to modify shared [GraphComponent] component (used by 4 consumers) and redirected to className override pattern
+2. **Layout-level extensibility** — `isFullBleed` flag in parent layout ([parent-layout].tsx) conditionally hides AppHeader and adds floating SidebarTrigger, reusable for any future canvas view
 3. **Minimal file changes** — Only 3 files modified (sidebar label, page component, parent layout) for a complete UX transformation
-4. **User research driven** — Direct quote from user testing (Jeremy, Fireflies 09:18) justified the change from process explanation to navigation tool
+4. **User research driven** — Direct quote from user testing justified the change from process explanation to navigation tool
 
 **Key Insight**: When converting a content page to a canvas/graph navigation view, the changes are primarily about removing framing chrome and adjusting layout constraints, not rebuilding the underlying visualization. The `isFullBleed` pattern makes this a reusable layout strategy.
 
