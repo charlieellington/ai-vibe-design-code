@@ -14,6 +14,7 @@ kanban-plugin: board
 
 ## 📝 Planning (Design-1)
 
+- [ ] Add Collapsible Evidence, Case Studies & Credentials Section to TBLA Proposal
 
 
 ## 🔍 Review (Design-2)
@@ -33,6 +34,7 @@ kanban-plugin: board
 
 ## 🧪 Testing (Manual)
 
+- [ ] Create Proposal Page: TBLA — Practice Intelligence Dashboard
 
 
 ## 👁️ Visual Verification (Design-5)
