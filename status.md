@@ -15,6 +15,7 @@ kanban-plugin: board
 ## 📝 Planning (Design-1)
 
 - [ ] Add Collapsible Evidence, Case Studies & Credentials Section to TBLA Proposal
+- [ ] Create TBLA Onboarding Flow
 
 
 ## 🔍 Review (Design-2)
