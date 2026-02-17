@@ -29,12 +29,15 @@ kanban-plugin: board
 ## 🚀 Ready to Execute (Design-4 Queue)
 
 
+
 ## 🛠️ Execution (Design-4)
 
 
 
 ## 🧪 Testing (Manual)
 
+- [ ] Redesign About Page — Personal Narrative with Card Format
+- [ ] Restyle Work-With-Me Page to Match Landing Page Visual Style
 - [ ] Create Proposal Page: TBLA — Practice Intelligence Dashboard
 
 
