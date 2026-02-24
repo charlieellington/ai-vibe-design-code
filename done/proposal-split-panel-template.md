@@ -113,7 +113,7 @@ The previous version turned the right panel into a second contract — repeating
 - Case study cards follow the dark/light card pattern from the homepage
 - Browser chrome mockup pattern for showing work samples
 
-**Note for Review + Execution Stages**: Before or during execution, run all 6 reference images through Gemini analysis (`mcp__aistudio__generate_content` with model `gemini-3-pro-preview`) to extract specific spacing values, colour codes, typography sizes, and component patterns.
+**Note for Review + Execution Stages**: Before or during execution, run all 6 reference images through Gemini analysis (`mcp__aistudio__generate_content` with model `gemini-3.1-pro-preview`) to extract specific spacing values, colour codes, typography sizes, and component patterns.
 
 **Primary Code References for Visual Consistency**:
 - **`zebra-design/`** (submodule) — the production codebase for zebradesign.io. The **landing page** (`app/page.tsx` or equivalent) is the gold-standard design. Read this code to extract exact Tailwind classes, spacing values, typography scale, colour tokens, card patterns, gradient implementation, and component structure. Do not guess from screenshots — match the actual code.
@@ -698,7 +698,7 @@ None. The 4-perspective analysis resolved the key tension: RT proposal content (
 - `app/page.tsx` in this app (sprint.zebradesign.io) — extract the calendar landing page's design language. The proposal must feel like a sibling to this page.
 
 **2. Analyse reference images (SECONDARY — for patterns not obvious in code):**
-- Run all 6 reference screenshots through `mcp__aistudio__generate_content` with model `gemini-3-pro-preview`
+- Run all 6 reference screenshots through `mcp__aistudio__generate_content` with model `gemini-3.1-pro-preview`
 - Extract: sidebar proportions (endless.design), content density, visual rhythm, CTA placement patterns
 
 Code is the source of truth. Screenshots confirm the intent. Together they ensure production quality.

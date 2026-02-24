@@ -131,7 +131,7 @@ mcp__aistudio__generate_content({
     { path: "screenshots/existing-card.png" },     // Visual reference
     { path: "docs/design-system.md" },             // Brand guidelines
   ],
-  model: "gemini-3-pro-preview"  // Default model - check tool schema for current options
+  model: "gemini-3.1-pro-preview"  // Default model - check tool schema for current options
 })
 ```
 
@@ -159,7 +159,7 @@ mcp__aistudio__generate_content({
     { path: "screenshots/implementation-v1.png" },
     { path: "reference/design-direction.png" },
   ],
-  model: "gemini-3-pro-preview"  // Default model - check tool schema for current options
+  model: "gemini-3.1-pro-preview"  // Default model - check tool schema for current options
 })
 ```
 

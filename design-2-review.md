@@ -277,7 +277,7 @@ ANALYZE AND PROVIDE:
     // ⚠️ DO NOT include .md files - they cause MIME type errors
     // Instead: Embed relevant code snippets in user_prompt above
   ],
-  model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
+  model: "gemini-3.1-pro-preview"  // NOTE: Use this exact model ID
 })
 ```
 
@@ -367,7 +367,7 @@ After using AI Studio MCP, include in your FINAL RESPONSE:
 Calls Made: [number]
 Purpose: [e.g., "Analyzed 3 reference images for layout direction"]
 Files Included: [number of reference files]
-Model: gemini-3-pro-preview
+Model: gemini-3.1-pro-preview
 ```
 
 **When NO reference images in task**: Skip this section entirely and note:
@@ -385,12 +385,12 @@ Model: gemini-3-pro-preview
 ❌ AI STUDIO MCP ERROR — PROCESS HALTED
 
 Error: [full error message]
-Model attempted: gemini-3-pro-preview
+Model attempted: gemini-3.1-pro-preview
 Files attempted: [list files that were sent]
 
 ACTION REQUIRED: Cannot proceed with visual reference analysis.
 Please check:
-- Model name is correct (gemini-3-pro-preview)
+- Model name is correct (gemini-3.1-pro-preview)
 - API key is configured
 - Files exist at specified paths
 - No .tsx, .ts, or .md files were included (these cause errors)

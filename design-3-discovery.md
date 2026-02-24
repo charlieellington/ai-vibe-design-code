@@ -296,7 +296,7 @@ Do NOT approve if there are ANY design language conflicts.`,
     // ⚠️ DO NOT include .md files - they cause MIME type errors
     // Instead: Read code files separately and embed relevant snippets in user_prompt
   ],
-  model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
+  model: "gemini-3.1-pro-preview"  // NOTE: Use this exact model ID
 })
 ```
 

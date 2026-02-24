@@ -326,7 +326,7 @@ For each issue found, provide:
 - What's already working well (keep these)
 
 Be specific and actionable. No vague suggestions.`,
-  model: "gemini-3-pro-preview"
+  model: "gemini-3.1-pro-preview"
 })
 
 // 4. Gemini MCP: UX Simplicity (Maeda Laws — USER perspective only)
@@ -415,7 +415,7 @@ For each recommendation:
 - User Simplicity Score: [1-10]
 - Top 3 UX simplifications
 - What to PRESERVE (don't touch)`,
-  model: "gemini-3-pro-preview"
+  model: "gemini-3.1-pro-preview"
 })
 ```
 
@@ -595,7 +595,7 @@ Edit({
 
 ## Gemini Error Handling (CRITICAL)
 
-**Model Required:** `gemini-3-pro-preview` — NO SUBSTITUTES
+**Model Required:** `gemini-3.1-pro-preview` — NO SUBSTITUTES
 
 ### If Either Gemini MCP Call Fails:
 
@@ -603,7 +603,7 @@ Edit({
 IF mcp__aistudio__generate_content returns ANY error:
 
 1. **ATTEMPT TO FIX** (try these in order):
-   - Check model name is exactly "gemini-3-pro-preview"
+   - Check model name is exactly "gemini-3.1-pro-preview"
    - Verify no .tsx/.ts/.md files in the files array
    - Reduce prompt size if very long
    - Retry once after 5 seconds

@@ -194,7 +194,7 @@ Be strict. Do NOT approve mismatches.`,
     // ⚠️ DO NOT include .md files - they cause MIME type errors
     // Instead: Read code files separately and embed relevant snippets in user_prompt
   ],
-  model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
+  model: "gemini-3.1-pro-preview"  // NOTE: Use this exact model ID
 })
 ```
 
@@ -391,7 +391,7 @@ REUSE existing components - do not create new ones if they already exist.`,
     // ⚠️ DO NOT include .md files - they cause MIME type errors
     // Instead: Read code files separately and embed relevant CSS patterns in the user_prompt above
   ],
-  model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
+  model: "gemini-3.1-pro-preview"  // NOTE: Use this exact model ID
 })
 ```
 
@@ -431,7 +431,7 @@ mcp__aistudio__generate_content({
   - [specific change 1]
   - [specific change 2]
   Keep all other aspects the same.`,
-  model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
+  model: "gemini-3.1-pro-preview"  // NOTE: Use this exact model ID
 })
 ```
 
@@ -616,7 +616,7 @@ List specific issues if any.`,
     // Include reference if available
     { path: "reference/design-direction.png" },
   ],
-  model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
+  model: "gemini-3.1-pro-preview"  // NOTE: Use this exact model ID
 })
 ```
 

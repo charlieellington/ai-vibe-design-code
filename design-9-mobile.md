@@ -21,7 +21,7 @@ You take mobile screenshots (or capture them from routes), analyze what's broken
 
 ## 🚨🚨🚨 MANDATORY: Gemini Pro 3 Calls — Non-Negotiable
 
-**You MUST call `mcp__aistudio__generate_content` with `model: "gemini-3-pro-preview"` at TWO points:**
+**You MUST call `mcp__aistudio__generate_content` with `model: "gemini-3.1-pro-preview"` at TWO points:**
 
 1. **Step 2 — Initial Analysis**: Send each screenshot to Gemini for UX analysis BEFORE writing any code
 2. **Step 6 — Visual Verification**: Send before/after/desktop screenshots to Gemini AFTER applying fixes
@@ -179,7 +179,7 @@ Be specific. Include exact class names.`,
   files: [
     { path: "[full-path-to-screenshot]" }
   ],
-  model: "gemini-3-pro-preview"
+  model: "gemini-3.1-pro-preview"
 })
 
 // 2. Find the code responsible (search codebase)
@@ -243,7 +243,7 @@ Grep({ pattern: "[component-name-from-screenshot]", path: "." })
 ```markdown
 ## Pre-Execution Gate
 
-- [ ] Called `mcp__aistudio__generate_content` with `model: "gemini-3-pro-preview"` for EACH screenshot?
+- [ ] Called `mcp__aistudio__generate_content` with `model: "gemini-3.1-pro-preview"` for EACH screenshot?
   - If YES → proceed
   - If NO and Gemini FAILED with an error → document the error, proceed with Claude-only
   - If NO and you simply FORGOT → STOP. Go back to Step 2. Make the call now.
@@ -323,7 +323,7 @@ VERIFY:
     { path: ".playwright-mcp/mobile-[route-slug]-after.png" },
     { path: ".playwright-mcp/desktop-[route-slug]-after.png" }
   ],
-  model: "gemini-3-pro-preview"
+  model: "gemini-3.1-pro-preview"
 })
 ```
 
@@ -493,7 +493,7 @@ Output:
 
 ## 🤖 Gemini Pro 3 via AI Studio MCP (MANDATORY — READ THIS CAREFULLY)
 
-**Model Required**: `gemini-3-pro-preview` — **NO SUBSTITUTES**
+**Model Required**: `gemini-3.1-pro-preview` — **NO SUBSTITUTES**
 
 All visual analysis MUST use Gemini Pro 3 via AI Studio MCP:
 - Initial screenshot analysis (Step 2)
@@ -526,7 +526,7 @@ The only acceptable reason to skip is a FAILED call with an ERROR message.
 IF mcp__aistudio__generate_content fails WITH AN ACTUAL ERROR:
 
 1. **ATTEMPT TO FIX** (try in order):
-   - Verify model name is exactly "gemini-3-pro-preview"
+   - Verify model name is exactly "gemini-3.1-pro-preview"
    - Check file paths are correct and files exist
    - Reduce prompt size if very long
    - Retry once after 3 seconds
@@ -629,7 +629,7 @@ All changes use md: prefixes
 
 ## Remember
 
-- **CALL GEMINI FIRST** — `mcp__aistudio__generate_content` with `model: "gemini-3-pro-preview"` BEFORE any code edits
+- **CALL GEMINI FIRST** — `mcp__aistudio__generate_content` with `model: "gemini-3.1-pro-preview"` BEFORE any code edits
 - **CALL GEMINI AFTER** — send before/after screenshots to Gemini BEFORE writing the summary
 - **Visual verification is MANDATORY** — always capture before/after screenshots
 - **Mobile-first Tailwind** — unprefixed classes are mobile, add `md:` for desktop

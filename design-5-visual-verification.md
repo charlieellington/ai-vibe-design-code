@@ -201,7 +201,7 @@ PROVIDE:
     // New implementation CODE (to check for inconsistent CSS)
     { path: "[path-to-new-component].tsx" },
   ],
-  model: "gemini-3-pro-preview"  // NOTE: Use this exact model ID
+  model: "gemini-3.1-pro-preview"  // NOTE: Use this exact model ID
 })
 ```
 
@@ -407,7 +407,7 @@ mcp__aistudio__generate_content({
     // SECONDARY: Design spec (30% weight)
     { path: "[path-to-project-context-or-design-system-docs]" }
   ],
-  model: "gemini-3-pro-preview"
+  model: "gemini-3.1-pro-preview"
 })
 ```
 
