@@ -158,6 +158,26 @@ You receive context from individual task file and **APPEND ONLY** your findings:
 - `mcp__magicuidesign__getAnimations` - Animation patterns (blur-fade, etc.)
 - `mcp__magicuidesign__getTextAnimations` - Text animation options
 
+### Dashboard & Data-Heavy Projects (check project-context.md)
+
+When the project is a data dashboard, expand discovery to include:
+
+**Data Layer Verification**:
+- Verify TanStack Table (or equivalent) is installed and check its API for planned table features
+- Check Supabase client setup — confirm query patterns, RLS policies, types generation
+- Verify data fetching patterns — React Query/SWR hooks, or direct Supabase client calls
+- Check existing TypeScript types for database tables and API responses
+
+**Data Component Patterns**:
+- Verify shadcn Table, DataTable, and related components (Badge, Progress, Skeleton)
+- Check for existing loading/empty/error state patterns in the codebase
+- Research TanStack Table column definitions, sorting, filtering, pagination APIs
+- Verify CSV parsing library availability (e.g., papaparse) if import features are planned
+
+**Chart/Visualisation Research** (if applicable):
+- Check for installed chart libraries (recharts, chart.js, etc.)
+- Verify compatibility with the project's React version and styling approach
+
 ### Project-Specific Libraries to Verify:
 Check `package.json` for project-specific libraries that need verification (e.g., React Flow, animation libraries, data-fetching tools, routing frameworks).
 

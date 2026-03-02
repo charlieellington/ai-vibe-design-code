@@ -25,6 +25,7 @@ You add motion design polish to completed implementations. Called AFTER Agent 4 
 - Simple form implementations
 - Bug fixes
 - Any work where animation isn't a key deliverable
+- **Data dashboards** — if `project-context.md` indicates a data dashboard, skip this agent entirely unless explicitly requested. Dashboard animation should be limited to functional transitions (loading spinners, skeleton→content, toast notifications) which are handled inline by Agent 4, not as a separate animation pass
 
 ---
 

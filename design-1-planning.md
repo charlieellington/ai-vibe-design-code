@@ -94,8 +94,19 @@ Example: `@design-1-planning.md create a new welcome card for onboarding`
 
 ---
 
-## 🎯 PROTOTYPE DEVELOPMENT CONTEXT
-**CRITICAL**: We are creating **FRONT-END ONLY PROTOTYPES**:
+## 🎯 DEVELOPMENT CONTEXT
+
+**Check `project-context.md` first** to determine the project type (prototype vs production, marketing vs dashboard).
+
+### If project-context.md says "Data Dashboard":
+- **This is a production tool**, not a prototype — real data, real users
+- **Data views need states**: loading (skeleton), empty (no data yet), error (API/import failure), populated
+- **Tables are primary UI** — plan sorting, filtering, search, pagination from the start
+- **No mock data in production paths** — only in tests
+- **Backend integration is part of scope** — Supabase queries, API calls, CSV parsing
+- **Information density over visual polish** — compact typography, status badges, minimal animation
+
+### If project-context.md says prototype (or no project-context.md):
 - **Reuse existing components** wherever possible from the app
 - **Preserve existing functionality/logic** if it doesn't break the prototype
 - **No full backend integration required** - backend engineer will handle later
@@ -112,6 +123,15 @@ When planning tasks, check `learnings.md` for relevant patterns in these areas:
 - **UI Additions**: Analyze space constraints and existing element priorities
 - **Mode-Dependent Features**: Analyze existing mode/tab systems
 - **Interactive Features**: Plan multiple discovery patterns and bidirectional workflows
+
+### Dashboard-Specific Planning Considerations
+
+When `project-context.md` indicates a data dashboard project:
+- **Data State Planning**: For every data view, plan all four states — loading, empty, error, populated
+- **Table Design**: Specify columns, sort defaults, filter options, and row actions up front
+- **Data Freshness**: Note whether data is live (API) or imported (CSV) and what "stale" looks like
+- **Import/Upload Flows**: Plan the full flow — file selection, parsing, validation, preview, confirmation, error handling
+- **Match/Reconciliation UI**: If cross-system matching is involved, plan confidence display and manual override flows
 
 ## Working Document Structure
 

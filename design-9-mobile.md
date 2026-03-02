@@ -77,6 +77,7 @@ http://localhost:[port]/dashboard: nav items cramped
 - Hidden overflow/scrolling issues
 - Element stacking/z-index on mobile
 - Mobile navigation/menu issues
+- **Data table mobile layouts** — tables with many columns should convert to card-based layouts on mobile, not just shrink. Consider hiding non-essential columns at mobile breakpoints, or using a stacked key-value layout per row
 
 ### ❌ OUT OF SCOPE — Escalate These
 - New features or functionality

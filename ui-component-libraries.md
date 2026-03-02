@@ -15,13 +15,18 @@ Reference document for design agents. Establishes the component library hierarch
 
 This is the foundation. Use shadcn/ui first for everything. Only look to other libraries when shadcn doesn't cover your specific need.
 
+### Tier 1b: Data Table Libraries (for dashboard projects)
+**URL**: https://tanstack.com/table
+
+**Use for**: Advanced table features beyond what shadcn Table provides — sorting, filtering, pagination, column visibility, row selection. Check `project-context.md` — if the project is a data dashboard, TanStack Table is a primary dependency alongside shadcn/ui.
+
 ### Tier 2: AI SDK Elements + React Flow
 **URLs**:
 - https://ai-sdk.dev/elements/examples/chatbot
 - https://ai-sdk.dev/elements/examples/workflow
 - https://reactflow.dev/
 
-**Use for**: AI-specific UI patterns that shadcn doesn't provide.
+**Use for**: AI-specific UI patterns that shadcn doesn't provide. **Note**: Check `project-context.md` — if the project is a data dashboard (not an AI product), Tier 2 is likely not needed.
 
 ### Tier 3: UI Particles (Supplementary)
 **Use for**: Specialized components when Tier 1 and Tier 2 don't cover the use case.
@@ -217,8 +222,12 @@ When reviewing a task plan:
 |----------------|---------------------|
 | Buttons, Cards, Forms | shadcn/ui (Tier 1) |
 | Tables, Data Display | shadcn/ui (Tier 1) |
+| Sortable/Filterable Data Tables | shadcn/ui Table + TanStack Table (Tier 1/1b) |
 | Navigation, Sidebar | shadcn/ui (Tier 1) |
 | Dialogs, Sheets | shadcn/ui (Tier 1) |
+| Status Indicators | shadcn/ui Badge + Progress (Tier 1) |
+| Loading States | shadcn/ui Skeleton (Tier 1) |
+| Notifications | shadcn/ui Toast + Alert (Tier 1) |
 | Chat Interface | AI SDK Elements Chatbot (Tier 2) |
 | Workflow/Node Graph | AI SDK Elements Workflow + React Flow (Tier 2) |
 | Citation/Source Panel | AI SDK Sources OR Tool-UI Citation (evaluate both) |
