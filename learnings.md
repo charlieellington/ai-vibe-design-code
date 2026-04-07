@@ -4,7 +4,7 @@ A categorized reference of patterns, debugging techniques, and lessons learned f
 
 **How to Use**: Search for keywords related to your current task. Check relevant categories before writing code.
 
-**Last Updated**: 2026-01-30 (Unified table — Discriminated Union for Multi-Type Tables, 4-Perspective UX Refinement Pipeline)
+**Last Updated**: 2026-04-02 (Service Catalogue Admin — Auth-Gated Visual Verification, Large Component Extraction Deferral)
 
 ---
 
@@ -263,6 +263,20 @@ Plan says:
 // ✅ Correct - verified against product documentation (6-8 hours processing)
 <span>~{category.estimatedDays} hours to complete</span>
 ```
+
+### Auth-Gated Pages Cannot Be Visually Verified via Playwright
+**Added**: 2026-04-02
+**Context**: Service Catalogue Admin (`/services`) requires Supabase authentication. Playwright headless browser cannot authenticate, so visual screenshots show the login/welcome page instead of the actual service catalogue.
+**Problem**: Agent 5 (Visual Verification) cannot complete the screenshot-based quality gate for authenticated routes. This was only discovered at verification time, causing an incomplete visual score (8/10 with -2 deduction).
+**Solution**: For auth-gated pages, rely on code-level CSS pattern matching (cross-referencing exact class strings against existing verified pages) + AI Studio MCP consistency analysis + manual user confirmation. Document the auth limitation explicitly rather than blocking.
+**Prevention**: Agent 1 (Planning) should flag auth-gated routes in the task file during planning. Agent 5 should check route auth requirements before attempting Playwright screenshots. For auth-gated pages, the code-level verification pass becomes the primary quality gate, with manual user confirmation as the secondary gate.
+
+### Large Component Files — Defer Extraction Until Second Usage
+**Added**: 2026-04-02
+**Context**: `service-catalogue.tsx` reached 693 lines — well above the 250-line guideline. Contains inline `EditableCell`, `AddServiceForm`, and `CategoryGroup` patterns that could be extracted.
+**Problem**: Extracting components during initial implementation adds risk (breaking changes, prop threading) when the patterns have only one usage. The 250-line guideline exists for maintainability, but premature extraction can create unnecessary abstraction.
+**Solution**: Document extraction candidates in the task completion notes but defer extraction until either (a) a second page needs the same pattern, or (b) a dedicated refactor pass is scheduled. Flag the file size as a known issue.
+**Prevention**: When a component file exceeds 250 lines during initial implementation, document the extraction candidates but only extract if there is a clear second consumer. Add the refactor as a backlog item.
 
 ---
 
@@ -1732,6 +1746,20 @@ max-h-0 → max-h-20 + overflow-hidden
 - **Markdown files**: Embed content directly in `user_prompt` text ❌ (don't attach)
 **Prevention**: When calling AI Studio MCP, never include .md files in the `files` array. Read the markdown content and include it as text in the prompt instead.
 
+### Prefer Computed Aging Over Stored Columns
+**Added**: 2026-03-03
+**Context**: Debts view used stored `is_overdue` and `days_overdue` from an external accounting API import, but `get_billing_summary()` (migration 013) used computed `CURRENT_DATE - due_on::date`.
+**Problem**: Stored aging columns are only as fresh as the last data import. Two SQL functions computing the same concept differently causes inconsistency.
+**Solution**: Use `CURRENT_DATE - fb.due_on::date` in SQL for always-fresh aging. Match this client-side with `daysSinceDue()` from the shared utility.
+**Prevention**: When writing SQL that involves aging/overdue calculations, always use `CURRENT_DATE - date_column::date` instead of relying on stored `days_overdue` or `is_overdue` columns. Check existing migrations for the established pattern.
+
+### Shared Status Utilities Prevent Drift
+**Added**: 2026-03-03
+**Context**: Debts view expanded rows used a local `STATUS_STYLE` map for invoice statuses while the rest of the dashboard used `invoice-status.ts`.
+**Problem**: Local status maps (overdue=red, paid=green, open=default) diverge from the shared 3-tier system (outstanding/overdue/aged-debt with amber/rose). New pages built separately can easily miss shared utilities.
+**Solution**: Always check for existing shared utilities before creating local status/style maps. Import from `@/lib/invoice-status` for all invoice tier rendering.
+**Prevention**: Agent 4 should grep for existing status/style utilities (`invoice-status`, `DEBT_TIER_STYLES`, `STATUS_LABELS`) before defining any local status rendering maps. If a shared utility exists, use it.
+
 ### React Flow Height Requirements
 **Added**: 2026-01-06
 **Context**: Visual Consistency task - workflow canvas showing blank on Orchestration, Agents, Synthesis phases
@@ -2010,6 +2038,29 @@ function [GraphComponent]({ className }: { className?: string }) {
 **Problem**: Two files need the same category-to-section ID mapping. Duplicating violates DRY.
 **Solution**: Export the existing mapping constant from the component file. Single source of truth, zero duplication.
 **Prevention**: When a constant is used by a component AND its parent for related logic, export it from the component file rather than duplicating.
+
+### Service Catalogue Admin — Full Pipeline with Code-Level Verification Fallback
+**Added**: 2026-04-02
+**Context**: Admin table page (`/services`) with inline editing, CRUD operations, and search. Auth-gated route required code-level verification instead of visual screenshots.
+**Success Factors**:
+- Agent 2 UX refinement produced 8 high-confidence simplifications (flat list over accordions, single add button, inline inactive dimming) that all perspectives agreed on — zero debate
+- Agent 3 verified all 8 shadcn components pre-installed, all table/page CSS patterns exact matches — zero blockers at execution time
+- Agent 4 produced clean TypeScript + Vite build on first pass (17.57s, zero errors)
+- Agent 5 adapted to auth limitation by performing exhaustive code-level CSS comparison (12 pattern categories, all exact matches) and AI Studio MCP consistency analysis (10/10 score)
+- Existing GET API was extended (not replaced) with `?all=true` param — proposal wizard unchanged, backward compatible
+- All 14 acceptance criteria addressed in implementation
+**Key Insight**: When a page closely follows established dashboard patterns (same table wrapper, headers, search, buttons), code-level CSS verification is nearly as reliable as visual verification. The 1:1 class string comparison across 12 pattern categories provides high confidence even without screenshots.
+
+### Debts View — Full Pipeline with Post-Build Consistency Audit
+**Added**: 2026-03-03
+**Context**: Complex data-heavy page (/debts) with RPC function, lazy-loaded expanded rows, sort presets, CSV export — followed by a cross-page consistency audit for the 3-tier invoice status system.
+**Success Factors**:
+- Agent 2 caught 3 key issues upfront: supabase.ts file size (648→split), SortableHead duplication, sort preset interaction conflict — all resolved before execution
+- Agent 3 verified all 10 shadcn components pre-installed, no new deps — zero blockers at execution time
+- Agent 4 produced clean TypeScript + Vite build on first pass, 10/10 visual verification
+- Post-build consistency audit identified 2 concrete drift issues (local STATUS_STYLE map, stored vs computed aging) and resolved both with targeted changes to 2 files
+- Splitting data-fetching into `supabase-debts.ts` kept the main `supabase.ts` from growing
+**Key Insight**: Post-build consistency audits are valuable when a shared utility (like invoice-status.ts) is introduced AFTER a page was built. The audit pattern — read the shared utility, compare with page code, fix divergences — is lightweight and high-impact.
 
 ### Domain Alignment — User Testing Evidence Drove Zero-Debate Decisions
 **Added**: 2026-01-29

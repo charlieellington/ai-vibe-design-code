@@ -14,8 +14,6 @@ kanban-plugin: board
 
 ## 📝 Planning (Design-1)
 
-- [ ] Add Collapsible Evidence, Case Studies & Credentials Section to TBLA Proposal
-- [ ] Create TBLA Onboarding Flow
 
 
 ## 🔍 Review (Design-2)
@@ -36,9 +34,6 @@ kanban-plugin: board
 
 ## 🧪 Testing (Manual)
 
-- [ ] Redesign About Page — Personal Narrative with Card Format
-- [ ] Restyle Work-With-Me Page to Match Landing Page Visual Style
-- [ ] Create Proposal Page: TBLA — Practice Intelligence Dashboard
 
 
 ## 👁️ Visual Verification (Design-5)

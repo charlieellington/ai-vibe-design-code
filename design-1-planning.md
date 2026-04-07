@@ -440,7 +440,7 @@ Please answer these before I complete the markdown plan.
 
 **Conductor Image Storage**:
 When user attaches images in Conductor, they are stored at:
-`/Users/charlieellington1/Library/Application Support/com.conductor.app/uploads/originals/[UUID].png`
+`~/Library/Application Support/com.conductor.app/uploads/originals/[UUID].png`
 
 **CRITICAL**: Capture the full path from the system instruction when images are attached.
 The path appears in format:
