@@ -39,12 +39,40 @@ Use these exact values. Don't invent new ones unless absolutely necessary.
 | **Stagger** | 0.08-0.1s | Creates rhythm without feeling slow |
 | **Ambient/loop** | 4-7s cycles | Varied per element to prevent sync |
 
+### Duration Tiers (by interaction type)
+
+| Type | Duration | Example |
+|------|----------|---------|
+| Feedback | 100-150ms | Button press, toggle, checkbox |
+| State change | 200-300ms | Accordion open, tab switch |
+| Layout shift | 300-500ms | Panel resize, card reorder |
+| Entrance | 500-800ms | Page section reveal, hero entry |
+| Exit | 75% of entrance | If entrance is 600ms, exit is 450ms |
+
 ### Anti-Patterns
 
 - ❌ Linear easing for UI elements
 - ❌ Slow fades (>500ms opacity transitions)
 - ❌ All elements animating at once (no stagger)
 - ❌ Same duration for all floating elements (they sync up)
+- ❌ CSS `ease` timing function — generic, use exponential curves (quart, quint, expo) for character
+- ❌ Bounce/elastic easing — almost always looks tacky and amateurish
+- ❌ Animating properties other than `transform` and `opacity` — causes layout thrash
+- ❌ Missing `prefers-reduced-motion` — mandatory accessibility requirement (~1/3 of older adults)
+
+### Height Animation (Without Layout Thrash)
+
+When animating height, avoid `max-height` hacks. Use CSS Grid:
+```css
+/* Collapsed */
+grid-template-rows: 0fr;
+
+/* Expanded */
+grid-template-rows: 1fr;
+
+/* With transition */
+transition: grid-template-rows 300ms cubic-bezier(0.16, 1, 0.3, 1);
+```
 
 ---
 

@@ -272,6 +272,18 @@ Scan existing components and the project's Tailwind config to determine establis
 - [ ] **Clean UI principle**: Professional, data-dense, not decorative
 - [ ] **Component patterns**: Shared components styled consistently across pages
 
+#### AI Slop Check (misc/ai-slop-checklist.md)
+
+Run through `misc/ai-slop-checklist.md` against each screenshot. Key quick checks:
+- [ ] **The Squint Test**: Blur your vision — can you immediately tell what's most important? If everything is the same visual weight, hierarchy is broken
+- [ ] **Font choice**: Not defaulting to overused AI-tell fonts (Inter, Roboto, Open Sans) without project justification
+- [ ] **No pure grays or pure black**: Neutrals should be tinted; dark backgrounds should be 12-18% lightness, not #000
+- [ ] **No decoration over function**: No gradient text, glassmorphism, or generic drop shadows unless design system mandates them
+- [ ] **Meaningful empty states**: Not just "No items" — should have context + next action
+- [ ] **Specific button labels**: Not "OK", "Submit", "Yes/No" — use verb + object ("Save changes", "Delete 5 items")
+
+**AI Slop Score**: Count tells present from the full checklist (0 = distinctive, 5+ = needs redesign). Include in quality assessment.
+
 ### Step 6: Functional Testing
 
 Use Playwright to test interactions:
