@@ -14,11 +14,11 @@ Which categories each agent should prioritize:
 
 | Agent | Primary Categories | Secondary Categories |
 |-------|-------------------|---------------------|
-| **Agent 1 (Planning)** | Workflow & Process, Interactions & UX | Layout & Positioning, Drag & Drop |
-| **Agent 2 (Review)** | All categories | Validation checkpoint - review all |
+| **Agent 1 (Planning)** | Workflow & Process, Interactions & UX, Design Quality | Layout & Positioning, Drag & Drop |
+| **Agent 2 (Review)** | All categories, misc/ai-slop-checklist.md | Validation checkpoint - review all |
 | **Agent 3 (Discovery)** | Component Patterns, Data & APIs | CSS & Styling, TypeScript Patterns |
-| **Agent 4 (Execution)** | CSS & Styling, React Patterns | Component Patterns, Layout & Positioning |
-| **Agent 5 (Verification)** | Layout & Positioning, CSS & Styling | Animations, Component Patterns |
+| **Agent 4 (Execution)** | CSS & Styling, React Patterns, Design Quality | Component Patterns, Layout & Positioning |
+| **Agent 5 (Verification)** | Layout & Positioning, CSS & Styling, misc/ai-slop-checklist.md | Animations, Component Patterns |
 | **Agent 6 (Complete)** | Workflow & Process, Success Patterns | All categories (for learning capture) |
 | **Agent 7 (Quick Fix)** | All categories | Rapid iteration - check relevant |
 | **Agent 8 (Animation)** | Animations, motion-patterns.md | Component Patterns, React Patterns |
@@ -28,6 +28,7 @@ Which categories each agent should prioritize:
 ## Table of Contents
 
 1. [Workflow & Process](#workflow--process)
+1b. [Design Quality & Anti-AI-Slop](#design-quality--anti-ai-slop)
 2. [CSS & Styling](#css--styling)
 3. [React Patterns](#react-patterns)
 4. [Drag & Drop](#drag--drop)
@@ -277,6 +278,58 @@ Plan says:
 **Problem**: Extracting components during initial implementation adds risk (breaking changes, prop threading) when the patterns have only one usage. The 250-line guideline exists for maintainability, but premature extraction can create unnecessary abstraction.
 **Solution**: Document extraction candidates in the task completion notes but defer extraction until either (a) a second page needs the same pattern, or (b) a dedicated refactor pass is scheduled. Flag the file size as a known issue.
 **Prevention**: When a component file exceeds 250 lines during initial implementation, document the extraction candidates but only extract if there is a clear second consumer. Add the refactor as a backlog item.
+
+---
+
+## Design Quality & Anti-AI-Slop
+
+### AI Slop Checklist Reference
+**Added**: 2026-04-08
+**Context**: Adapted from Impeccable design quality system (github.com/pbakaus/impeccable)
+**Problem**: AI-generated UIs tend to look generically "AI-made" — overused fonts, pure grays, card grids, gradient text
+**Solution**: Reference `misc/ai-slop-checklist.md` during Agent 2 (Review) and Agent 5 (Verification)
+**Prevention**: Run the checklist before approving any implementation. Count AI tells — 0 is distinctive, 5+ needs redesign
+
+### Typography: Meaningful Type Scale
+**Added**: 2026-04-08
+**Context**: Impeccable design quality system
+**Problem**: AI agents default to incremental type scales (14/15/16px) that create no visual hierarchy
+**Solution**: Use a 5-tier type scale with meaningful contrast between levels. Readers should instantly feel the hierarchy. One typeface with varied weights often beats pairing two typefaces.
+**Prevention**:
+1. Verify type scale has distinct jumps, not incremental steps
+2. Prefer weight variation within one family over mixing families
+3. Use `clamp()` for marketing/hero text; fixed `rem` for app UI
+4. Enable OpenType features: `tabular-nums` for data tables, `diagonal-fractions` for stats
+
+### Color: OKLCH and Tinted Neutrals
+**Added**: 2026-04-08
+**Context**: Impeccable design quality system
+**Problem**: AI agents default to pure grays and HSL, which look flat and generic
+**Solution**: Use OKLCH color space (perceptually uniform) when building programmatic palettes. Tint neutrals with a tiny amount of brand hue (chroma ~0.01) instead of using pure grays. Follow the 60-30-10 rule: 60% neutral, 30% secondary surface, 10% accent.
+**Prevention**:
+1. Most apps need only one accent color — skip secondary/tertiary unless justified
+2. Never use gray text on colored backgrounds — use a shade of the background color
+3. Dark mode: 12-18% lightness backgrounds, never pure black (#000)
+4. Lighter surfaces create depth in dark mode, not shadows
+5. Separate primitive tokens (color values) from semantic tokens (roles)
+
+### Spatial Design: 4pt Base Unit
+**Added**: 2026-04-08
+**Context**: Impeccable design quality system
+**Problem**: 8pt grid systems are too coarse — you frequently need 12px gaps. AI agents use random spacing values.
+**Solution**: Use a 4pt base unit with scale: 4, 8, 12, 16, 24, 32, 48, 64, 96px. Use semantic token names (`--space-sm`) not raw pixel values.
+**Prevention**:
+1. Self-adjusting grids: `repeat(auto-fit, minmax(280px, 1fr))`
+2. Cards only when content is truly distinct — never nest cards in cards
+3. The Squint Test: blur your vision to verify visual hierarchy — if you can't tell what's important, the hierarchy is wrong
+4. Optical alignment: large text needs `-0.05em` negative margin adjustment to look visually aligned
+
+### Bold Aesthetic Direction
+**Added**: 2026-04-08
+**Context**: Impeccable design quality system — Context Gathering Protocol
+**Problem**: Without an intentional aesthetic direction, AI produces safe, generic output
+**Solution**: Before design work, establish target audience, use cases, and brand personality. Commit to a bold direction. "Bold maximalism and refined minimalism both work — the key is intentionality, not intensity."
+**Prevention**: Agent 1 (Planning) should document the aesthetic direction in the task file. If the project has no established direction, flag it for user input before proceeding.
 
 ---
 
@@ -2692,6 +2745,7 @@ When Agent 6 captures a new learning, add it to the appropriate category using t
 
 Categories to use:
 - Workflow & Process
+- Design Quality & Anti-AI-Slop
 - CSS & Styling
 - React Patterns
 - Drag & Drop
