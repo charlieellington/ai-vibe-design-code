@@ -34,6 +34,8 @@ kanban-plugin: board
 
 ## 🧪 Testing (Manual)
 
+- [x] [DC Landing Content — Reformat Tailark to DC](doing/dc-landing-content.md)
+
 
 
 ## 👁️ Visual Verification (Design-5)
@@ -41,6 +43,8 @@ kanban-plugin: board
 
 
 ## ✅ Complete (Design-6)
+
+- [x] [Landing Page Build — CPC Landing Page for Design Canvas](doing/landing-page-build.md)
 
 
 
