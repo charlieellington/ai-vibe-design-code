@@ -86,7 +86,28 @@ Pre-Implementation Checklist:
 - [ ] Learnings.md checked for relevant patterns
 - [ ] Acceptance criteria understood
 - [ ] No ambiguities in specification
+- [ ] design-system.md read; every token reference in the plan ({colors.*}, {typography.*}, {spacing.*}, {components.*}) resolves to a real token
+- [ ] Agent 3's lint result reviewed; any unresolved warnings/errors addressed in this implementation
 ```
+
+### 3b. Design System Token Contract
+
+**Source of truth**: `design-system.md` (DESIGN.md format) at the project root. The plan from Agent 1 references tokens by path; your job is to resolve those references to the actual YAML values and emit them as Tailwind classes / CSS values.
+
+**Resolution rule**:
+- `{colors.primary}` in the plan → look up `colors.primary` in `design-system.md` front matter → emit the corresponding Tailwind class or CSS variable
+- `{components.card-default}` → expand to the bundle of properties (`backgroundColor`, `textColor`, `rounded`, `padding`) defined under that component, each resolved against the primitives
+
+**If the plan references a token that does not exist in `design-system.md`**:
+1. STOP — do not invent the value
+2. Add the missing token to `design-system.md` (front matter + a one-line prose entry explaining intent)
+3. Re-run `npx -y @google/design.md@latest lint design-system.md` to confirm no contrast or reference issues
+4. Then proceed with implementation
+
+**Forbidden**:
+- Inlining hex codes that aren't traceable to a `design-system.md` token
+- Adding `rounded-lg` / `rounded-xl` literals when `{rounded.md}` exists — use the token
+- Silently introducing a new token without updating `design-system.md`
 
 ### 4. Task Classification (MANDATORY)
 

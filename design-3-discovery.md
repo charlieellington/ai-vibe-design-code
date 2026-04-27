@@ -73,6 +73,80 @@ Please check your MCP server configuration:
 
 **RATIONALE**: MCP tools are essential for accurate technical verification. Manual research may miss critical details that MCP tools provide (exact APIs, version compatibility, installation commands).
 
+## 📐 DESIGN.md Spec Sync & Lint (MANDATORY SECOND STEP)
+
+**Purpose**: Keep our local mirror of the upstream DESIGN.md spec current, then lint the project's `design-system.md` for broken token references and WCAG contrast failures. This is a deterministic gate that runs before any AI-based consistency checks — it catches issues without burning Gemini calls.
+
+### Step 1: Weekly upstream spec sync (silent auto-update)
+
+Run this block at the top of Discovery. It auto-pulls the latest spec + template from `google-labs-code/design.md` if it has been ≥7 days since the last sync. Notifies nothing, gates nothing, just keeps the local mirror fresh.
+
+```bash
+LAST_CHECK_FILE=".design-md-last-check"
+NOW=$(date +%s)
+AGE_DAYS=$([ -f "$LAST_CHECK_FILE" ] && echo $(( (NOW - $(cat "$LAST_CHECK_FILE")) / 86400 )) || echo 999)
+
+if [ "$AGE_DAYS" -ge 7 ]; then
+  # Mirror upstream spec for agent reference
+  gh api repos/google-labs-code/design.md/contents/docs/spec.md \
+    --jq '.content' | base64 -d > .design-md-spec.md 2>/dev/null || true
+
+  # Refresh the starter template (does NOT touch the project's design-system.md)
+  gh api repos/google-labs-code/design.md/contents/examples/paws-and-paths/DESIGN.md \
+    --jq '.content' | base64 -d > design-system.md.template.upstream 2>/dev/null || true
+
+  date +%s > "$LAST_CHECK_FILE"
+fi
+```
+
+**What this updates** (safe — agent flow artifacts only):
+- `.design-md-spec.md` — local cached copy of the upstream `docs/spec.md` for agent reference
+- `design-system.md.template.upstream` — fresh upstream example, kept alongside the curated `design-system.md.template` for diffing when the spec evolves
+
+**What this NEVER touches** (user data):
+- The project's actual `design-system.md` (its tokens and prose)
+- The curated `design-system.md.template` in this agents directory
+
+Both `.design-md-last-check` and `.design-md-spec.md` are gitignored (per-machine artifacts).
+
+### Step 2: Lint the project's design-system.md
+
+```bash
+# Verify design-system.md exists; if not, this is a blocking issue — return to Agent 1
+if [ ! -f "design-system.md" ]; then
+  echo "⛔ design-system.md missing. Agent 1 should generate it from design-system.md.template before Discovery proceeds."
+  exit 1
+fi
+
+# Lint with always-fresh CLI
+npx -y @google/design.md@latest lint design-system.md
+```
+
+**Lint failures are blocking**:
+- `severity: error` (broken token reference, malformed YAML) → return to Agent 1 for fix
+- `severity: warning` for contrast (e.g. text on background fails WCAG AA) → record in task file, fix during Execution
+- `severity: info` → log for awareness, no action
+
+Document the lint result in the task file:
+
+```markdown
+### DESIGN.md Lint Result (Agent 3)
+**Spec mirror age**: [X days since last upstream sync]
+**Lint summary**: [errors] errors, [warnings] warnings, [info] info findings
+
+**Findings requiring action**:
+- [path] — [message] → [resolution: fixed in Agent 4 / fixed in design-system.md / accepted]
+```
+
+### Step 3: Use design-system.md as the canonical token source
+
+For the rest of Discovery, when verifying that planned components use real tokens:
+- Read `design-system.md` first; do not re-derive tokens from `tailwind.config.*` or component files
+- Token references in the plan (`{colors.primary}`) must resolve against the YAML front matter
+- If the plan asks for a value that has no token, flag it as needing a `design-system.md` addition before Execution
+
+---
+
 ## Learnings Reference (MANDATORY CHECK)
 
 **BEFORE starting discovery**, scan `learnings.md` for relevant patterns:

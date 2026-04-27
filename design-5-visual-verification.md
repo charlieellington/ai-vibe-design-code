@@ -122,6 +122,47 @@ After screenshots complete, **read the images with the Read tool** to analyze th
 
 **Keep Playwright MCP for interactive testing** (Step 6: clicking buttons, filling forms, reading snapshots). Only use CLI for screenshots.
 
+### Step 3.5: DESIGN.md Token Regression Check (deterministic, runs before AI checks)
+
+**Purpose**: Detect accidental drift in `design-system.md` between the start of this task and now. Catches "someone changed `colors.primary` to fix one card and broke five others" without burning a Gemini call. Runs in seconds.
+
+```bash
+# Compare design-system.md at the task's starting commit against the current working tree
+TASK_BASE_REF=$(git merge-base HEAD origin/main 2>/dev/null || echo "HEAD~1")
+
+# Diff via the upstream CLI — outputs structured JSON
+npx -y @google/design.md@latest diff \
+  <(git show "$TASK_BASE_REF":design-system.md 2>/dev/null) \
+  design-system.md
+```
+
+**Expected output (no drift)**:
+```json
+{
+  "tokens": { "colors": { "added": [], "removed": [], "modified": [] }, ... },
+  "regression": false
+}
+```
+
+**If `regression: true` or any tokens were modified/removed**:
+
+1. Cross-reference the change against the task file's "Design system changes" section (Agent 4 documents intentional token additions there)
+2. **Intentional change** (documented in task file): record in the verification report and continue to Step 4
+3. **Unintentional change** (no entry in task file): **BLOCK** — return to Agent 4 with the diff. Token modifications without intent are how cards drift between pages
+
+Document the diff result in the task file:
+
+```markdown
+### DESIGN.md Diff Result (Agent 5, Step 3.5)
+**Base ref**: [commit sha or branch point]
+**Tokens added**: [list, or "none"]
+**Tokens removed**: [list, or "none"]
+**Tokens modified**: [list with old → new values, or "none"]
+**Verdict**: ✅ No drift / ⚠️ Intentional change (documented) / ❌ Unintentional drift — returned to Agent 4
+```
+
+**Why this runs before Step 4**: token regressions are the most common root cause of the "this card looks wrong" issues that the AI Studio consistency check catches. Catching them deterministically here is faster, free, and cannot hallucinate.
+
 ### Step 4: Cross-Page Consistency Check with AI Studio MCP (MANDATORY)
 
 **⛔ THIS IS THE FINAL GATE. DO NOT APPROVE INCONSISTENCIES. ⛔**

@@ -42,6 +42,7 @@ design-agents-flow/
 ├── design-7-fix.md            # Bug fix agent
 ├── design-8-animation.md      # Animation & motion design agent
 ├── design-9-mobile.md         # Mobile & responsive design agent
+├── design-system.md.template  # DESIGN.md-format design system starter (tokens + prose, lint-able via npx @google/design.md)
 ├── learnings.md               # Accumulated patterns and lessons learned
 ├── motion-patterns.md         # Animation spring values and patterns
 ├── ui-component-libraries.md  # Component library hierarchy guide
