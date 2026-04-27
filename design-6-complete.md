@@ -125,6 +125,43 @@ Add to task completion notes:
 - Components use project design principles
 ```
 
+#### Step 3b: Update `design-system.md` `components:` section
+
+When you extract a reusable component, also register it as a component-token bundle in the project's `design-system.md` front matter. This keeps the component library and the design system in sync — they used to drift because they were separate artifacts.
+
+For each extracted component:
+
+1. **Identify the token bundle** — what `backgroundColor`, `textColor`, `typography`, `rounded`, `padding` does the component use? Resolve them back to primitive token references (`{colors.surface}`, `{rounded.md}`) rather than literal values.
+
+2. **Append to `design-system.md` `components:`** in the YAML front matter:
+
+   ```yaml
+   components:
+     # ...existing entries unchanged...
+     [component-name]:
+       backgroundColor: "{colors.[primitive]}"
+       textColor: "{colors.[primitive]}"
+       typography: "{typography.[scale]}"
+       rounded: "{rounded.[scale]}"
+       padding: "{spacing.[scale]}"
+   ```
+
+3. **Add a one-line prose entry** under the `## Components` section explaining intent:
+
+   ```markdown
+   - **[component-name]:** [When to use it. When NOT to use it.]
+   ```
+
+4. **Re-lint** to confirm no broken references or contrast failures introduced:
+
+   ```bash
+   npx -y @google/design.md@latest lint design-system.md
+   ```
+
+5. **Verify diff is clean** — Agent 5 ran the regression check at task start, so the only token additions should be the ones for this extracted component. Anything unexpected means the change isn't isolated to this extraction.
+
+**Why this matters**: Without this step, `design-system.md` describes primitives only and the component library drifts independently. The next task picks one or the other, and they conflict. Registering extractions here means future Agent 1 plans can reference `{components.[component-name]}` and downstream agents resolve it consistently.
+
 ### Core Components to Build
 
 Track progress on core components (extract when first implemented):

@@ -576,78 +576,39 @@ mkdir -p public/design-references
 - Note: User should attach these same images when running Agent 5.1
 ```
 
-**Use Visual Reference System (No Figma)**
+**Read tokens from `design-system.md` (DESIGN.md format)**
 
-Instead of Figma, extract design specifications from the project's design system docs or `project-context.md`:
+The project's `design-system.md` at the repo root is the single source of truth for colors, typography, spacing, rounded, and component tokens. Format spec: https://github.com/google-labs-code/design.md.
+
+**If `design-system.md` is missing**, your first deliverable is to generate it from `design-system.md.template` (in this agents directory). Inspect the project's `tailwind.config.*` and existing components to populate real values; do not ship placeholders. Agent 3 will lint it; Agent 5 will diff it for regressions.
+
+**In the task plan, reference tokens by path, not by inlined value:**
 
 ```markdown
-## Visual Design Specifications
-**Source**: project-context.md + design system docs
+## Design Token References (from design-system.md)
 
-**Colors** (from project design system):
-- App Background: #F3F4F6 (cool gray - "the desk")
-- Content Surface: #FFFFFF (white - "the sheet")
-- Primary Action: #2563EB (royal blue)
-- AI/Magic: #7C3AED (violet)
-- Primary Text: #111827 (gray 900)
-- Secondary Text: #6B7280 (gray 500)
-- Borders: #E5E7EB (gray 200)
-
-**Status Colors**:
-- Success/Low Risk: bg-#D1FAE5, text-#065F46
-- Warning/Medium Risk: bg-#FFEDD5, text-#9A3412
-- Critical/High Risk: bg-#FEE2E2, text-#991B1B
-
-**Spacing**:
-- Base unit: 4px
-- Scale: 4, 8, 16, 24, 32px
-- Content padding: 32px (main views), 16px (inside cards)
-- Sidebar: Fixed 240px
+**Colors used by this task**:
+- `{colors.primary}` for the CTA background
+- `{colors.on-primary}` for CTA text
+- `{colors.surface-container}` for the card body
+- `{colors.outline}` for the divider
 
 **Typography**:
-- Font: Inter, 16px, weight 500, line-height 1.5
-- Tailwind: text-base font-medium leading-normal
+- `{typography.title-lg}` for the section header
+- `{typography.body-md}` for descriptive copy
 
-**Border**:
-- Radius: 8px (rounded-lg)
-- Width: 1px (border)
+**Spacing**:
+- `{spacing.md}` for card padding
+- `{spacing.lg}` between sections
 
-**Layout**:
-- Display: Flex column
-- Align: Items center
-- Justify: Space between
+**Components** (composed bundles already defined in design-system.md):
+- `{components.card-default}` for the container — do not redefine its border/radius/padding
+- `{components.button-primary}` for the CTA
 
-**Interaction States**:
-- Hover: darken by 10%, scale 1.02
-- Active: darken by 20%, scale 0.98
-- Disabled: opacity 50%
-- Focus: ring-2 ring-primary
+**If you need a token that does not exist yet**: propose adding it to `design-system.md` as part of this task, with a one-line rationale in the prose section. Do not inline raw hex values in the plan.
 ```
 
-**Design Token Mapping:**
-```markdown
-## Design Token Mapping (from project design system)
-
-Project Colors → Tailwind Class:
-- #F3F4F6 → bg-gray-100 (app background)
-- #FFFFFF → bg-white (content surface)
-- #2563EB → bg-blue-600 / text-blue-600 (primary action)
-- #7C3AED → bg-violet-600 / text-violet-600 (AI/magic)
-- #111827 → text-gray-900 (primary text)
-- #6B7280 → text-gray-500 (secondary text)
-- #E5E7EB → border-gray-200 (borders)
-
-Component Styling:
-- 12px radius → rounded-xl
-- 1px border → border (prefer borders over shadows)
-- 32px padding → p-8 (main views)
-- 16px padding → p-4 (inside cards)
-
-**CRITICAL**: Follow "Invisible UI" principle - interface recedes, data is hero
-- ✅ Use gray-200 borders, minimal shadows
-- ✅ High data density with generous container padding
-- ❌ Heavy drop shadows, decorative elements
-```
+**Why this matters**: Inlining hex codes in every task plan caused tokens to drift across tasks (cards used `rounded-lg` in one plan, `rounded-xl` in the next). The `design-system.md` is the contract; plans cite it.
 
 **Visual Reference Analysis Process:**
 ```markdown

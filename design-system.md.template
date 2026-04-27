@@ -1,0 +1,128 @@
+What this file does: Canonical design system for this project, in the DESIGN.md format from google-labs-code/design.md. Copy to `design-system.md` in your project root and fill in real values. The design agents read this as the single source of truth for tokens (colors, typography, spacing, components) and the prose rationale behind them. The npx CLI lints contrast and detects regressions between iterations.
+
+---
+name: [Project Name]
+description: [One-line description of the visual identity]
+design-md-spec-version: [paste latest commit sha from google-labs-code/design.md, e.g. 8ecd464 — Agent 3 keeps this current]
+
+colors:
+  # Primitives. Use semantic names (primary, surface, on-surface) over literal names (blue, red).
+  primary: "#000000"
+  on-primary: "#ffffff"
+  secondary: "#000000"
+  on-secondary: "#ffffff"
+  surface: "#ffffff"
+  on-surface: "#000000"
+  surface-container: "#f5f5f5"
+  outline: "#cccccc"
+  error: "#b00020"
+  on-error: "#ffffff"
+
+typography:
+  display:
+    fontFamily: Inter
+    fontSize: 44px
+    fontWeight: "800"
+    lineHeight: 52px
+    letterSpacing: -0.02em
+  headline-lg:
+    fontFamily: Inter
+    fontSize: 32px
+    fontWeight: "700"
+    lineHeight: 40px
+  title-lg:
+    fontFamily: Inter
+    fontSize: 20px
+    fontWeight: "600"
+    lineHeight: 28px
+  body-md:
+    fontFamily: Inter
+    fontSize: 16px
+    fontWeight: "400"
+    lineHeight: 24px
+  label-md:
+    fontFamily: Inter
+    fontSize: 14px
+    fontWeight: "600"
+    lineHeight: 20px
+
+rounded:
+  sm: 0.25rem
+  DEFAULT: 0.5rem
+  md: 0.75rem
+  lg: 1rem
+  full: 9999px
+
+spacing:
+  xs: 4px
+  sm: 8px
+  md: 16px
+  lg: 24px
+  xl: 40px
+
+components:
+  # Component tokens reference primitives via {path.to.token}
+  # Agent 6 appends new entries here whenever it extracts a reusable component.
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.label-md}"
+    rounded: "{rounded.DEFAULT}"
+    padding: "{spacing.md}"
+  card-default:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.on-surface}"
+    rounded: "{rounded.md}"
+    padding: "{spacing.md}"
+  input-field:
+    backgroundColor: "{colors.surface-container}"
+    textColor: "{colors.on-surface}"
+    typography: "{typography.body-md}"
+    rounded: "{rounded.DEFAULT}"
+    padding: "{spacing.sm}"
+---
+
+## Overview
+
+[2–3 sentences on the visual identity. What feeling does the UI evoke? What is it NOT? E.g. "Architectural Minimalism meets Journalistic Gravitas. The UI evokes a premium matte finish — a high-end broadsheet, not a consumer app. Decorative effects are forbidden."]
+
+## Colors
+
+[For each token, explain *why* the value exists and *when* to apply it. Tokens give agents the value; this prose tells them the intent.]
+
+- **Primary:** [What it's for, e.g. "Sole driver of interaction. Apply only to primary CTAs and active states. Not for body text."]
+- **Surface / on-surface:** [The page foundation pair. Body text reads against surface.]
+- **Surface-container:** [Elevated surfaces — cards, inputs.]
+- **Outline:** [Borders, dividers. Prefer borders over shadows.]
+- **Error:** [Reserved for destructive actions and validation failures only.]
+
+## Typography
+
+[Voice: e.g. "Tight, authoritative. Headlines compress letterspacing. Body uses generous line-height for readability."]
+
+- **display / headline-lg:** Top-of-page headers and hero copy.
+- **title-lg:** Section headers within a page.
+- **body-md:** Default reading copy.
+- **label-md:** Buttons, form labels, badges, table headers.
+
+## Spacing & Rounded
+
+- **Spacing:** Built on an 8px base. Use `xs` for tight pairings, `md` for component padding, `lg` for section gutters.
+- **Rounded:** Default is `0.5rem`. Cards use `md`. Pills use `full`. Sharp corners (no rounded) for table cells and dense data UI.
+
+## Components
+
+[Document any non-obvious composition rules. The `components:` tokens above give exact values — this prose explains when/why to deviate.]
+
+- **button-primary:** One per view. Never two side-by-side.
+- **card-default:** Bordered, no shadow. Shadows are reserved for floating UI (popovers, modals).
+- **input-field:** Sits on `surface-container`, not `surface`, to give visual depth without shadows.
+
+## When to deviate
+
+[Optional but useful. List the explicit cases where a token is the wrong answer, so future agents know not to invent rules. E.g. "On the dashboard's data tables, do NOT apply rounded — sharp corners are intentional for data density."]
+
+## Validation
+
+This file is linted by `npx -y @google/design.md@latest lint design-system.md` in Agent 3.
+Token regressions are detected by `npx -y @google/design.md@latest diff` in Agent 5.

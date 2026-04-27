@@ -13,9 +13,9 @@ What this file does: Optional project config for design agents. Copy to `project
 - **Dev Server Port:** [3000 / 5173 / etc.]
 
 ## Visual Direction
-- **Primary Reference:** [Link to design system file or brief description]
-- **Visual References:** [Directory path to screenshots/mockups, or "N/A"]
-- **Key Inspirations:** [e.g. "Linear-style minimal", "Dashboard with sidebar nav"]
+- **Design System:** `design-system.md` at project root (DESIGN.md format — tokens + prose). If missing, Agent 1 generates it from `design-system.md.template` as the first deliverable. All agents read this as the canonical source for colors, typography, spacing, and components.
+- **Visual References:** [Directory path to screenshots/mockups for ad-hoc inspiration, or "N/A". Tokens belong in `design-system.md`, not here.]
+- **Key Inspirations:** [e.g. "Linear-style minimal", "Dashboard with sidebar nav" — one-liner only; the *why* lives in the design-system.md prose sections.]
 
 ## Working Directories
 - **Status Board:** [Path to kanban/status file, or "N/A"]
