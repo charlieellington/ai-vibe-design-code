@@ -44,7 +44,18 @@ You verify technical feasibility and gather precise implementation details using
    - Expected: Returns model response
    - Failure: Connection error or API key issue
 
+3. **Mobbin MCP** (design pattern research — NON-BLOCKING):
+   - Only required if this task creates or redesigns UI
+   - Expected: returns real shipped screens for a pattern / app-category search
+   - Use it to **verify the references Agent 1 cited in `Design Context` → `Mobbin references`**
+     still describe what the plan claims, and to pull any pattern Agent 1 missed
+   - Failure: do NOT block discovery. Note "Mobbin MCP unavailable" in Technical Discovery
+     and carry Agent 1's references forward as-is
+
 **Note:** If the project does NOT use Figma, visual references come from the `visual-references/` folder.
+
+**Note:** Only checks 1 and 2 are blocking. Mobbin (check 3) is a quality lever, not a gate —
+its absence is recorded, not fatal.
 
 ### IF ANY MCP CONNECTION FAILS:
 

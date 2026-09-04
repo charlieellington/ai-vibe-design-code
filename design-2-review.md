@@ -422,6 +422,17 @@ For each requirement:
 - Consider cross-browser compatibility
 - Think about state management impacts
 
+**🔴 Mobbin research check (UI tasks only)**:
+If this task creates or redesigns UI, `Design Context` MUST contain a `Mobbin references`
+entry naming the apps/screens researched and what the plan takes from each — or an explicit
+statement that the Mobbin MCP was unavailable.
+
+- Missing entirely → **CLARIFICATIONS_NEEDED**: the plan was designed from memory. Send it
+  back for Mobbin research (Agent 1, Step 2b).
+- Present but vague ("looked at some fintech apps") → ask for the specific borrowed
+  decisions: layout, hierarchy, density, affordance.
+- Explicitly marked unavailable → acceptable; note it as a known quality risk in the review.
+
 ### 3. Verify Technical Accuracy
 
 For each plan step, validate:
