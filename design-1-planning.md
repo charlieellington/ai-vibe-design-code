@@ -156,6 +156,7 @@ Each task gets its own file in the `agents/doing/` folder:
 [Visual reference analysis, design specs from project-context.md or design system docs]
 
 **Design References** (for Agent 5 visual verification):
+- Mobbin references: [Apps/screens found via Mobbin MCP + what this task takes from each]
 - Visual inspiration: [Which reference images guide this task]
 - User-provided images: [List any images user attached]
 - Key patterns: [Specific patterns from visual-references/ folder]
@@ -552,6 +553,38 @@ In the Plan section, explicitly state:
 - Any intentional deviations and why
 
 **WHY THIS MATTERS**: Without referencing existing pages, each new page may drift in style. AI Studio MCP produces better code when given real examples of what the app looks like.
+
+---
+
+### 2b. Design Pattern Research (Mobbin MCP) — MANDATORY FOR UI WORK
+
+**Applies whenever this task creates or redesigns UI**: a new screen or page, a redesign,
+onboarding, auth, settings, checkout, empty states, component composition, or any
+"make this look better" request.
+
+**Do this BEFORE writing the plan.**
+
+1. **Search Mobbin** via the Mobbin MCP for:
+   - the **pattern** ("onboarding", "empty state", "pricing table", "settings list"), AND
+   - the **app category** this product sits in (read `project-context.md` for the category).
+2. **Pull several references, not one.** Three or more. Note what each does well and where
+   they disagree — the disagreement is where the design decision actually lives.
+3. **Record them in the task file** under `Design Context` → `Mobbin references`:
+   which apps/screens you looked at, and what specifically this plan takes from each.
+   Name the borrowed decision (layout, hierarchy, density, affordance) — not just the app.
+
+**WHY**: designing from model memory produces generic, average-of-the-internet layouts.
+Mobbin returns real screens from shipped products, so the plan is grounded in patterns
+that already survived contact with real users. This is the single cheapest quality lever
+in the whole pipeline — it costs one tool call and changes the ceiling of the output.
+
+**Do NOT copy a reference wholesale.** The project's `design-system.md` tokens and the
+existing production pages (Step 2 above) still win on colour, type, spacing and component
+choice. Mobbin informs **structure and interaction**, not brand.
+
+**⛔ IF THE MOBBIN MCP IS UNAVAILABLE** (not authenticated, failed to connect, or returns
+nothing useful): state that explicitly in the task file's `Design Context`. Do NOT silently
+fall back to designing from memory — Agent 2 checks for this.
 
 ---
 
